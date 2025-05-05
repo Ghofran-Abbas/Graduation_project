@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/localization/app_localizations_setup.dart';
 import 'core/localization/local_cubit/local_cubit.dart';
 import 'core/utils/app_router.dart';
+import 'core/utils/bloc_observer.dart';
+import 'core/utils/service_locator.dart';
 
 void main() {
+
+  setupServiceLocator();
+  Bloc.observer = MyBlocObserver();
+
   runApp(const MyApp());
 }
 
@@ -21,15 +28,22 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
-          return MaterialApp.router(
-            routerDelegate: AppRouter.router.routerDelegate,
-            routeInformationParser: AppRouter.router.routeInformationParser,
-            routeInformationProvider: AppRouter.router.routeInformationProvider,
-            debugShowCheckedModeBanner: false,
-            supportedLocales: AppLocalizationsSetup.supportedLocales,
-            localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
-            localeResolutionCallback: AppLocalizationsSetup.localeResolutionCallback,
-            locale: locale,
+          return ScreenUtilInit(
+            designSize: const Size(1440, 1024),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return MaterialApp.router(
+                routerDelegate: AppRouter.router.routerDelegate,
+                routeInformationParser: AppRouter.router.routeInformationParser,
+                routeInformationProvider: AppRouter.router.routeInformationProvider,
+                debugShowCheckedModeBanner: false,
+                supportedLocales: AppLocalizationsSetup.supportedLocales,
+                localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
+                localeResolutionCallback: AppLocalizationsSetup.localeResolutionCallback,
+                locale: locale,
+              );
+            },
           );
         },
       ),
