@@ -1,10 +1,10 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:alhadara_dashboard/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_network/image_network.dart';
-
-import '../../../../../core/utils/assets.dart';
 
 class CustomImageNetwork extends StatelessWidget {
   const CustomImageNetwork({
@@ -21,9 +21,8 @@ class CustomImageNetwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("h${image!}");
     return ImageNetwork(
-      image: "http://127.0.0.1:8000/uploads/${image!}",
+      image: "http://127.0.0.1:8080/${image!}",
       // put a height and width because they are required
       height: imageHeight ?? 55,
       width: imageWidth ?? 50,
@@ -60,7 +59,6 @@ class CustomImageAsset extends StatelessWidget {
     return Container(
       height: imageHeight ?? 55,
       width: imageWidth ?? 50,
-      //margin: EdgeInsets.only(top: screenSize.height * .16),
       decoration: BoxDecoration(
         color: color ?? AppColors.lightPurple,
         borderRadius: BorderRadius.circular(borderRadius ?? 35.0),
@@ -71,3 +69,30 @@ class CustomImageAsset extends StatelessWidget {
     );
   }
 }
+
+class CustomMemoryImage extends StatelessWidget {
+  const CustomMemoryImage({super.key, this.imageHeight, this.imageWidth, this.borderRadius, this.image, this.color});
+
+  final double? imageHeight;
+  final double? imageWidth;
+  final double? borderRadius;
+  final Uint8List? image;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: imageHeight ?? 55.w,
+      width: imageWidth ?? 50.w,
+      decoration: BoxDecoration(
+        color: color ?? AppColors.lightPurple,
+        borderRadius: BorderRadius.circular(borderRadius ?? 35.0),
+        image: DecorationImage(
+          image: MemoryImage(image!,),
+          fit: BoxFit.fill
+        )
+      ),
+    );
+  }
+}
+

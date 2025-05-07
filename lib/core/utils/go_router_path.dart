@@ -2,6 +2,8 @@ class GoRouterPath {
 
   //Secretary path
   static const login = '/';
+  static const verification = '/verification';
+  static const passwordReset = '/verification/passwordReset';
   static const dashboard = '/dashboard';
   static const courses = '/dashboard/courses';
   static const courseDetails = '/details';
