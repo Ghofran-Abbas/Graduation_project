@@ -1,3 +1,6 @@
+import 'package:alhadara_dashboard/features/secretary_features/student/data/repos/student_repo_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/repos/trainer_repo_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/presentation/manager/trainers_cubit/trainers_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +10,9 @@ import 'core/localization/local_cubit/local_cubit.dart';
 import 'core/utils/app_router.dart';
 import 'core/utils/bloc_observer.dart';
 import 'core/utils/service_locator.dart';
+import 'features/login/data/repos/login_repo_impl.dart';
+import 'features/login/presentation/manager/login_cubit/login_cubit.dart';
+import 'features/secretary_features/student/presentation/manager/students_cubit/students_cubit.dart';
 
 void main() {
 
@@ -25,6 +31,27 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LocaleCubit>(create: (_) => LocaleCubit()),
+        BlocProvider(
+          create: (context) {
+            return LoginCubit(
+              getIt.get<LoginRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return StudentsCubit(
+              getIt.get<StudentRepoImpl>(),
+            )..fetchStudents();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return TrainersCubit(
+              getIt.get<TrainerRepoImpl>(),
+            )..fetchTrainers();
+          },
+        ),
       ],
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {

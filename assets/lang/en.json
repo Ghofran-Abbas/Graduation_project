@@ -2,6 +2,14 @@
   "Put Admin translation under this line": "******************************************",
 
   "Put Secretary translation under this line": "******************************************",
+  "CreateStudentFailure": "Create student failure",
+  "CreateStudentSuccess": "Create student success",
+  "UpdateStudentFailure": "UpdateStudentFailure",
+  "UpdateStudentSuccess": "UpdateStudentSuccess",
+  "ImagePickedSuccess": "Image picked success",
 
-  "Put Teacher translation under this line": "******************************************"
+  "CreateTrainerFailure": "CreateTrainerFailure",
+  "CreateTrainerSuccess": "CreateTrainerSuccess",
+
+  "Put Trainer translation under this line": "******************************************"
 }

@@ -6,33 +6,10 @@ import '../../utils/styles.dart';
 import 'list_view_information_field.dart';
 
 class CustomListInformationFields extends StatelessWidget {
-  const CustomListInformationFields({super.key, required this.secondField, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.fourthDetailsText, this.fourthDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, required this.itemCount});
+  const CustomListInformationFields({super.key, required this.secondField, required this.widget});
 
   final String secondField;
-  final double? width;
-  final double? height;
-  final Color? color;
-  final String? image;
-  final double? imageWidth;
-  final double? imageHeight;
-  final double? imageBorderRadius;
-  final double? widthProfileText;
-  final String name;
-  final Color? nameColor;
-  final bool? showDetailsText;
-  final String? secondText;
-  final Color? secondTextColor;
-  final bool? showSecondDetailsText;
-  final String? thirdDetailsText;
-  final Color? thirdDetailsTextColor;
-  final String? fourthDetailsText;
-  final Color? fourthDetailsTextColor;
-  final bool? showIcons;
-  final double? heightTextIcon;
-  final IconData? leftIcon;
-  final IconData? rightIcon;
-  final Function onTap;
-  final int itemCount;
+  final Widget widget;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +68,8 @@ class CustomListInformationFields extends StatelessWidget {
             ],
           ),
         ),
-        ListViewInformationField(
+        widget,
+        /*ListViewInformationField(
           image: image,
           name: name,
           secondText: secondText,
@@ -115,7 +93,7 @@ class CustomListInformationFields extends StatelessWidget {
           heightTextIcon: heightTextIcon,
           leftIcon: leftIcon,
           rightIcon: rightIcon,
-        ),
+        ),*/
       ],
     );
   }

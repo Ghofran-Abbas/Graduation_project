@@ -1,14 +1,17 @@
+import 'package:alhadara_dashboard/core/widgets/custom_error_widget.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/trainers_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../features/secretary_features/student/data/models/students_model.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/styles.dart';
 import '../custom_icon_button.dart';
 import '../custom_image_network.dart';
 
-class ListViewInformationField extends StatelessWidget {
+/*class ListViewInformationField extends StatelessWidget {
   const ListViewInformationField({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor, required this.itemCount,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor, required this.itemCount, this.students, this.trainers,
   });
 
   final double? width;
@@ -35,10 +38,21 @@ class ListViewInformationField extends StatelessWidget {
   final IconData? rightIcon;
   final Function onTap;
   final int itemCount;
+  final List<Datum>? students;
+  final List<DatumTrainer>? trainers;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    bool? isStudents;
+    List<dynamic>? items;
+    if(students != null) {
+      isStudents = true;
+      items = students;
+    } else if(trainers != null) {
+      isStudents = false;
+      items = trainers;
+    }
+    return items != null ? ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         return Align(child: InformationFieldItem(
           width: width,
@@ -69,13 +83,13 @@ class ListViewInformationField extends StatelessWidget {
       itemCount: itemCount,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-    );
+    ) : CustomErrorWidget(errorMessage: 'No thing to display');
   }
-}
+}*/
 
 class InformationFieldItem extends StatelessWidget {
   const InformationFieldItem({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor, required this.onTapFirstIcon, required this.onTapSecondIcon,
   });
 
   final double? width;
@@ -101,6 +115,8 @@ class InformationFieldItem extends StatelessWidget {
   final IconData? leftIcon;
   final IconData? rightIcon;
   final Function onTap;
+  final Function onTapFirstIcon;
+  final Function onTapSecondIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +136,11 @@ class InformationFieldItem extends StatelessWidget {
           //mainAxisAlignment: (showDetailsText ?? false) && (showIcons ?? false) ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: [
             //image
-            CustomImageAsset(
+            CustomImageNetwork(
               imageWidth: imageWidth ?? 24.w,
               imageHeight: imageHeight ?? 24.w,
               borderRadius: imageBorderRadius ?? 30.r,
+              image: image,
             ),
             //Information
             SizedBox(width: widthProfileText ?? 8.12.w,),
@@ -171,9 +188,9 @@ class InformationFieldItem extends StatelessWidget {
             showIcons ?? false ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomIconButton(icon: leftIcon ?? Icons.edit_outlined, onTap: (){},),
+                CustomIconButton(icon: leftIcon ?? Icons.edit_outlined, onTap: (){onTapFirstIcon();},),
                 SizedBox(width: 10.8.w,),
-                CustomIconButton(icon: rightIcon ?? Icons.delete_outline, onTap: (){},),
+                CustomIconButton(icon: rightIcon ?? Icons.delete_outline, onTap: (){onTapSecondIcon();},),
               ],
             ) : SizedBox(width: 0, height: 0,),
           ],

@@ -1,4 +1,8 @@
+import 'package:alhadara_dashboard/core/utils/service_locator.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/repos/trainer_repo_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/presentation/manager/create_trainer_cubit/create_trainer_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/trainers_view_body.dart';
 
@@ -7,6 +11,13 @@ class TrainersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TrainersViewBody();
+    return BlocProvider(
+      create: (context) {
+        return CreateTrainerCubit(
+          getIt.get<TrainerRepoImpl>(),
+        );
+      },
+      child: TrainersViewBody(),
+    );
   }
 }
