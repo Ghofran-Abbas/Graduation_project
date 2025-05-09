@@ -1,9 +1,10 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:alhadara_dashboard/constants.dart';
 import 'package:alhadara_dashboard/core/errors/failure.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/create_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/delete_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/details_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/update_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/repos/student_repo.dart';
 import 'package:dartz/dartz.dart';
@@ -74,7 +75,7 @@ class StudentRepoImpl extends StudentRepo{
       return right(studentsModel);
 
     } catch (e) {
-      if (e is DioError){
+      if (e is DioException){
         return left(ServerFailure.fromDioError(e),);
       }
       return left(ServerFailure(e.toString()));
@@ -114,7 +115,10 @@ class StudentRepoImpl extends StudentRepo{
         filename: 'upload.png',
       );
     }
-    log('dfghjkjbhvgvbnj ${dataMap.toString()}');
+
+    if (dataMap.isEmpty) {
+      return left(ServerFailure('يجب تعديل حقل واحد على الأقل قبل الإرسال.'));
+    }
 
     final formData = FormData.fromMap(dataMap);
 
@@ -130,6 +134,47 @@ class StudentRepoImpl extends StudentRepo{
 
       return right(updateStudentModel);
     } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DeleteStudentModel>> fetchDeleteStudent({required int id}) async {
+    try {
+      var data = await (dioApiService.post(
+        endPoint: '/secretary/student/deleteStudent/$id',
+        data: {
+          "id": id,
+        },
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      DeleteStudentModel deleteStudentModel;
+      deleteStudentModel = DeleteStudentModel.fromJson(data);
+
+      return right(deleteStudentModel);
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DetailsStudentModel>> fetchDetailsStudent({required int id}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/student/showStudentById/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      DetailsStudentModel detailsStudentModel;
+      detailsStudentModel = DetailsStudentModel.fromJson(data);
+
+      return right(detailsStudentModel);
+
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
       return left(ServerFailure(e.toString()));
     }
   }

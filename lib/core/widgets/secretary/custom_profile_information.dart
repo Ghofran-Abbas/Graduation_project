@@ -54,7 +54,12 @@ class CustomProfileInformation extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomImageAsset(
+              image != null ? CustomImageNetwork(
+                image: image,
+                imageWidth: imageWidth ?? 252.w,
+                imageHeight: imageHeight ?? 252.w,
+                borderRadius: borderRadius ?? 210.r,
+              ) : CustomImageAsset(
                 imageWidth: imageWidth ?? 252.w,
                 imageHeight: imageHeight ?? 252.w,
                 borderRadius: borderRadius ?? 210.r,

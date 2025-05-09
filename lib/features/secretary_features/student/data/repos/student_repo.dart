@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/create_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/delete_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/details_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/update_student_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -29,11 +31,11 @@ abstract class StudentRepo {
     Uint8List? photo,
   });
 
-  /*Future<Either<Failure, DeleteStaffModel>> fetchDeleteStaff({
+  Future<Either<Failure, DeleteStudentModel>> fetchDeleteStudent({
     required int id,
   });
 
-  Future<Either<Failure, List<ShowStaffDetailsModel>>> fetchShowStaffDetails({
+  Future<Either<Failure, DetailsStudentModel>> fetchDetailsStudent({
     required int id,
-  });*/
+  });
 }

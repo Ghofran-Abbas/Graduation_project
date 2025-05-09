@@ -1,70 +1,125 @@
+import 'package:alhadara_dashboard/features/secretary_features/trainer/presentation/manager/details_trainer_cubit/details_trainer_cubit.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/presentation/manager/details_trainer_cubit/details_trainer_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/utils/styles.dart';
+import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
+import '../../../../../../core/widgets/custom_error_widget.dart';
+import '../../../../../../core/widgets/secretary/custom_over_loading_card.dart';
 import '../../../../../../core/widgets/secretary/custom_profile_cards.dart';
 import '../../../../../../core/widgets/secretary/custom_profile_information.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
+import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 
 class TrainerDetailsViewBody extends StatelessWidget {
   const TrainerDetailsViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 56.0.h,),
-      child: CustomScreenBody(
-        title: 'Trainers',
-        showSearchField: true,
-        onPressedFirst: (){},
-        onPressedSecond: (){},
-        body: Padding(
-          padding: EdgeInsets.only(top: 238.0.h, left: 20.0.w, right: 20.0.w, bottom: 27.0.h),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomProfileInformation(
-                  name: 'Kristin Watson',
-                  detailsText: 'French trainer',
-                  showDetailsText: true,
-                  firstBoxText: '+42 249 22 873',
-                  firstBoxIcon: Icons.phone_in_talk_outlined,
-                  secondBoxText: 'mickelle.rivera@exmple.com',
-                  secondBoxIcon: Icons.mail_outlined,
-                  aboutText: 'Nulla Lorem mollit cupidatat irure. Laborum\n'
-                      'magna nulla duis ullamco cillum dolor.\n'
-                      'Voluptate exercitation incididunt aliquip\n'
-                      'deserunt reprehenderit elit laborum. Nulla\n'
-                      'Lorem mollit cupidatat irure. Laborum\n'
-                      'magna nulla duis ullamco cillum dolor.\n'
-                      'Voluptate exercitation incididunt aliquip\n'
-                      'deserunt reprehenderit elit laborum. ',
-                  showAboutText: true,
-                  firstFieldInfoText: '2002-07-05',
-                  secondFieldInfoText: 'Female',
-                  labelText: 'Students from the same class',
-                  tailText: 'See more',
-                  avatarCount: 1,
-                  onTap: (){},
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = ((screenWidth - 210) / 250).floor();
+    crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
+    int count = 7;
+    return BlocConsumer<DetailsTrainerCubit, DetailsTrainerState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if(state is DetailsTrainerSuccess) {
+          return Padding(
+            padding: EdgeInsets.only(top: 56.0.h,),
+            child: CustomScreenBody(
+              title: state.showResult.trainer.name,
+              showSearchField: true,
+              onPressedFirst: () {},
+              onPressedSecond: () {},
+              body: Padding(
+                padding: EdgeInsets.only(
+                    top: 238.0.h, left: 20.0.w, right: 20.0.w, bottom: 27.0.h),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomProfileInformation(
+                        image: state.showResult.trainer.photo,
+                        name: state.showResult.trainer.name,
+                        detailsText: state.showResult.trainer.specialization,
+                        showDetailsText: true,
+                        firstBoxText: state.showResult.trainer.phone,
+                        firstBoxIcon: Icons.phone_in_talk_outlined,
+                        secondBoxText: state.showResult.trainer.email,
+                        secondBoxIcon: Icons.mail_outlined,
+                        aboutText: state.showResult.trainer.experience/*'Nulla Lorem mollit cupidatat irure. Laborum\n'
+                            'magna nulla duis ullamco cillum dolor.\n'
+                            'Voluptate exercitation incididunt aliquip\n'
+                            'deserunt reprehenderit elit laborum. Nulla\n'
+                            'Lorem mollit cupidatat irure. Laborum\n'
+                            'magna nulla duis ullamco cillum dolor.\n'
+                            'Voluptate exercitation incididunt aliquip\n'
+                            'deserunt reprehenderit elit laborum. '*/,
+                        showAboutText: true,
+                        firstFieldInfoText: state.showResult.trainer.birthday,
+                        secondFieldInfoText: state.showResult.trainer.gender,
+                        labelText: 'Students from the same class',
+                        tailText: 'See more',
+                        avatarCount: 1,
+                        onTap: () {},
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 52.h, bottom: 20.h, left: 20.w, right: 20.w,),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Courses by ${state.showResult.trainer.name}',
+                              style: Styles.b2Bold(color: AppColors.t4),
+                            ),
+                            SizedBox(height: 10.h,),
+                            CustomOverLoadingCard(
+                              cardCount: count,
+                              onTapSeeMore: () {},
+                              widget: GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    crossAxisSpacing: 10.w,
+                                    mainAxisExtent: 354.66.h),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Align(child: CustomCard(
+                                    text: 'English',
+                                    showDetailsText: true,
+                                    detailsText: 'Section1',
+                                    secondDetailsText: 'Languages',
+                                    showSecondDetailsText: true,
+                                    onTap: () {
+                                      /*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/
+                                    },
+                                  ));
+                                },
+                                itemCount: count > 4 ? 4 : count,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                CustomProfileCards(
-                  labelText: 'Courses by Kristin',
-                  text: 'English',
-                  showDetailsText: true,
-                  detailsText: 'Section1',
-                  secondDetailsText: 'Languages',
-                  showSecondDetailsText: true,
-                  cardCount: 5,
-                  onTapCard: (){},
-                  onTapSeeMore: (){},
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else if(state is DetailsTrainerFailure) {
+          return CustomErrorWidget(errorMessage: state.errorMessage);
+        } else {
+          return CustomCircularProgressIndicator();
+        }
+      }
     );
   }
 }

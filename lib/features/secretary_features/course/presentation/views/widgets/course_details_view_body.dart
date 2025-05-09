@@ -65,6 +65,11 @@ class CourseDetailsViewBody extends StatelessWidget {
     return BlocConsumer<CreateSectionCubit, CreateSectionState>(
       listener: (context, state) {},
       builder: (context, state) {
+        final screenWidth = MediaQuery.of(context).size.width;
+
+        int crossAxisCount = ((screenWidth - 210) / 250).floor();
+        crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
+        int count = 10;
         return Padding(
           padding: EdgeInsets.only(top: 56.0.h,),
           child: CustomScreenBody(
@@ -889,11 +894,21 @@ class CourseDetailsViewBody extends StatelessWidget {
                                         ],
                                       ),
                                       CustomOverLoadingCard(
-                                        text: 'Discount 30%',
-                                        showIcons: true,
-                                        cardCount: 5,
-                                        onTapCard: (){},
+                                        cardCount: count,
                                         onTapSeeMore: (){},
+                                        widget: GridView.builder(
+                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 10.w, mainAxisExtent: 354.66.h),
+                                          itemBuilder: (BuildContext context, int index) {
+                                            return Align(child: CustomCard(
+                                              text: 'Discount 30%',
+                                              showIcons: true,
+                                              onTap: (){/*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/},
+                                            ));
+                                          },
+                                          itemCount: count > 4 ? 4 : count,
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                        ),
                                       ),
                                     ],
                                   ),

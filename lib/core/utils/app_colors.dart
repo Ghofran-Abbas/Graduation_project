@@ -23,6 +23,7 @@ class AppColors
   static const darkHighlightPurple = Color(0x40C1BBEB);
   static const dialogBackground = Color(0xFFFBFAFC);
   static const gold = Color(0xFFFCC43E);
+  static const orange = Color(0xFFFF6D45);
   static const red = Color(0xFFF52828);
   static const mintGreen = Color(0xFF4CBC9A);
 

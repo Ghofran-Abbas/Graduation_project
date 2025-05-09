@@ -6,10 +6,39 @@
   "CreateStudentSuccess": "Create student success",
   "UpdateStudentFailure": "UpdateStudentFailure",
   "UpdateStudentSuccess": "UpdateStudentSuccess",
+  "DeleteStudentFailure": "DeleteStudentFailure",
+  "DeleteStudentSuccess": "DeleteStudentSuccess",
   "ImagePickedSuccess": "Image picked success",
+
+  "Are you sure you want to delete this student?": "Are you sure you want to delete this student?",
 
   "CreateTrainerFailure": "CreateTrainerFailure",
   "CreateTrainerSuccess": "CreateTrainerSuccess",
+  "UpdateTrainerFailure": "UpdateTrainerFailure",
+  "UpdateTrainerSuccess": "UpdateTrainerSuccess",
+  "DeleteTrainerFailure": "DeleteTrainerFailure",
+  "DeleteTrainerSuccess": "DeleteTrainerSuccess",
+
+  "Trainers": "Trainers",
+  "New trainer": "New trainer",
+  "Add trainer": "Add trainer",
+  "Edit trainer": "Edit trainer",
+
+  "Are you sure you want to delete this trainer?": "Are you sure you want to delete this trainer?",
+
+
+  "Full name": "Full name",
+  "Email address": "Email address",
+  "Phone number": "Phone number",
+  "Birth date": "Birth date",
+  "Gender": "Gender",
+  "Password": "Password",
+  "Specification": "Specification",
+  "Experience": "Experience",
+  "       Cancel       ": "       Cancel       ",
+  "Subject": "Subject",
+  "Warning": "Warning",
+  "Confirm": "Confirm",
 
   "Put Trainer translation under this line": "******************************************"
 }

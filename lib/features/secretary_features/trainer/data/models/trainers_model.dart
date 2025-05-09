@@ -87,7 +87,7 @@ class DatumTrainer {
   final String name;
   final String email;
   final String phone;
-  final String photo;
+  final String? photo;
   final String birthday;
   final String gender;
   final String specialization;

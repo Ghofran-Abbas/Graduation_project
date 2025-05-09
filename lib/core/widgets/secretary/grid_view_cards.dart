@@ -6,7 +6,7 @@ import '../../utils/styles.dart';
 import '../custom_icon_button.dart';
 import '../custom_image_network.dart';
 
-class GridViewCards extends StatelessWidget {
+/*class GridViewCards extends StatelessWidget {
   const GridViewCards({super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, required this.cardCount});
 
   final double? width;
@@ -71,11 +71,11 @@ class GridViewCards extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
     );
   }
-}
+}*/
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.showRating, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.showCheckEndCourse,
   });
 
   final double? width;
@@ -99,6 +99,13 @@ class CustomCard extends StatelessWidget {
   final IconData? leftIcon;
   final IconData? rightIcon;
   final Function onTap;
+  final bool? showRating;
+  final IconData? ratingIcon;
+  final Color? ratingIconColor;
+  final double? ratingIconSize;
+  final String? ratingText;
+  final Color? ratingTextColor;
+  final bool? showCheckEndCourse;
 
   @override
   Widget build(BuildContext context) {
@@ -122,10 +129,23 @@ class CustomCard extends StatelessWidget {
             mainAxisAlignment: (showDetailsText ?? false) && (showIcons ?? false) ? MainAxisAlignment.start : MainAxisAlignment.center,
             children: [
               //image
-              CustomImageAsset(
-                imageWidth: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageWidth ?? 104.w,
-                imageHeight: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageHeight ?? 104.w,
-                borderRadius: imageBorderRadius ?? 80.r,
+              Stack(
+                children: [
+                  CustomImageAsset(
+                    imageWidth: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageWidth ?? 104.w,
+                    imageHeight: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageHeight ?? 104.w,
+                    borderRadius: imageBorderRadius ?? 80.r,
+                  ),
+                  showCheckEndCourse ?? false ?Positioned(
+                    top: 75.w,
+                    left: 75.w,
+                    child: CustomIconButton(
+                      icon: Icons.check,
+                      backgroundColor: AppColors.mintGreen,
+                      onTap: () {},
+                    ),
+                  ) : SizedBox(width: 0, height: 0,),
+                ],
               ),
               //Title
               SizedBox(height: heightProfileText ?? 16.h,),
@@ -176,6 +196,23 @@ class CustomCard extends StatelessWidget {
                   CustomIconButton(icon: leftIcon ?? Icons.edit_outlined, onTap: (){},),
                   SizedBox(width: 10.8.w,),
                   CustomIconButton(icon: rightIcon ?? Icons.delete_outline, onTap: (){},),
+                ],
+              ) : SizedBox(width: 0, height: 0,),
+              showRating ?? false ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    ratingText ?? '',
+                    style: Styles.b2Bold(color: ratingTextColor ?? AppColors.blue),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(width: 8.w,),
+                  Icon(
+                    ratingIcon ?? Icons.star,
+                    color: ratingIconColor ?? AppColors.gold,
+                    size: ratingIconSize ?? 32.r,
+                  ),
                 ],
               ) : SizedBox(width: 0, height: 0,),
             ],

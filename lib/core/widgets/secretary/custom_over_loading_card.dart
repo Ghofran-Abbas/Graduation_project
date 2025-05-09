@@ -6,32 +6,11 @@ import '../../utils/styles.dart';
 import 'grid_view_cards.dart';
 
 class CustomOverLoadingCard extends StatelessWidget {
-  const CustomOverLoadingCard({super.key,required this.cardCount, required this.onTapCard, this.seeMoreText, required this.onTapSeeMore, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon});
+  const CustomOverLoadingCard({super.key,required this.cardCount, required this.onTapSeeMore, required this.widget});
 
-  final double? width;
-  final double? height;
-  final Color? color;
-  final String? image;
-  final double? imageWidth;
-  final double? imageHeight;
-  final double? imageBorderRadius;
-  final double? heightProfileText;
-  final String text;
-  final Color? textColor;
-  final bool? showDetailsText;
-  final String? detailsText;
-  final Color? detailsTextColor;
-  final bool? showSecondDetailsText;
-  final String? secondDetailsText;
-  final Color? secondDetailsTextColor;
-  final bool? showIcons;
-  final double? heightTextIcon;
-  final IconData? leftIcon;
-  final IconData? rightIcon;
   final int cardCount;
-  final Function onTapCard;
-  final String? seeMoreText;
   final Function onTapSeeMore;
+  final Widget widget;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +22,8 @@ class CustomOverLoadingCard extends StatelessWidget {
             children: [
               SizedBox(
                 width: 1049.2.w,
-                child: GridViewCards(
+                child: widget,
+                /*child: GridViewCards(
                   cardCount: calculateCardCount(cardCount: cardCount),
                   width: width,
                   height: height,
@@ -68,7 +48,7 @@ class CustomOverLoadingCard extends StatelessWidget {
                   onTap: (){
                     onTapCard();
                   },
-                ),
+                ),*/
               ),
               Positioned(
                 left: 870.w,

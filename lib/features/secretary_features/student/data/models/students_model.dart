@@ -86,8 +86,8 @@ class Datum {
   late final int id;
   late final String name;
   late final String email;
-  late final String phone;
-  late final String photo;
+  late final String? phone;
+  late final String? photo;
   late final String birthday;
   late final DateTime createdAt;
   late final DateTime updatedAt;
