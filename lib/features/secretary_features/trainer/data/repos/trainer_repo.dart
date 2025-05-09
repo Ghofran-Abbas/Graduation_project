@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/create_trainer_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/delete_trainer_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/details_trainer_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/update_trainer_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
@@ -19,5 +22,22 @@ abstract class TrainerRepo {
     required String gender,
     required String specialization,
     required String experience,
+  });
+
+  Future<Either<Failure, UpdateTrainerModel>> fetchUpdateTrainer({
+    required int id,
+    String? name,
+    String? phone,
+    String? birthday,
+    String? gender,
+    Uint8List? photo,
+  });
+
+  Future<Either<Failure, DeleteTrainerModel>> fetchDeleteTrainer({
+    required int id,
+  });
+
+  Future<Either<Failure, DetailsTrainerModel>> fetchDetailsTrainer({
+    required int id,
   });
 }

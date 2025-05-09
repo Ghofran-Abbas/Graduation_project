@@ -13,7 +13,11 @@ class GoRouterPath {
   static const trainers = '/trainers';
   static const trainerDetails = '/trainers/trainerDetails';
   static const inPreparation = '/inPreparation';
+  static const inPreparationDetails = '/inPreparation/inPreparationDetails';
+  static const inPreparationCalendar = '/inPreparationCalendar';
   static const complete = '/complete';
+  static const completeDetails = '/complete/completeDetails';
+  static const completeCalendar = '/completeCalendar';
   static const reports = '/reports';
 
 }

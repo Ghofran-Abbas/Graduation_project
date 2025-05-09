@@ -11,6 +11,10 @@ class InPreparationViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = ((screenWidth - 210) / 250).floor();
+    crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
@@ -26,14 +30,21 @@ class InPreparationViewBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GridViewCards(
-                  text: 'Video Editing',
-                  cardCount: 20,
-                  showIcons: true,
-                  detailsText: 'Section 1',
-                  secondDetailsText: 'Media & Pro',
-                  showDetailsText: true,
-                  onTap: (){/*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/},
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 10.w, mainAxisExtent: 354.66.h),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Align(child: CustomCard(
+                      text: 'Video Editing',
+                      showIcons: true,
+                      detailsText: 'Section 1',
+                      secondDetailsText: 'Media & Pro',
+                      showDetailsText: true,
+                      onTap: (){context.go('${GoRouterPath.inPreparationDetails}/1');},
+                    ));
+                  },
+                  itemCount: 20,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                 ),
               ],
             ),

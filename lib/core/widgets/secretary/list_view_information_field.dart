@@ -136,11 +136,15 @@ class InformationFieldItem extends StatelessWidget {
           //mainAxisAlignment: (showDetailsText ?? false) && (showIcons ?? false) ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: [
             //image
-            CustomImageNetwork(
+            image != null ? CustomImageNetwork(
               imageWidth: imageWidth ?? 24.w,
               imageHeight: imageHeight ?? 24.w,
               borderRadius: imageBorderRadius ?? 30.r,
               image: image,
+            ) : CustomImageAsset(
+              imageWidth: imageWidth ?? 24.w,
+              imageHeight: imageHeight ?? 24.w,
+              borderRadius: imageBorderRadius ?? 30.r,
             ),
             //Information
             SizedBox(width: widthProfileText ?? 8.12.w,),

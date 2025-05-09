@@ -11,6 +11,10 @@ class DepartmentsViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = ((screenWidth - 210) / 250).floor();
+    crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
@@ -26,10 +30,18 @@ class DepartmentsViewBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GridViewCards(
-                  text: 'Video Editing',
-                  cardCount: 20,
-                  onTap: (){context.go('${GoRouterPath.courses}/1');},
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 10.w, mainAxisExtent: 354.66.h),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Align(child: CustomCard(
+                      //image: image,
+                      text: 'Video Editing',
+                      onTap: (){context.go('${GoRouterPath.courses}/1');},
+                    ));
+                  },
+                  itemCount: 20,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                 ),
               ],
             ),

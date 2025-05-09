@@ -4,6 +4,8 @@ import 'package:alhadara_dashboard/features/secretary_features/trainer/presentat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../manager/delete_trainer_cubit/delete_trainer_cubit.dart';
+import '../manager/update_trainer_cubit/update_trainer_cubit.dart';
 import 'widgets/trainers_view_body.dart';
 
 class TrainersView extends StatelessWidget {
@@ -11,12 +13,30 @@ class TrainersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        return CreateTrainerCubit(
-          getIt.get<TrainerRepoImpl>(),
-        );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return CreateTrainerCubit(
+              getIt.get<TrainerRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return UpdateTrainerCubit(
+              getIt.get<TrainerRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return DeleteTrainerCubit(
+              getIt.get<TrainerRepoImpl>(),
+            );
+          },
+        ),
+      ],
       child: TrainersViewBody(),
     );
   }
