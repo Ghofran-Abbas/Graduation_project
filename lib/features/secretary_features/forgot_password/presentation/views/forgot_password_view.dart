@@ -20,7 +20,7 @@ class ForgotPasswordView extends StatelessWidget {
           getIt.get<ForgotPasswordRepoImpl>(),
         );
       },
-      child: ForgotPasswordViewBody(),
+      child: Scaffold(body: ForgotPasswordViewBody()),
     );
   }
 }

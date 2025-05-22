@@ -6,16 +6,17 @@ import '../../utils/styles.dart';
 import '../custom_image_network.dart';
 
 class CustomOverloadingAvatar extends StatelessWidget {
-  const CustomOverloadingAvatar({super.key, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, required this.avatarCount});
+  const CustomOverloadingAvatar({super.key, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, required this.avatarCount, required this.onTap});
 
   final String labelText;
-  final Color? firstImage;
-  final Color? secondImage;
-  final Color? thirdImage;
-  final Color? fourthImage;
-  final Color? fifthImage;
+  final String? firstImage;
+  final String? secondImage;
+  final String? thirdImage;
+  final String? fourthImage;
+  final String? fifthImage;
   final String tailText;
   final int avatarCount;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,66 +29,89 @@ class CustomOverloadingAvatar extends StatelessWidget {
           style: Styles.l2Bold(color: AppColors.t4),
         ),
         SizedBox(height: 38.h,),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Stack(
-              children: [
-                CustomImageAsset(
-                  imageWidth: 48.w,
-                  imageHeight: 44.w,
-                  borderRadius: 50.67.r,
-                  color: Colors.yellow,
-                ),
-                avatarCount >= 2 ? Align(
-                  widthFactor: 2.1.w,
-                  child: CustomImageAsset(
+        GestureDetector(
+          onTap: (){onTap();},
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Stack(
+                children: [
+                  avatarCount >= 1 ? firstImage != null ? CustomImageNetwork(
                     imageWidth: 48.w,
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
-                    color: firstImage ?? Colors.red,
-                  ),
-                ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                avatarCount >= 3 ? Align(
-                  widthFactor: 3.3.w,
-                  child: CustomImageAsset(
+                    image: firstImage,
+                  ) : CustomImageAsset(
                     imageWidth: 48.w,
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
-                    color: secondImage ?? Colors.blue,
-                  ),
-                ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                avatarCount >= 4 ? Align(
-                  widthFactor: 4.5.w,
-                  child: CustomImageAsset(
+                  ) : SizedBox(width: 0.0.w, height: 0.0.h,),
+                  avatarCount >= 2 ? secondImage != null ? Align(
+                    widthFactor: 2.1.w,
+                    child: CustomImageNetwork(
+                      imageWidth: 48.w,
+                      imageHeight: 44.w,
+                      borderRadius: 50.67.r,
+                      image: secondImage,
+                    )
+                  ) : CustomImageAsset(
                     imageWidth: 48.w,
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
-                    color: thirdImage ?? Colors.orange,
-                  ),
-                ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                avatarCount >= 5 ? Align(
-                  widthFactor: 5.7.w,
-                  child: CustomImageAsset(
+                  ) : SizedBox(width: 0.0.w, height: 0.0.h,),
+                  avatarCount >= 3 ? thirdImage != null ? Align(
+                    widthFactor: 3.3.w,
+                    child: CustomImageNetwork(
+                      imageWidth: 48.w,
+                      imageHeight: 44.w,
+                      borderRadius: 50.67.r,
+                      image: thirdImage,
+                    )
+                  ) : CustomImageAsset(
                     imageWidth: 48.w,
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
-                    color: fourthImage ?? Colors.pink,
+                  ) : SizedBox(width: 0.0.w, height: 0.0.h,),
+                  avatarCount >= 4 ? fourthImage != null ? Align(
+                    widthFactor: 4.5.w,
+                    child: CustomImageNetwork(
+                      imageWidth: 48.w,
+                      imageHeight: 44.w,
+                      borderRadius: 50.67.r,
+                      image: fourthImage,
+                    )
+                  ) : CustomImageAsset(
+                    imageWidth: 48.w,
+                    imageHeight: 44.w,
+                    borderRadius: 50.67.r,
+                  ) : SizedBox(width: 0.0.w, height: 0.0.h,),
+                  avatarCount >= 5 ? fifthImage != null ? Align(
+                    widthFactor: 5.7.w,
+                    child: CustomImageNetwork(
+                      imageWidth: 48.w,
+                      imageHeight: 44.w,
+                      borderRadius: 50.67.r,
+                      image: fifthImage,
+                    )
+                  ) : CustomImageAsset(
+                    imageWidth: 48.w,
+                    imageHeight: 44.w,
+                    borderRadius: 50.67.r,
+                  ) : SizedBox(width: 0.0.w, height: 0.0.h,),
+                  Align(
+                    widthFactor: width,
+                    heightFactor: 4.3.h,
+                    child: Text(
+                      tailText,
+                      style: Styles.l3Normal(color: AppColors.purple),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                Align(
-                  widthFactor: width,
-                  heightFactor: 4.3.h,
-                  child: Text(
-                    tailText,
-                    style: Styles.l3Normal(color: AppColors.purple),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

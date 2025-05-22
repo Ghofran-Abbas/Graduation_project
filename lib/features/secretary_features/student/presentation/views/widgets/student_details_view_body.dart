@@ -3,8 +3,11 @@ import 'package:alhadara_dashboard/features/secretary_features/student/presentat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/utils/styles.dart';
 import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../core/widgets/custom_error_widget.dart';
@@ -39,6 +42,9 @@ class StudentDetailsViewBody extends StatelessWidget {
               showSearchField: true,
               onPressedFirst: () {},
               onPressedSecond: () {},
+              onTapSearch: () {
+                context.go(GoRouterPath.searchStudent);
+              },
               body: Padding(
                 padding: EdgeInsets.only(
                     top: 238.0.h, left: 20.0.w, right: 20.0.w, bottom: 27.0.h),
@@ -57,8 +63,8 @@ class StudentDetailsViewBody extends StatelessWidget {
                         secondBoxIcon: Icons.mail_outlined,
                         firstFieldInfoText: state.showResult.student.birthday,
                         secondFieldInfoText: 'Female',
-                        labelText: 'Students from the same class',
-                        tailText: 'See more',
+                        labelText: AppLocalizations.of(context).translate('Students from the same class'),
+                        tailText: AppLocalizations.of(context).translate('See more'),
                         avatarCount: 1,
                         onTap: () {
                           /*showDialog(
@@ -163,7 +169,7 @@ class StudentDetailsViewBody extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Courses ${state.showResult.student.name} learns',
+                              '${AppLocalizations.of(context).translate('Courses')} ${state.showResult.student.name} ${AppLocalizations.of(context).translate('learns')}',
                               style: Styles.b2Bold(color: AppColors.t4),
                             ),
                             SizedBox(height: 10.h,),
@@ -185,6 +191,8 @@ class StudentDetailsViewBody extends StatelessWidget {
                                     onTap: () {
                                       /*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/
                                     },
+                                    onTapFirstIcon: (){},
+                                    onTapSecondIcon: (){},
                                   ));
                                 },
                                 itemCount: count > 4 ? 4 : count,

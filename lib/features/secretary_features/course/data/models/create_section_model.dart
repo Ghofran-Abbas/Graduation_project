@@ -1,0 +1,71 @@
+class CreateSectionModel {
+  final String message;
+  final Data data;
+
+  CreateSectionModel({
+    required this.message,
+    required this.data,
+  });
+
+  factory CreateSectionModel.fromJson(Map<String, dynamic> json) => CreateSectionModel(
+    message: json["message"],
+    data: Data.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "message": message,
+    "data": data.toJson(),
+  };
+}
+
+class Data {
+  final int id;
+  final String name;
+  final int seatsOfNumber;
+  final DateTime startDate;
+  final DateTime endDate;
+  final dynamic state;
+  final int courseId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<dynamic> weekDays;
+
+  Data({
+    required this.id,
+    required this.name,
+    required this.seatsOfNumber,
+    required this.startDate,
+    required this.endDate,
+    required this.state,
+    required this.courseId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.weekDays,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    id: json["id"],
+    name: json["name"],
+    seatsOfNumber: json["seatsOfNumber"],
+    startDate: DateTime.parse(json["startDate"]),
+    endDate: DateTime.parse(json["endDate"]),
+    state: json["state"],
+    courseId: json["courseId"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    weekDays: List<dynamic>.from(json["week_days"].map((x) => x)),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "seatsOfNumber": seatsOfNumber,
+    "startDate": "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
+    "endDate": "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
+    "state": state,
+    "courseId": courseId,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "week_days": List<dynamic>.from(weekDays.map((x) => x)),
+  };
+}

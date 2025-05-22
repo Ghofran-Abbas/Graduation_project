@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../features/secretary_features/logout/presentation/manager/logout_secretary_cubit/logout_secretary_cubit.dart';
+import '../../../features/secretary_features/logout/presentation/manager/logout_secretary_cubit/logout_secretary_state.dart';
+import '../../localization/app_localizations.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/assets.dart';
 import '../../utils/go_router_path.dart';
 import '../../utils/size.dart';
 import '../../utils/styles.dart';
+import '../custom_snack_bar.dart';
 
 class SideBar extends StatelessWidget {
   const SideBar({super.key});
@@ -32,7 +37,7 @@ class SideBar extends StatelessWidget {
                     Image(image: AssetImage(Assets.logo), height: 70.h,),
                     SizedBox(width: 6.w,),
                     Text(
-                      "Al Hadara",
+                      'Al Hadara',
                       style: Styles.h1Bold(
                         color: AppColors.white
                       ),
@@ -45,13 +50,13 @@ class SideBar extends StatelessWidget {
                   padding: EdgeInsets.only(top: 40.0.h ,left: 52.0.w),
                   child: Column(
                     children: [
-                      SideBarItem(name: "Dashboard", icon: Icons.home_outlined, route: GoRouterPath.dashboard,),
-                      SideBarItem(name: "Students", icon: Icons.person_outline_outlined, route: GoRouterPath.students, color: AppColors.purple,),
-                      SideBarItem(name: "Trainers", icon: Icons.perm_identity, route: GoRouterPath.trainers, color: AppColors.purple,),
-                      SideBarItem(name: "In preparation", icon: Icons.school_outlined, route: GoRouterPath.inPreparation, color: AppColors.purple,),
-                      SideBarItem(name: "Complete", icon: Icons.check_circle_outline, route: GoRouterPath.complete, color: AppColors.purple,),
-                      SideBarItem(name: "Reports", icon: Icons.insert_chart, route: GoRouterPath.reports, color: AppColors.purple,),
-                      SideBarItem(name: "Notification", icon: Icons.notifications_none, route: GoRouterPath.students, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Dashboard'), icon: Icons.home_outlined, route: GoRouterPath.dashboard,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Students'), icon: Icons.person_outline_outlined, route: GoRouterPath.students, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Trainers'), icon: Icons.perm_identity, route: GoRouterPath.trainers, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('In preparation'), icon: Icons.school_outlined, route: GoRouterPath.inPreparation, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Complete'), icon: Icons.check_circle_outline, route: GoRouterPath.complete, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Reports'), icon: Icons.insert_chart, route: GoRouterPath.reports, color: AppColors.purple,),
+                      SideBarItem(name: AppLocalizations.of(context).translate('Notification'), icon: Icons.notifications_none, route: GoRouterPath.reports, color: AppColors.purple,),
                     ],
                   ),
                 ),
@@ -59,43 +64,56 @@ class SideBar extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Column(
-                children: [
-                  Container(
-                    height: 0.5.h,
-                    color: AppColors.lightPurple,
-                  ),
-                  GestureDetector(
-                    onTap: (){
+              child: BlocConsumer<LogoutSecretaryCubit, LogoutSecretaryState>(
+                  listener: (context, state) {
+                    if(state is LogoutSecretarySuccess) {
                       context.go(GoRouterPath.login);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(left: 76.0.w),
-                      height: 82.h,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_2_outlined,
-                              color: AppColors.lightPurple,
-                              size: 60.0.r,
+                      CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('LogoutSecretarySuccess'),);
+                    } else if(state is LogoutSecretaryFailure) {
+                      CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('LogoutSecretaryFailure'),);
+                    }
+                  },
+                  builder: (context, state) {
+                  return Column(
+                    children: [
+                      Container(
+                        height: 0.5.h,
+                        color: AppColors.lightPurple,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          //context.go(GoRouterPath.login);
+                          context.read<LogoutSecretaryCubit>().fetchLogoutSecretary();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(left: 76.0.w),
+                          height: 82.h,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.output_outlined,
+                                  color: AppColors.lightPurple,
+                                  size: 60.0.r,
+                                ),
+                                SizedBox(width: 20.0.w,),
+                                Text(
+                                  AppLocalizations.of(context).translate('Log out'),
+                                  style: Styles.b1Normal(
+                                      color: AppColors.lightPurple
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 20.0.w,),
-                            Text(
-                              "Log out",
-                              style: Styles.b1Normal(
-                                  color: AppColors.lightPurple
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                }
               ),
             ),
           ],

@@ -14,9 +14,9 @@ class TrainersCubit extends Cubit<TrainersState> {
 
   final TrainerRepo trainerRepo;
 
-  Future<void> fetchTrainers() async {
+  Future<void> fetchTrainers({required int page}) async {
     emit(TrainersLoading());
-    var result = await trainerRepo.fetchTrainers();
+    var result = await trainerRepo.fetchTrainers(page: page);
 
     result.fold((failure) {
       log(failure.errorMessage);

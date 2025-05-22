@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../localization/app_localizations.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/styles.dart';
-import '../CustomTextFormField.dart';
+import '../custom_text_form_field.dart';
 
 class CustomLabelTextFormField extends StatelessWidget {
-  const CustomLabelTextFormField({super.key, this.topPadding, this.bottomPadding, this.leftPadding, this.rightPadding, this.labelText, this.showLabelText, this.hintText, required this.controller, this.onTap, this.onFieldSubmitted, this.onPressed, this.readOnly, this.boxHeight, this.maxLines,});
+  const CustomLabelTextFormField({super.key, this.topPadding, this.bottomPadding, this.leftPadding, this.rightPadding, this.labelText, this.showLabelText, this.hintText, required this.controller, this.onTap, this.onFieldSubmitted, this.onPressed, this.readOnly, this.boxHeight, this.maxLines, this.validator,});
 
   final double? topPadding;
   final double? bottomPadding;
@@ -22,6 +23,7 @@ class CustomLabelTextFormField extends StatelessWidget {
   final bool? readOnly;
   final double? boxHeight;
   final int? maxLines;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class CustomLabelTextFormField extends StatelessWidget {
           ) : SizedBox(width: 0.w, height: 0.h,),
           SizedBox(
             height: boxHeight ?? 55.h,
-            child: CustomEditTextField(
+            child: CustomTextFormField(
               hintText: hintText ?? '',
               readOnly: readOnly ?? false,
               controller: controller,
@@ -49,6 +51,13 @@ class CustomLabelTextFormField extends StatelessWidget {
               onTap: onTap ?? (){},
               onFieldSubmitted: onFieldSubmitted ?? (){},
               onPressed: onPressed ?? (){},
+              validator: validator ??
+                      (value) {
+                    if (value?.isEmpty ?? true) {
+                      return AppLocalizations.of(context).translate('this field must not be empty');
+                    }
+                    return null;
+                  },
             ),
           ),
         ],

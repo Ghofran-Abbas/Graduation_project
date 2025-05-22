@@ -14,9 +14,9 @@ class StudentsCubit extends Cubit<StudentsState> {
 
   final StudentRepo studentRepo;
 
-  Future<void> fetchStudents() async {
+  Future<void> fetchStudents({required int page}) async {
     emit(StudentsLoading());
-    var result = await studentRepo.fetchStudents();
+    var result = await studentRepo.fetchStudents(page: page);
 
     result.fold((failure) {
       log(failure.errorMessage);

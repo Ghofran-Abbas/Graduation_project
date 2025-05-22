@@ -12,6 +12,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../../core/utils/shared_preferences_helper.dart';
+import '../models/search_trainer_model.dart';
 import '../models/trainers_model.dart';
 
 class TrainerRepoImpl extends TrainerRepo{
@@ -65,19 +66,15 @@ class TrainerRepoImpl extends TrainerRepo{
   }
 
   @override
-  Future<Either<Failure, TrainersModel>> fetchTrainers() async {
+  Future<Either<Failure, TrainersModel>> fetchTrainers({required int page}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/secretary/trainer/showAllTrainer',
+        endPoint: '/secretary/trainer/showAllTrainer?page=$page',
         token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
       TrainersModel trainersModel;
       trainersModel = TrainersModel.fromJson(data);
-      List<DatumTrainer> allTrainers = [];
-      for (var item in trainersModel.trainers.data!) {
-        allTrainers.add(item);
-      }
       return right(trainersModel);
 
     } catch (e) {
@@ -120,6 +117,10 @@ class TrainerRepoImpl extends TrainerRepo{
         photo,
         filename: 'upload.png',
       );
+    }
+
+    if (dataMap.isEmpty) {
+      return left(ServerFailure('يجب تعديل حقل واحد على الأقل قبل الإرسال.'));
     }
 
     final formData = FormData.fromMap(dataMap);
@@ -173,6 +174,26 @@ class TrainerRepoImpl extends TrainerRepo{
 
       return right(detailsTrainerModel);
 
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SearchTrainerModel>> fetchSearchTrainer({required String querySearch, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/trainer/searchTrainer/$querySearch?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      SearchTrainerModel searchTrainerModel;
+      searchTrainerModel = SearchTrainerModel.fromJson(data);
+
+      return right(searchTrainerModel);
     } catch (e) {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);
