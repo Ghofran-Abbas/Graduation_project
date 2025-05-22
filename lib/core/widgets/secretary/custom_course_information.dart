@@ -9,8 +9,9 @@ import '../custom_image_network.dart';
 import 'custom_about.dart';
 
 class CustomCourseInformation extends StatelessWidget {
-  const CustomCourseInformation({super.key, this.imageWidth, this.imageHeight, this.borderRadius, this.infoTopPadding, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, required this.ratingText, this.ratingTextColor, required this.ratingPercent, required this.ratingPercentText, this.ratingPercentTextColor, this.circleStatusSize, this.circleStatusColor, required this.courseStatusText, this.showEditStatusIcon, this.startDateIcon, this.startDateIconColor, this.startDateIconSize, required this.startDateText, this.showCourseCalenderIcon, this.courseCalenderIcon, this.courseCalenderIconColor, this.courseCalenderIconSize, this.endDateIcon, this.endDateIconColor, this.endDateIconSize, required this.endDateText, this.numberSeatsIcon, this.numberSeatsIconColor, this.numberSeatsIconSize, required this.numberSeatsText, this.labelText, required this.bodyText, this.bigText, required this.onTap, required this.onTapDate});
+  const CustomCourseInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, this.infoTopPadding, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.ratingPercent, this.ratingPercentText, this.ratingPercentTextColor, this.circleStatusSize, this.circleStatusColor, this.courseStatusText, this.showEditStatusIcon, this.startDateIcon, this.startDateIconColor, this.startDateIconSize, this.startDateText, this.showCourseCalenderIcon, this.courseCalenderIcon, this.courseCalenderIconColor, this.courseCalenderIconSize, this.endDateIcon, this.endDateIconColor, this.endDateIconSize, this.endDateText, this.numberSeatsIcon, this.numberSeatsIconColor, this.numberSeatsIconSize, this.numberSeatsText, this.labelText, required this.bodyText, this.bigText, required this.onTap, required this.onTapDate, this.showSectionInformation, this.showIcons, this.hideFirstIcon, required this.onTapFirstIcon, required this.onTapSecondIcon,});
 
+  final String? image;
   final double? imageWidth;
   final double? imageHeight;
   final double? borderRadius;
@@ -19,19 +20,19 @@ class CustomCourseInformation extends StatelessWidget {
   final IconData? ratingIcon;
   final Color? ratingIconColor;
   final double? ratingIconSize;
-  final String ratingText;
+  final String? ratingText;
   final Color? ratingTextColor;
-  final double ratingPercent;
-  final String ratingPercentText;
+  final double? ratingPercent;
+  final String? ratingPercentText;
   final Color? ratingPercentTextColor;
   final double? circleStatusSize;
   final Color? circleStatusColor;
-  final String courseStatusText;
+  final String? courseStatusText;
   final bool? showEditStatusIcon;
   final IconData? startDateIcon;
   final Color? startDateIconColor;
   final double? startDateIconSize;
-  final String startDateText;
+  final String? startDateText;
   final bool? showCourseCalenderIcon;
   final IconData? courseCalenderIcon;
   final Color? courseCalenderIconColor;
@@ -39,29 +40,53 @@ class CustomCourseInformation extends StatelessWidget {
   final IconData? endDateIcon;
   final Color? endDateIconColor;
   final double? endDateIconSize;
-  final String endDateText;
+  final String? endDateText;
   final IconData? numberSeatsIcon;
   final Color? numberSeatsIconColor;
   final double? numberSeatsIconSize;
-  final String numberSeatsText;
+  final String? numberSeatsText;
   final String? labelText;
   final String bodyText;
   final bool? bigText;
   final Function onTap;
   final Function onTapDate;
+  final bool? showSectionInformation;
+  final bool? showIcons;
+  final bool? hideFirstIcon;
+  final Function onTapFirstIcon;
+  final Function onTapSecondIcon;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomImageAsset(
-          imageWidth: imageWidth ?? 176.w,
-          imageHeight: imageHeight ?? 176.w,
-          borderRadius: borderRadius ?? 150.67.r,
+        Column(
+          children: [
+            image != null ? CustomImageNetwork(
+              image: image,
+              imageWidth: imageWidth ?? 176.w,
+              imageHeight: imageHeight ?? 176.w,
+              borderRadius: borderRadius ?? 150.67.r,
+            )
+                : CustomImageAsset(
+              imageWidth: imageWidth ?? 176.w,
+              imageHeight: imageHeight ?? 176.w,
+              borderRadius: borderRadius ?? 150.67.r,
+            ),
+            SizedBox(height: 30.0.h,),
+            showIcons ?? false ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                hideFirstIcon ?? false ? SizedBox(width: 25.w, height: 0.h,) : CustomIconButton(icon: Icons.edit_outlined, onTap: (){onTapFirstIcon();},),
+                SizedBox(width: 10.8.w,),
+                CustomIconButton(icon: Icons.delete_outline, onTap: (){onTapSecondIcon();},),
+              ],
+            ) : SizedBox(width: 0, height: 0,),
+          ],
         ),
         SizedBox(width: 24.w,),
-        Padding(
+        showSectionInformation ?? false ? Padding(
           padding: EdgeInsets.only(top: infoTopPadding ?? 28.0.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -76,7 +101,7 @@ class CustomCourseInformation extends StatelessWidget {
                   ),
                   SizedBox(width: 8.w,),
                   Text(
-                    ratingText,
+                    ratingText ?? '',
                     style: Styles.h3Bold(color: ratingTextColor ?? AppColors.blue),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -85,9 +110,9 @@ class CustomCourseInformation extends StatelessWidget {
                   CircularPercentIndicator(
                     radius: 40.0.r,
                     lineWidth: 5.0,
-                    percent: ratingPercent,
+                    percent: ratingPercent ?? 1,
                     center: Text(
-                      ratingPercentText,
+                      ratingPercentText ?? '',
                       style: Styles.l1Bold(color: ratingPercentTextColor ?? AppColors.blue),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -111,7 +136,7 @@ class CustomCourseInformation extends StatelessWidget {
                     ),
                     SizedBox(width: 17.w,),
                     Text(
-                      courseStatusText,
+                      courseStatusText ?? '',
                       style: Styles.b2Bold(color: AppColors.t1),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -131,7 +156,7 @@ class CustomCourseInformation extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w,),
                   Text(
-                    startDateText,
+                    startDateText ?? '',
                     style: Styles.b2Bold(color: AppColors.t1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -156,7 +181,7 @@ class CustomCourseInformation extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w,),
                   Text(
-                    endDateText,
+                    endDateText ?? '',
                     style: Styles.b2Bold(color: AppColors.t1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -173,7 +198,7 @@ class CustomCourseInformation extends StatelessWidget {
                   ),
                   SizedBox(width: 10.w,),
                   Text(
-                    numberSeatsText,
+                    numberSeatsText ?? '',
                     style: Styles.b2Bold(color: AppColors.t1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -182,9 +207,12 @@ class CustomCourseInformation extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ) : SizedBox(width: 0.w, height: 0.h,),
         SizedBox(width: 250.w,),
-        CustomAbout(labelText: labelText, bodyText: bodyText, bigText: bigText,),
+        SizedBox(
+          width: 324.w,
+          child: CustomAbout(labelText: labelText, bodyText: bodyText, bigText: bigText,),
+        ),
       ],
     );
   }

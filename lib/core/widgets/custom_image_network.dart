@@ -12,12 +12,13 @@ class CustomImageNetwork extends StatelessWidget {
     this.imageHeight,
     this.imageWidth,
     this.borderRadius,
-    this.image,
+    this.image, this.onTap,
   });
   final double? imageHeight;
   final double? imageWidth;
   final double? borderRadius;
   final String? image;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class CustomImageNetwork extends StatelessWidget {
         Icons.error,
         color: Colors.red,
       ),
+      onTap: () {onTap!() ?? () {};},
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
@@ -18,7 +19,7 @@ class CompleteViewBody extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
-        title: 'Languages',
+        title: AppLocalizations.of(context).translate('Complete'),
         showSearchField: true,
         onPressedFirst: (){},
         onPressedSecond: (){},
@@ -42,7 +43,9 @@ class CompleteViewBody extends StatelessWidget {
                       showCheckEndCourse: true,
                       ratingText: '2.8',
                       ratingIcon: Icons.star,
-                      onTap: (){context.go('${GoRouterPath.completeDetails}/1');},
+                      onTap: (){context.go('${GoRouterPath.completeDetails}/2');},
+                      onTapFirstIcon: (){},
+                      onTapSecondIcon: (){},
                     ));
                   },
                   itemCount: 20,

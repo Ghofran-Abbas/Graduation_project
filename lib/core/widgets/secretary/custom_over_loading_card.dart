@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../localization/app_localizations.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/styles.dart';
 import 'grid_view_cards.dart';
@@ -58,7 +59,7 @@ class CustomOverLoadingCard extends StatelessWidget {
                     onTapSeeMore();
                   },
                   child: Text(
-                    /*seeMoreText ?? */cardCount > 4 ? 'See more' : '',
+                    /*seeMoreText ?? */cardCount > 4 ? AppLocalizations.of(context).translate('See more') : '',
                     style: Styles.l3Normal(color: AppColors.purple),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

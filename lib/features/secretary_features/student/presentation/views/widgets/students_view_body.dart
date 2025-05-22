@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:number_paginator/number_paginator.dart';
 
 import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/app_colors.dart';
@@ -20,6 +21,7 @@ import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/utils/styles.dart';
 import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../core/widgets/custom_error_widget.dart';
+import '../../../../../../core/widgets/custom_number_pagination.dart';
 import '../../../../../../core/widgets/custom_snack_bar.dart';
 import '../../../../../../core/widgets/secretary/custom_dropdown_list.dart';
 import '../../../../../../core/widgets/secretary/custom_label_text_form_field.dart';
@@ -77,28 +79,24 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
 
   Future<void> pickImage() async {
     try {
-      log('message 1');
       FilePickerResult? result = await FilePicker.platform.pickFiles(
           type: FileType.image,
           withData: true
       );
-      log('message 2');
       if (result != null && result.files.single.bytes != null) {
-        log('message 3');
         setState(() {
           selectedImage = result.files.single.bytes!;
         });
-        log('message 4');
       } else {
-        log('No image selected or image data is unavailable.');
+        CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('No image selected or image data is unavailable.'),);
       }
     } catch (e) {
-      log('Failed to pick image: $e');
+      CustomSnackBar.showErrorSnackBar(context, msg: '${AppLocalizations.of(context).translate('Failed to pick image:')} $e',);
     }
   }
 
   void register() {
-    if (selectedImage != null) {
+    if (_formKey.currentState!.validate() && selectedImage != null) {
       context.read<CreateStudentCubit>().fetchCreateStudent(
         name: nameController.text,
         email: emailController.text,
@@ -108,7 +106,7 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
         photo: selectedImage!,
       );
     } else {
-      CustomSnackBar.showErrorSnackBar(context, msg: 'AppLocalizations.of(context).translate('')',);
+      CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('Error, Please enter all the fields.'),);
     }
   }
 
@@ -153,8 +151,6 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                   CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteStudentFailure'),);
                 } else if (state is DeleteStudentSuccess) {
                   CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteStudentSuccess'),);
-                } else if (state is ImagePickedSuccess) {
-                  CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('ImagePickedSuccess'),);
                 }
               },
               builder: (context, state) {
@@ -165,9 +161,9 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                       return Padding(
                         padding: EdgeInsets.only(top: 56.0.h,),
                         child: CustomScreenBody(
-                          title: 'Students',
+                          title: AppLocalizations.of(context).translate('Students'),
                           showSearchField: true,
-                          textSecondButton: 'New student',
+                          textSecondButton: AppLocalizations.of(context).translate('New student'),
                           showSecondButton: true,
                           onPressedFirst: () {},
                           onPressedSecond: () {
@@ -177,260 +173,267 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                 return StatefulBuilder(
                                     builder: (BuildContext context,
                                         void Function(void Function()) setStateDialog) {
-                                      return Align(
-                                        alignment: Alignment.topRight,
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            width: 871.w,
-                                            height: 858.h,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 160.w, vertical: 85.h),
-                                            padding: EdgeInsets.all(22.r),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.white,
-                                              borderRadius: BorderRadius.circular(6.r),
-                                            ),
-                                            child: SingleChildScrollView(
-                                              physics: BouncingScrollPhysics(),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(top: 65.h,
-                                                        left: 60.w,
-                                                        right: 155.w),
-                                                    child: Text(
-                                                      'Add student',
-                                                      style: Styles.h3Bold(
-                                                          color: AppColors.t3),
+                                      return Form(
+                                        key: _formKey,
+                                        child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: Container(
+                                              width: 871.w,
+                                              height: 858.h,
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 160.w, vertical: 85.h),
+                                              padding: EdgeInsets.all(22.r),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.white,
+                                                borderRadius: BorderRadius.circular(6.r),
+                                              ),
+                                              child: SingleChildScrollView(
+                                                physics: BouncingScrollPhysics(),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 65.h,
+                                                          left: 60.w,
+                                                          right: 155.w),
+                                                      child: Text(
+                                                        AppLocalizations.of(context).translate('Add student'),
+                                                        style: Styles.h3Bold(
+                                                            color: AppColors.t3),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 60.w),
-                                                    child: Row(
-                                                      children: [
-                                                        Stack(
-                                                          children: [
-                                                            selectedImage != null
-                                                                ? CustomMemoryImage(
-                                                              image: selectedImage,
-                                                              imageWidth: 186.w,
-                                                              imageHeight: 186.w,
-                                                              borderRadius: 150.r,
-                                                            )
-                                                                : CustomImageAsset(
-                                                              imageWidth: 186.w,
-                                                              imageHeight: 186.w,
-                                                              borderRadius: 150.r,
-                                                            ),
-                                                            Positioned(
-                                                              top: 140.w,
-                                                              left: 150.w,
-                                                              child: CustomIconButton(
-                                                                icon: Icons.add,
-                                                                onTap: () async {
-                                                                  await pickImage();
-                                                                  setStateDialog(() {});
-                                                                },
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 60.w),
+                                                      child: Row(
+                                                        children: [
+                                                          Stack(
+                                                            children: [
+                                                              selectedImage != null
+                                                                  ? CustomMemoryImage(
+                                                                image: selectedImage,
+                                                                imageWidth: 186.w,
+                                                                imageHeight: 186.w,
+                                                                borderRadius: 150.r,
+                                                              )
+                                                                  : CustomImageAsset(
+                                                                imageWidth: 186.w,
+                                                                imageHeight: 186.w,
+                                                                borderRadius: 150.r,
                                                               ),
+                                                              Positioned(
+                                                                top: 140.w,
+                                                                left: 150.w,
+                                                                child: CustomIconButton(
+                                                                  icon: Icons.add,
+                                                                  onTap: () async {
+                                                                    await pickImage();
+                                                                    setStateDialog(() {});
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              children: [
+                                                                CustomLabelTextFormField(
+                                                                  labelText: AppLocalizations.of(context).translate('Full name'),
+                                                                  showLabelText: true,
+                                                                  controller: nameController,
+                                                                  topPadding: 20.h,
+                                                                  bottomPadding: 0.h,
+                                                                  leftPadding: 175.w,
+                                                                  rightPadding: 127.w,
+                                                                  validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                ),
+                                                                CustomLabelTextFormField(
+                                                                  labelText: AppLocalizations.of(context).translate('Email address'),
+                                                                  showLabelText: true,
+                                                                  controller: emailController,
+                                                                  topPadding: 42.h,
+                                                                  bottomPadding: 0.h,
+                                                                  leftPadding: 175.w,
+                                                                  rightPadding: 127.w,
+                                                                  validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                ),
+                                                                CustomLabelTextFormField(
+                                                                  labelText: AppLocalizations.of(context).translate('Password'),
+                                                                  showLabelText: true,
+                                                                  controller: passwordController,
+                                                                  topPadding: 42.h,
+                                                                  bottomPadding: 0.h,
+                                                                  leftPadding: 175.w,
+                                                                  rightPadding: 127.w,
+                                                                  validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      crossAxisAlignment: CrossAxisAlignment
+                                                          .start,
+                                                      children: [
                                                         Expanded(
                                                           child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment
+                                                                .start,
                                                             children: [
-                                                              CustomLabelTextFormField(
-                                                                labelText: 'Full name',
-                                                                showLabelText: true,
-                                                                controller: nameController,
-                                                                topPadding: 20.h,
-                                                                bottomPadding: 0.h,
-                                                                leftPadding: 175.w,
-                                                                rightPadding: 127.w,
-                                                              ),
-                                                              CustomLabelTextFormField(
-                                                                labelText: 'Email address',
-                                                                showLabelText: true,
-                                                                controller: emailController,
-                                                                topPadding: 42.h,
-                                                                bottomPadding: 0.h,
-                                                                leftPadding: 175.w,
-                                                                rightPadding: 127.w,
-                                                              ),
-                                                              CustomLabelTextFormField(
-                                                                labelText: 'Password',
-                                                                showLabelText: true,
-                                                                controller: passwordController,
-                                                                topPadding: 42.h,
-                                                                bottomPadding: 0.h,
-                                                                leftPadding: 175.w,
-                                                                rightPadding: 127.w,
+                                                              Padding(
+                                                                padding: EdgeInsets.only(
+                                                                    left: 60.w,
+                                                                    right: 65.w),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment
+                                                                      .start,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: CustomLabelTextFormField(
+                                                                        hintText: AppLocalizations.of(context).translate('Birth date'),
+                                                                        readOnly: true,
+                                                                        controller: birthDateController,
+                                                                        topPadding: 68.h,
+                                                                        leftPadding: 0.w,
+                                                                        rightPadding: 0.w,
+                                                                        bottomPadding: 0
+                                                                            .h,
+                                                                        validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                        onTap: () async {
+                                                                          DateTime? pickedDate = await showDatePicker(
+                                                                            context: context,
+                                                                            initialDate: birthDateController
+                                                                                .text
+                                                                                .isEmpty
+                                                                                ? DateTime
+                                                                                .now()
+                                                                                : DateTime
+                                                                                .parse(
+                                                                                birthDateController
+                                                                                    .text),
+                                                                            firstDate: DateTime(
+                                                                                2000),
+                                                                            lastDate: DateTime(
+                                                                                2100),
+                                                                          );
+                                                                          if (pickedDate !=
+                                                                              null) {
+                                                                            birthDateController
+                                                                                .text =
+                                                                            pickedDate
+                                                                                .toString()
+                                                                                .split(
+                                                                                ' ')[0];
+                                                                          }
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 19.w,),
+                                                                    Expanded(
+                                                                      child: CustomDropdownList(
+                                                                        hintText: AppLocalizations.of(context).translate('Gender'),
+                                                                        statusController: genderController,
+                                                                        topPadding: 68.h,
+                                                                        bottomPadding: 0
+                                                                            .h,
+                                                                        dropdownMenuEntries: [
+                                                                          DropdownMenuEntry(
+                                                                            value: 'Female',
+                                                                            label: AppLocalizations.of(context).translate('Female'),
+                                                                          ),
+                                                                          DropdownMenuEntry(
+                                                                            value: 'Male',
+                                                                            label: AppLocalizations.of(context).translate('Male'),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    crossAxisAlignment: CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment
-                                                              .start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: EdgeInsets.only(
-                                                                  left: 60.w,
-                                                                  right: 65.w),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .start,
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: CustomLabelTextFormField(
-                                                                      hintText: 'Birth date',
-                                                                      readOnly: true,
-                                                                      controller: birthDateController,
-                                                                      topPadding: 68.h,
-                                                                      leftPadding: 0.w,
-                                                                      rightPadding: 0.w,
-                                                                      bottomPadding: 0
-                                                                          .h,
-                                                                      onTap: () async {
-                                                                        DateTime? pickedDate = await showDatePicker(
-                                                                          context: context,
-                                                                          initialDate: birthDateController
-                                                                              .text
-                                                                              .isEmpty
-                                                                              ? DateTime
-                                                                              .now()
-                                                                              : DateTime
-                                                                              .parse(
-                                                                              birthDateController
-                                                                                  .text),
-                                                                          firstDate: DateTime(
-                                                                              2000),
-                                                                          lastDate: DateTime(
-                                                                              2100),
-                                                                        );
-                                                                        if (pickedDate !=
-                                                                            null) {
-                                                                          birthDateController
-                                                                              .text =
-                                                                          pickedDate
-                                                                              .toString()
-                                                                              .split(
-                                                                              ' ')[0];
-                                                                        }
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 19.w,),
-                                                                  Expanded(
-                                                                    child: CustomDropdownList(
-                                                                      hintText: 'Gender',
-                                                                      statusController: genderController,
-                                                                      topPadding: 68.h,
-                                                                      bottomPadding: 0
-                                                                          .h,
-                                                                      dropdownMenuEntries: [
-                                                                        DropdownMenuEntry(
-                                                                          value: 'Female',
-                                                                          label: 'Female',
-                                                                        ),
-                                                                        DropdownMenuEntry(
-                                                                          value: 'Male',
-                                                                          label: 'Male',
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: CustomLabelTextFormField(
-                                                          labelText: 'Phone number',
-                                                          showLabelText: true,
-                                                          controller: phoneController,
-                                                          topPadding: 42.h,
-                                                          bottomPadding: 0.h,
-                                                          leftPadding: 0.w,
-                                                          rightPadding: 128.w,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(top: 60.h,
-                                                        bottom: 65.h,
-                                                        left: 47.w,
-                                                        right: 155.w),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        TextIconButton(
-                                                          textButton: 'Add student',
-                                                          bigText: true,
-                                                          textColor: AppColors.t3,
-                                                          icon: Icons.add,
-                                                          iconSize: 40.01.r,
-                                                          iconColor: AppColors.t2,
-                                                          iconLast: false,
-                                                          firstSpaceBetween: 3.w,
-                                                          buttonHeight: 53.h,
-                                                          borderWidth: 0.w,
-                                                          buttonColor: AppColors.white,
-                                                          borderColor: Colors
-                                                              .transparent,
-                                                          onPressed: () {
-                                                            register();
-                                                            nameController.clear();
-                                                            emailController.clear();
-                                                            phoneController.clear();
-                                                            birthDateController.clear();
-                                                            genderController.clear();
-                                                            passwordController.clear();
-                                                            Navigator.pop(
-                                                                dialogContext);
-                                                          },
-                                                        ),
-                                                        SizedBox(width: 42.w,),
-                                                        TextIconButton(
-                                                          textButton: '       Cancel       ',
-                                                          textColor: AppColors.t3,
-                                                          iconLast: false,
-                                                          buttonHeight: 53.h,
-                                                          borderWidth: 0.w,
-                                                          borderRadius: 4.r,
-                                                          buttonColor: AppColors.w1,
-                                                          borderColor: AppColors.w1,
-                                                          onPressed: () {
-                                                            nameController.clear();
-                                                            emailController.clear();
-                                                            phoneController.clear();
-                                                            birthDateController.clear();
-                                                            genderController.clear();
-                                                            passwordController.clear();
-                                                            Navigator.pop(
-                                                                dialogContext);
-                                                          },
+                                                        Expanded(
+                                                          child: CustomLabelTextFormField(
+                                                            labelText: AppLocalizations.of(context).translate('Phone number'),
+                                                            showLabelText: true,
+                                                            controller: phoneController,
+                                                            topPadding: 42.h,
+                                                            bottomPadding: 0.h,
+                                                            leftPadding: 0.w,
+                                                            rightPadding: 128.w,
+                                                            validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
-                                                  )
-                                                ],
+                                                    Padding(
+                                                      padding: EdgeInsets.only(top: 60.h,
+                                                          bottom: 65.h,
+                                                          left: 47.w,
+                                                          right: 155.w),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          TextIconButton(
+                                                            textButton: AppLocalizations.of(context).translate('Add student'),
+                                                            bigText: true,
+                                                            textColor: AppColors.t3,
+                                                            icon: Icons.add,
+                                                            iconSize: 40.01.r,
+                                                            iconColor: AppColors.t2,
+                                                            iconLast: false,
+                                                            firstSpaceBetween: 3.w,
+                                                            buttonHeight: 53.h,
+                                                            borderWidth: 0.w,
+                                                            buttonColor: AppColors.white,
+                                                            borderColor: Colors
+                                                                .transparent,
+                                                            onPressed: () {
+                                                              register();
+                                                              nameController.clear();
+                                                              emailController.clear();
+                                                              phoneController.clear();
+                                                              birthDateController.clear();
+                                                              genderController.clear();
+                                                              passwordController.clear();
+                                                              /*Navigator.pop(dialogContext);*/
+                                                            },
+                                                          ),
+                                                          SizedBox(width: 42.w,),
+                                                          TextIconButton(
+                                                            textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                            textColor: AppColors.t3,
+                                                            iconLast: false,
+                                                            buttonHeight: 53.h,
+                                                            borderWidth: 0.w,
+                                                            borderRadius: 4.r,
+                                                            buttonColor: AppColors.w1,
+                                                            borderColor: AppColors.w1,
+                                                            onPressed: () {
+                                                              nameController.clear();
+                                                              emailController.clear();
+                                                              phoneController.clear();
+                                                              birthDateController.clear();
+                                                              genderController.clear();
+                                                              passwordController.clear();
+                                                              Navigator.pop(
+                                                                  dialogContext);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -441,6 +444,9 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                               },
                             );
                           },
+                          onTapSearch: () {
+                            context.go(GoRouterPath.searchStudent);
+                          },
                           body: state.showResult.students.data != null ? Padding(
                             padding: EdgeInsets.only(top: 238.0.h,
                                 left: 20.0.w,
@@ -448,38 +454,252 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                 bottom: 27.0.h),
                             child: SingleChildScrollView(
                               physics: BouncingScrollPhysics(),
-                              child: CustomListInformationFields(
-                                secondField: 'Points',
-                                widget: ListView.builder(
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Align(child: InformationFieldItem(
-                                      color: index % 2 != 0 ? AppColors.darkHighlightPurple : AppColors.white,
-                                      image: state.showResult.students.data![index].photo,
-                                      name: state.showResult.students.data![index].name,
-                                      secondText: '150',
-                                      thirdDetailsText: state.showResult.students.data![index].email,
-                                      fourthDetailsText: 'Female',
-                                      showIcons: true,
-                                      onTap: () {
-                                        context.go('${GoRouterPath.studentDetails}/${state.showResult.students.data![index].id}');
-                                      },
-                                      onTapFirstIcon: (){
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext dialogContext) {
-                                            return StatefulBuilder(
-                                              builder: (BuildContext context,
-                                                  void Function(void Function()) setStateDialog) {
+                              child: Column(
+                                children: [
+                                  CustomListInformationFields(
+                                    secondField: AppLocalizations.of(context).translate('Birth date'),
+                                    showSecondField: true,
+                                    widget: ListView.builder(
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Align(child: InformationFieldItem(
+                                          color: index % 2 != 0 ? AppColors.darkHighlightPurple : AppColors.white,
+                                          image: state.showResult.students.data![index].photo,
+                                          name: state.showResult.students.data![index].name,
+                                          secondText: state.showResult.students.data![index].birthday,
+                                          showSecondDetailsText: true,
+                                          thirdDetailsText: state.showResult.students.data![index].email,
+                                          fourthDetailsText: 'Female',
+                                          showIcons: true,
+                                          onTap: () {
+                                            context.go('${GoRouterPath.studentDetails}/${state.showResult.students.data![index].id}');
+                                          },
+                                          onTapFirstIcon: (){
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext dialogContext) {
+                                                return StatefulBuilder(
+                                                  builder: (BuildContext context,
+                                                      void Function(void Function()) setStateDialog) {
+                                                    return Align(
+                                                      alignment: Alignment.topRight,
+                                                      child: Material(
+                                                        color: Colors.transparent,
+                                                        child: Container(
+                                                          width: 871.w,
+                                                          height: 728.h,
+                                                          margin: EdgeInsets.symmetric(
+                                                              horizontal: 160.w, vertical: 160.h),
+                                                          padding: EdgeInsets.all(22.r),
+                                                          decoration: BoxDecoration(
+                                                            color: AppColors.white,
+                                                            borderRadius: BorderRadius.circular(6.r),
+                                                          ),
+                                                          child: SingleChildScrollView(
+                                                            physics: BouncingScrollPhysics(),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(top: 65.h,
+                                                                      left: 60.w,
+                                                                      right: 155.w),
+                                                                  child: Text(
+                                                                    AppLocalizations.of(context).translate('Edit student'),
+                                                                    style: Styles.h3Bold(
+                                                                        color: AppColors.t3),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(left: 60.w),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Stack(
+                                                                        children: [
+                                                                          selectedImage != null
+                                                                              ? CustomMemoryImage(
+                                                                            image: selectedImage,
+                                                                            imageWidth: 186.w,
+                                                                            imageHeight: 186.w,
+                                                                            borderRadius: 150.r,
+                                                                          )
+                                                                              : CustomImageAsset(
+                                                                            imageWidth: 186.w,
+                                                                            imageHeight: 186.w,
+                                                                            borderRadius: 150.r,
+                                                                          ),
+                                                                          Positioned(
+                                                                            top: 140.w,
+                                                                            left: 150.w,
+                                                                            child: CustomIconButton(
+                                                                              icon: Icons.add,
+                                                                              onTap: () async {
+                                                                                await pickImage();
+                                                                                setStateDialog(() {});
+                                                                              },
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Column(
+                                                                          children: [
+                                                                            CustomLabelTextFormField(
+                                                                              labelText: AppLocalizations.of(context).translate('Full name'),
+                                                                              showLabelText: true,
+                                                                              controller: nameController,
+                                                                              topPadding: 20.h,
+                                                                              bottomPadding: 0.h,
+                                                                              leftPadding: 165.w,
+                                                                              rightPadding: 137.w,
+                                                                            ),
+                                                                            CustomLabelTextFormField(
+                                                                              labelText: AppLocalizations.of(context).translate('Phone number'),
+                                                                              showLabelText: true,
+                                                                              controller: phoneController,
+                                                                              topPadding: 42.h,
+                                                                              bottomPadding: 0.h,
+                                                                              leftPadding: 165.w,
+                                                                              rightPadding: 137.w,
+                                                                            ),
+                                                                            Row(
+                                                                              mainAxisAlignment: MainAxisAlignment
+                                                                                  .start,
+                                                                              children: [
+                                                                                Expanded(
+                                                                                  child: CustomLabelTextFormField(
+                                                                                    hintText: AppLocalizations.of(context).translate('Birth date'),
+                                                                                    readOnly: true,
+                                                                                    controller: birthDateController,
+                                                                                    topPadding: 72.h,
+                                                                                    leftPadding: 165.w,
+                                                                                    rightPadding: 0.w,
+                                                                                    bottomPadding: 0.h,
+                                                                                    onTap: () async {
+                                                                                      DateTime? pickedDate = await showDatePicker(
+                                                                                        context: context,
+                                                                                        initialDate: birthDateController.text.isEmpty ? DateTime.now() : DateTime.parse(birthDateController.text),
+                                                                                        firstDate: DateTime(2000),
+                                                                                        lastDate: DateTime(2100),
+                                                                                      );
+                                                                                      if (pickedDate !=
+                                                                                          null) {
+                                                                                        birthDateController
+                                                                                            .text =
+                                                                                        pickedDate
+                                                                                            .toString()
+                                                                                            .split(
+                                                                                            ' ')[0];
+                                                                                      }
+                                                                                    },
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 19.w,),
+                                                                                Expanded(
+                                                                                  child: CustomDropdownList(
+                                                                                    hintText: AppLocalizations.of(context).translate('Gender'),
+                                                                                    statusController: genderController,
+                                                                                    topPadding: 72.h,
+                                                                                    bottomPadding: 0.h,
+                                                                                    dropdownMenuEntries: [
+                                                                                      DropdownMenuEntry(
+                                                                                        value: 'Female',
+                                                                                        label: AppLocalizations.of(context).translate('Female'),
+                                                                                      ),
+                                                                                      DropdownMenuEntry(
+                                                                                        value: 'Male',
+                                                                                        label: AppLocalizations.of(context).translate('Male'),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(top: 60.h,
+                                                                      bottom: 65.h,
+                                                                      left: 47.w,
+                                                                      right: 155.w),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    children: [
+                                                                      TextIconButton(
+                                                                        textButton: AppLocalizations.of(context).translate('Edit student'),
+                                                                        bigText: true,
+                                                                        textColor: AppColors.t3,
+                                                                        icon: Icons.edit,
+                                                                        iconSize: 40.01.r,
+                                                                        iconColor: AppColors.t2,
+                                                                        iconLast: false,
+                                                                        firstSpaceBetween: 3.w,
+                                                                        buttonHeight: 53.h,
+                                                                        borderWidth: 0.w,
+                                                                        buttonColor: AppColors.white,
+                                                                        borderColor: Colors.transparent,
+                                                                        onPressed: () {
+                                                                          update(state.showResult.students.data![index].id);
+                                                                          nameController.clear();
+                                                                          emailController.clear();
+                                                                          phoneController.clear();
+                                                                          birthDateController.clear();
+                                                                          genderController.clear();
+                                                                          passwordController.clear();
+                                                                          Navigator.pop(dialogContext);
+                                                                        },
+                                                                      ),
+                                                                      SizedBox(width: 42.w,),
+                                                                      TextIconButton(
+                                                                        textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                                        textColor: AppColors.t3,
+                                                                        iconLast: false,
+                                                                        buttonHeight: 53.h,
+                                                                        borderWidth: 0.w,
+                                                                        borderRadius: 4.r,
+                                                                        buttonColor: AppColors.w1,
+                                                                        borderColor: AppColors.w1,
+                                                                        onPressed: () {
+                                                                          nameController.clear();
+                                                                          emailController.clear();
+                                                                          phoneController.clear();
+                                                                          birthDateController.clear();
+                                                                          genderController.clear();
+                                                                          passwordController.clear();
+                                                                          Navigator.pop(dialogContext);
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                );
+                                              },
+                                            );
+                                          },
+                                          onTapSecondIcon: (){
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext dialogContext) {
                                                 return Align(
                                                   alignment: Alignment.topRight,
                                                   child: Material(
                                                     color: Colors.transparent,
                                                     child: Container(
-                                                      width: 871.w,
-                                                      height: 728.h,
-                                                      margin: EdgeInsets.symmetric(
-                                                          horizontal: 160.w, vertical: 160.h),
-                                                      padding: EdgeInsets.all(22.r),
+                                                      width: 638.w,
+                                                      height: 478.h,
+                                                      margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
+                                                      padding:  EdgeInsets.all(22.r),
                                                       decoration: BoxDecoration(
                                                         color: AppColors.white,
                                                         borderRadius: BorderRadius.circular(6.r),
@@ -490,140 +710,41 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Padding(
-                                                              padding: EdgeInsets.only(top: 65.h,
-                                                                  left: 60.w,
-                                                                  right: 155.w),
-                                                              child: Text(
-                                                                'Edit student',
-                                                                style: Styles.h3Bold(
-                                                                    color: AppColors.t3),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets.only(left: 60.w),
+                                                              padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
                                                               child: Row(
                                                                 children: [
-                                                                  Stack(
-                                                                    children: [
-                                                                      selectedImage != null
-                                                                          ? CustomMemoryImage(
-                                                                        image: selectedImage,
-                                                                        imageWidth: 186.w,
-                                                                        imageHeight: 186.w,
-                                                                        borderRadius: 150.r,
-                                                                      )
-                                                                          : CustomImageAsset(
-                                                                        imageWidth: 186.w,
-                                                                        imageHeight: 186.w,
-                                                                        borderRadius: 150.r,
-                                                                      ),
-                                                                      Positioned(
-                                                                        top: 140.w,
-                                                                        left: 150.w,
-                                                                        child: CustomIconButton(
-                                                                          icon: Icons.add,
-                                                                          onTap: () async {
-                                                                            await pickImage();
-                                                                            setStateDialog(() {});
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                                    ],
+                                                                  Icon(
+                                                                    Icons.error_outline,
+                                                                    color: AppColors.orange,
+                                                                    size: 55.r,
                                                                   ),
-                                                                  Expanded(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        CustomLabelTextFormField(
-                                                                          labelText: 'Full name',
-                                                                          showLabelText: true,
-                                                                          controller: nameController,
-                                                                          topPadding: 20.h,
-                                                                          bottomPadding: 0.h,
-                                                                          leftPadding: 165.w,
-                                                                          rightPadding: 137.w,
-                                                                        ),
-                                                                        CustomLabelTextFormField(
-                                                                          labelText: 'Phone number',
-                                                                          showLabelText: true,
-                                                                          controller: phoneController,
-                                                                          topPadding: 42.h,
-                                                                          bottomPadding: 0.h,
-                                                                          leftPadding: 165.w,
-                                                                          rightPadding: 137.w,
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment: MainAxisAlignment
-                                                                              .start,
-                                                                          children: [
-                                                                            Expanded(
-                                                                              child: CustomLabelTextFormField(
-                                                                                hintText: 'Birth date',
-                                                                                readOnly: true,
-                                                                                controller: birthDateController,
-                                                                                topPadding: 72.h,
-                                                                                leftPadding: 165.w,
-                                                                                rightPadding: 0.w,
-                                                                                bottomPadding: 0.h,
-                                                                                onTap: () async {
-                                                                                  DateTime? pickedDate = await showDatePicker(
-                                                                                    context: context,
-                                                                                    initialDate: birthDateController.text.isEmpty ? DateTime.now() : DateTime.parse(birthDateController.text),
-                                                                                    firstDate: DateTime(2000),
-                                                                                    lastDate: DateTime(2100),
-                                                                                  );
-                                                                                  if (pickedDate !=
-                                                                                      null) {
-                                                                                    birthDateController
-                                                                                        .text =
-                                                                                    pickedDate
-                                                                                        .toString()
-                                                                                        .split(
-                                                                                        ' ')[0];
-                                                                                  }
-                                                                                },
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 19.w,),
-                                                                            Expanded(
-                                                                              child: CustomDropdownList(
-                                                                                hintText: 'Gender',
-                                                                                statusController: genderController,
-                                                                                topPadding: 72.h,
-                                                                                bottomPadding: 0.h,
-                                                                                dropdownMenuEntries: [
-                                                                                  DropdownMenuEntry(
-                                                                                    value: 'Female',
-                                                                                    label: 'Female',
-                                                                                  ),
-                                                                                  DropdownMenuEntry(
-                                                                                    value: 'Male',
-                                                                                    label: 'Male',
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        )
-                                                                      ],
-                                                                    ),
+                                                                  SizedBox(width: 10.w,),
+                                                                  Text(
+                                                                    AppLocalizations.of(context).translate('Warning'),
+                                                                    style: Styles.h3Bold(color: AppColors.t3),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
                                                             Padding(
-                                                              padding: EdgeInsets.only(top: 60.h,
-                                                                  bottom: 65.h,
-                                                                  left: 47.w,
-                                                                  right: 155.w),
+                                                              padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
+                                                              child: Text(
+                                                                AppLocalizations.of(context).translate('Are you sure you want to delete this student?'),
+                                                                style: Styles.b2Normal(color: AppColors.t3),
+                                                                maxLines: 1,
+                                                                overflow: TextOverflow.ellipsis,
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
                                                                   TextIconButton(
-                                                                    textButton: 'Edit student',
+                                                                    textButton: AppLocalizations.of(context).translate('Confirm'),
                                                                     bigText: true,
                                                                     textColor: AppColors.t3,
-                                                                    icon: Icons.edit,
+                                                                    icon: Icons.check_circle_outline,
                                                                     iconSize: 40.01.r,
                                                                     iconColor: AppColors.t2,
                                                                     iconLast: false,
@@ -632,20 +753,14 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                                     borderWidth: 0.w,
                                                                     buttonColor: AppColors.white,
                                                                     borderColor: Colors.transparent,
-                                                                    onPressed: () {
-                                                                      update(state.showResult.students.data![index].id);
-                                                                      nameController.clear();
-                                                                      emailController.clear();
-                                                                      phoneController.clear();
-                                                                      birthDateController.clear();
-                                                                      genderController.clear();
-                                                                      passwordController.clear();
+                                                                    onPressed: (){
+                                                                      context.read<DeleteStudentCubit>().fetchDeleteStudent(id: state.showResult.students.data![index].id);
                                                                       Navigator.pop(dialogContext);
                                                                     },
                                                                   ),
                                                                   SizedBox(width: 42.w,),
                                                                   TextIconButton(
-                                                                    textButton: '       Cancel       ',
+                                                                    textButton: AppLocalizations.of(context).translate('       Cancel       '),
                                                                     textColor: AppColors.t3,
                                                                     iconLast: false,
                                                                     buttonHeight: 53.h,
@@ -653,13 +768,7 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                                     borderRadius: 4.r,
                                                                     buttonColor: AppColors.w1,
                                                                     borderColor: AppColors.w1,
-                                                                    onPressed: () {
-                                                                      nameController.clear();
-                                                                      emailController.clear();
-                                                                      phoneController.clear();
-                                                                      birthDateController.clear();
-                                                                      genderController.clear();
-                                                                      passwordController.clear();
+                                                                    onPressed: (){
                                                                       Navigator.pop(dialogContext);
                                                                     },
                                                                   ),
@@ -672,119 +781,27 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                     ),
                                                   ),
                                                 );
-                                              }
+                                              },
                                             );
                                           },
-                                        );
+                                        ));
                                       },
-                                      onTapSecondIcon: (){
-                                        {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext dialogContext) {
-                                              return Align(
-                                                alignment: Alignment.topRight,
-                                                child: Material(
-                                                  color: Colors.transparent,
-                                                  child: Container(
-                                                    width: 638.w,
-                                                    height: 478.h,
-                                                    margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
-                                                    padding:  EdgeInsets.all(22.r),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.white,
-                                                      borderRadius: BorderRadius.circular(6.r),
-                                                    ),
-                                                    child: SingleChildScrollView(
-                                                      physics: BouncingScrollPhysics(),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons.error_outline,
-                                                                  color: AppColors.orange,
-                                                                  size: 55.r,
-                                                                ),
-                                                                SizedBox(width: 10.w,),
-                                                                Text(
-                                                                  'Warning',
-                                                                  style: Styles.h3Bold(color: AppColors.t3),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
-                                                            child: Text(
-                                                              AppLocalizations.of(context).translate('Are you sure you want to delete this student?'),
-                                                              style: Styles.b2Normal(color: AppColors.t3),
-                                                              maxLines: 1,
-                                                              overflow: TextOverflow.ellipsis,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                TextIconButton(
-                                                                  textButton: 'Confirm',
-                                                                  bigText: true,
-                                                                  textColor: AppColors.t3,
-                                                                  icon: Icons.check_circle_outline,
-                                                                  iconSize: 40.01.r,
-                                                                  iconColor: AppColors.t2,
-                                                                  iconLast: false,
-                                                                  firstSpaceBetween: 3.w,
-                                                                  buttonHeight: 53.h,
-                                                                  borderWidth: 0.w,
-                                                                  buttonColor: AppColors.white,
-                                                                  borderColor: Colors.transparent,
-                                                                  onPressed: (){
-                                                                    context.read<DeleteStudentCubit>().fetchDeleteStudent(id: state.showResult.students.data![index].id);
-                                                                    Navigator.pop(dialogContext);
-                                                                  },
-                                                                ),
-                                                                SizedBox(width: 42.w,),
-                                                                TextIconButton(
-                                                                  textButton: '       Cancel       ',
-                                                                  textColor: AppColors.t3,
-                                                                  iconLast: false,
-                                                                  buttonHeight: 53.h,
-                                                                  borderWidth: 0.w,
-                                                                  borderRadius: 4.r,
-                                                                  buttonColor: AppColors.w1,
-                                                                  borderColor: AppColors.w1,
-                                                                  onPressed: (){
-                                                                    Navigator.pop(dialogContext);
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        }
-                                      },
-                                    ));
-                                  },
-                                  itemCount: state.showResult.students.data!.length,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                ),
+                                      itemCount: state.showResult.students.data!.length,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                    ),
+                                  ),
+                                  CustomNumberPagination(
+                                    numberPages: state.showResult.students.lastPage,
+                                    initialPage: state.showResult.students.currentPage,
+                                    onPageChange: (int index) {
+                                      context.read<StudentsCubit>().fetchStudents(page: index + 1);
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                          ) : Center(child: CustomErrorWidget(errorMessage: 'No thing to display')),
+                          ) : Center(child: CustomErrorWidget(errorMessage: AppLocalizations.of(context).translate('No thing to display'))),
                         ),
                       );
                     } else if(state is StudentsFailure) {

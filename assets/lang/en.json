@@ -2,29 +2,164 @@
   "Put Admin translation under this line": "******************************************",
 
   "Put Secretary translation under this line": "******************************************",
-  "CreateStudentFailure": "Create student failure",
-  "CreateStudentSuccess": "Create student success",
-  "UpdateStudentFailure": "UpdateStudentFailure",
-  "UpdateStudentSuccess": "UpdateStudentSuccess",
-  "DeleteStudentFailure": "DeleteStudentFailure",
-  "DeleteStudentSuccess": "DeleteStudentSuccess",
-  "ImagePickedSuccess": "Image picked success",
+
+  "LoginFailure": "Failed to login. Please try again later",
+  "LoginSuccess": "Login Successfully",
+
+  "VerificationFailure": "Failed to verification. Please try again later",
+  "VerificationSuccess": "Verification Successfully",
+
+  "LogoutSecretaryFailure": "Failed to logout. Please try again later",
+  "LogoutSecretarySuccess": "Logout Successfully",
+
+  "CreateCourseFailure": "Failed to add course. Please try again later",
+  "CreateCourseSuccess": "Course added successfully",
+  "UpdateCourseFailure": "Failed to update course. Please try again later",
+  "UpdateCourseSuccess": "Course information updated successfully",
+  "DeleteCourseFailure": "Failed to delete course. Please try again later",
+  "DeleteCourseSuccess": "Course deleted successfully",
+  "Error, Please enter all the fields.": "Error, Please enter all the fields.",
+  "Failed to pick image:": "Failed to pick image:",
+  "No image selected or image data is unavailable.": "No image selected or image data is unavailable.",
+
+  "Are you sure you want to delete this course?": "Are you sure you want to delete this course?",
+
+  "CreateSectionFailure": "Failed to add section. Please try again later",
+  "CreateSectionSuccess": "Section added successfully",
+  "UpdateSectionFailure": "Failed to update section. Please try again later",
+  "UpdateSectionSuccess": "Section information updated successfully",
+  "DeleteSectionFailure": "Failed to delete section. Please try again later",
+  "DeleteSectionSuccess": "Section deleted successfully",
+  "AddSectionTrainerFailure": "Failed to add trainer to section. Please try again later",
+  "AddSectionTrainerSuccess": "Trainer added to section successfully",
+  "DeleteSectionTrainerFailure": "Failed to delete trainer from section. Please try again later",
+  "DeleteSectionTrainerSuccess": "Trainer deleted from section successfully",
+  "AddSectionStudentFailure": "Failed to add student to section. Please try again later",
+  "AddSectionStudentSuccess": "Student added to section successfully",
+
+  "Are you sure you want to delete this section?": "Are you sure you want to delete this section?",
+  "Are you sure you want to add this trainer to section?": "Are you sure you want to add this trainer to section?",
+  "Are you sure you want to remove this trainer from section?": "Are you sure you want to remove this trainer from section?",
+  "Are you sure you want to add this student to section?": "Are you sure you want to add this student to section?",
+  "Are you sure you want to remove this student from section?": "Are you sure you want to remove this student from section?",
+
+  "CreateStudentFailure": "Failed to add student. Please try again later",
+  "CreateStudentSuccess": "Student added successfully",
+  "UpdateStudentFailure": "Failed to update student. Please try again later",
+  "UpdateStudentSuccess": "Student information updated successfully",
+  "DeleteStudentFailure": "Failed to delete student. Please try again later",
+  "DeleteStudentSuccess": "Student deleted successfully",
+  "ImagePickedSuccess": "Image picked successfully",
+
+
+
+  "CreateTrainerFailure": "Failed to add trainer. Please try again later",
+  "CreateTrainerSuccess": "Trainer added successfully",
+  "UpdateTrainerFailure": "Failed to update trainer. Please try again later",
+  "UpdateTrainerSuccess": "Trainer information updated successfully",
+  "DeleteTrainerFailure": "Failed to delete trainer. Please try again later",
+  "DeleteTrainerSuccess": "Trainer deleted successfully",
+
+
+  "CreateReportFailure": "Failed to add report. Please try again later",
+  "CreateReportSuccess": "Report added successfully",
+  "UpdateReportFailure": "Failed to update report. Please try again later",
+  "UpdateReportSuccess": "Report information updated successfully",
+
+
+  "Dashboard": "Dashboard",
+  "Reports": "Reports",
+  "Notification": "Notification",
+  "Log out": "Log out",
+
+
+  "Departments": "Departments",
+
+
+  "Students": "Students",
+  "New student": "New student",
+  "Add student": "Add student",
+  "Edit student": "Edit student",
+  "Students from the same class": "Students from the same class",
+  "Courses": "Courses",
+  "learns": "learns",
+  "Points": "Points",
 
   "Are you sure you want to delete this student?": "Are you sure you want to delete this student?",
 
-  "CreateTrainerFailure": "CreateTrainerFailure",
-  "CreateTrainerSuccess": "CreateTrainerSuccess",
-  "UpdateTrainerFailure": "UpdateTrainerFailure",
-  "UpdateTrainerSuccess": "UpdateTrainerSuccess",
-  "DeleteTrainerFailure": "DeleteTrainerFailure",
-  "DeleteTrainerSuccess": "DeleteTrainerSuccess",
 
   "Trainers": "Trainers",
   "New trainer": "New trainer",
   "Add trainer": "Add trainer",
   "Edit trainer": "Edit trainer",
+  "Trainers teach the same subject": "Trainers teach the same subject",
+  "Courses by": "Courses by",
 
   "Are you sure you want to delete this trainer?": "Are you sure you want to delete this trainer?",
+
+
+  "In Preparation": "In Preparation",
+
+
+  "Log in": "Log in",
+  "Forget password?": "Forget password?",
+  "This field required": "This field required",
+
+
+  "Verification": "Verification",
+
+
+  "Complete": "Complete",
+  "Look at": "Look at",
+  "students in this class": "students in this class",
+  "trainers in this class": "trainers in this class",
+  "See more": "See more",
+  "         File         ": "         File         ",
+  "Announcement": "Announcement",
+  "No courses at this time": "No courses at this time",
+  "Courses will appear here after they enroll in your school.": "Courses will appear here after they enroll in your institute.",
+
+
+  "New course": "New course",
+  "Add course": "Add course",
+  "Edit course": "Edit course",
+
+
+  "No section": "No section",
+  "New section": "New section",
+  "Add Section": "Add Section",
+  "Edit status": "Edit status",
+  "Edit section": "Edit section",
+  "Seats number": "Seats number",
+  "Start date": "Start date",
+  "End date": "End date",
+  "Class days": "Class days",
+  "Seats": "Seats",
+  "Status": "Status",
+  "Start time": "Start time",
+  "End time": "End time",
+  "Sunday": "Sunday",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "In preparation": "In preparation",
+  "Active now": "Active now",
+  "Trainer": "Trainer",
+
+
+
+
+  "Search": "Search",
+  "Search to see more": "Search to see more",
+
+
+  "New report": "New report",
+  "Add report": "Add report",
+  "Edit report": "Edit report",
+  "Title": "Title",
 
 
   "Full name": "Full name",
@@ -32,13 +167,32 @@
   "Phone number": "Phone number",
   "Birth date": "Birth date",
   "Gender": "Gender",
+  "Female": "Female",
+  "Male": "Male",
   "Password": "Password",
+  "Password confirmation": "Password confirmation",
   "Specification": "Specification",
   "Experience": "Experience",
   "       Cancel       ": "       Cancel       ",
   "Subject": "Subject",
   "Warning": "Warning",
   "Confirm": "Confirm",
+  "Submit": "Submit",
+  "Name": "Name",
+  "About": "About",
+  "Description": "Description",
+  "No thing to display": "No thing to display",
+  "this field must not be empty": "this field must not be empty",
+  "Search here...": "Search here...",
+
+
+
+  "SelectEndDateFailure": "Failed to select end date. Please try again later",
+  "SelectEndTimeFailure": "Failed to select end time. Please try again later",
+  "SelectEndTimeStartFailure": "You must select the start time first!",
+  "End time should be after start time!": "End time should be after start time!",
+  "Please choose start time first!": "Please choose start time first!",
+
 
   "Put Trainer translation under this line": "******************************************"
 }

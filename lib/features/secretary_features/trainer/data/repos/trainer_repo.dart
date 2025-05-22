@@ -7,10 +7,11 @@ import 'package:alhadara_dashboard/features/secretary_features/trainer/data/mode
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
+import '../models/search_trainer_model.dart';
 import '../models/trainers_model.dart';
 
 abstract class TrainerRepo {
-  Future<Either<Failure, TrainersModel>> fetchTrainers();
+  Future<Either<Failure, TrainersModel>> fetchTrainers({required int page});
 
   Future<Either<Failure, CreateTrainerModel>> fetchCreateTrainer({
     required String name,
@@ -40,4 +41,6 @@ abstract class TrainerRepo {
   Future<Either<Failure, DetailsTrainerModel>> fetchDetailsTrainer({
     required int id,
   });
+
+  Future<Either<Failure, SearchTrainerModel>> fetchSearchTrainer({required String querySearch, required int page});
 }

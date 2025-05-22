@@ -9,30 +9,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:number_paginator/number_paginator.dart';
 
+import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/go_router_path.dart';
+import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
+import '../../../../../../core/widgets/custom_error_widget.dart';
 import '../../../../../../core/widgets/secretary/custom_check_box.dart';
 import '../../../../../../core/widgets/secretary/custom_course_information.dart';
 import '../../../../../../core/widgets/secretary/custom_overloading_avatar.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_files.dart';
 import '../../../../../../core/widgets/text_icon_button.dart';
-import '../../../../course/presentation/manager/CreateSectionCubit/CreateSectionCubit.dart';
-import '../../../../course/presentation/manager/CreateSectionCubit/CreateSectionState.dart';
+import '../../../../course/presentation/manager/create_section_cubit/create_section_cubit.dart';
+import '../../../../course/presentation/manager/create_section_cubit/create_section_state.dart';
+import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
+import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 import '../../../../course/presentation/views/widgets/course_details_view_body.dart';
 
 class DetailsInPreparationViewBody extends StatelessWidget {
   DetailsInPreparationViewBody({super.key});
 
   final List<String> statusOptions = ['In preparation', 'Active now', 'Complete',];
-  //int _currentPage = 0;
-  final int _numPages = 10;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
-        title: 'Languages',
+        title: 'Video Editing',
         showSearchField: true,
         textFirstButton: 'Section 2',
         showFirstButton: true,
@@ -49,6 +52,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                 Column(
                   children: [
                     CustomCourseInformation(
+                      showSectionInformation: true,
                       ratingText: '0.0',
                       ratingPercent: 0,
                       ratingPercentText: '0%',
@@ -100,7 +104,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(top: 65.h, left: 60.w, right: 155.w),
                                                 child: Text(
-                                                  'Edit status',
+                                                  AppLocalizations.of(context).translate('Edit status'),
                                                   style: Styles.h3Bold(color: AppColors.t3),
                                                 ),
                                               ),
@@ -142,7 +146,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     TextIconButton(
-                                                      textButton: 'Edit status',
+                                                      textButton: AppLocalizations.of(context).translate('Edit status'),
                                                       bigText: true,
                                                       textColor: AppColors.t3,
                                                       icon: Icons.edit,
@@ -160,7 +164,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                                     ),
                                                     SizedBox(width: 42.w,),
                                                     TextIconButton(
-                                                      textButton: '       Cancel       ',
+                                                      textButton: AppLocalizations.of(context).translate('       Cancel       '),
                                                       textColor: AppColors.t3,
                                                       iconLast: false,
                                                       buttonHeight: 53.h,
@@ -190,14 +194,53 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                       onTapDate: (){
                         context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationCalendar}');
                       },
+                      onTapFirstIcon: (){},
+                      onTapSecondIcon: (){},
                     ),
                     SizedBox(height: 22.h),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        CustomOverloadingAvatar(labelText: 'Look at 17 students in this class', tailText: 'See more', avatarCount: 5,),
-                        SizedBox(width: calculateWidthBetweenAvatars(avatarCount: 5)/*270.w*/,),
-                        CustomOverloadingAvatar(labelText: 'Look at trainers in this class', tailText: 'See more', avatarCount: 2,),
+                        CustomOverloadingAvatar(
+                          labelText: '${AppLocalizations.of(context).translate('Look at')} 17 ${AppLocalizations.of(context).translate('students in this class')}',
+                          tailText: AppLocalizations.of(context).translate('See more'),
+                          firstImage: '',
+                          secondImage: '',
+                          thirdImage: '',
+                          fourthImage: '',
+                          fifthImage: '',
+                          avatarCount: 5,
+                          onTap: (){
+                            context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationStudents}/1');
+                            //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${state.section.id}');
+                          },
+                        ),
+                        SizedBox(width: calculateWidthBetweenAvatars(avatarCount: 5),),
+                        BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
+                            builder: (contextTS, stateTS) {
+                              if(stateTS is TrainersSectionSuccess) {
+                                return CustomOverloadingAvatar(
+                                  labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                  tailText: AppLocalizations.of(context).translate('See more'),
+                                  firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                  secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                  thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                  fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                  fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                  avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                  onTap: () {
+                                    context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationTrainers}/1');
+                                    //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                  },
+                                );
+                              } else if(stateTS is TrainersSectionFailure) {
+                                return CustomErrorWidget(
+                                    errorMessage: stateTS.errorMessage);
+                              } else {
+                                return CustomCircularProgressIndicator();
+                              }
+                            }
+                        ),
                       ],
                     ),
                     Padding(
@@ -220,8 +263,8 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                 labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                                 unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
                                 tabs: [
-                                  Tab(text: '         File         ',),
-                                  Tab(text: 'Announcement'),
+                                  Tab(text: AppLocalizations.of(context).translate('         File         '),),
+                                  Tab(text: AppLocalizations.of(context).translate('Announcement')),
                                 ],
                               ),
                             ),
@@ -230,15 +273,25 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                               child: TabBarView(
                                 children: [
                                   Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      GridViewFiles(
-                                        fileName: 'hgjhv',
-                                        cardCount: 5,
+                                      //Image(image: AssetImage(Assets.empty)),
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context).translate('No courses at this time'),
+                                          style: Styles.h3Bold(color: AppColors.t3),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                      NumberPaginator(
-                                        numberPages: _numPages,
-                                        onPageChange: (int index) {
-                                        },
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context).translate('Courses will appear here after they enroll in your school.'),
+                                          style: Styles.l1Normal(color: AppColors.t3),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -249,7 +302,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                       //Image(image: AssetImage(Assets.empty)),
                                       Expanded(
                                         child: Text(
-                                          'No courses at this time',
+                                          AppLocalizations.of(context).translate('No courses at this time'),
                                           style: Styles.h3Bold(color: AppColors.t3),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -257,7 +310,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          'Courses will appear here after they enroll in your school.',
+                                          AppLocalizations.of(context).translate('Courses will appear here after they enroll in your school.'),
                                           style: Styles.l1Normal(color: AppColors.t3),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -282,29 +335,3 @@ class DetailsInPreparationViewBody extends StatelessWidget {
     );
   }
 }
-
-/*
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image(image: AssetImage(Assets.empty)),
-                Expanded(
-                  child: Text(
-                    'No courses at this time',
-                    style: Styles.h3Bold(color: AppColors.t3),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Courses will appear here after they enroll in your school.',
-                    style: Styles.l1Normal(color: AppColors.t3),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            )
-* */

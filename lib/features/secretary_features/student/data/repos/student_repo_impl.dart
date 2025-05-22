@@ -5,6 +5,7 @@ import 'package:alhadara_dashboard/core/errors/failure.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/create_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/delete_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/details_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/search_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/update_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/repos/student_repo.dart';
 import 'package:dartz/dartz.dart';
@@ -17,9 +18,29 @@ import '../models/students_model.dart';
 class StudentRepoImpl extends StudentRepo{
 
   final DioApiService dioApiService;
-  static var dio = Dio();
 
   StudentRepoImpl(this.dioApiService);
+
+  @override
+  Future<Either<Failure, StudentsModel>> fetchStudents({required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/student/showAllStudent?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      StudentsModel studentsModel;
+      studentsModel = StudentsModel.fromJson(data);
+
+      return right(studentsModel);
+
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 
   @override
   Future<Either<Failure, CreateStudentModel>> fetchCreateStudent({
@@ -54,30 +75,6 @@ class StudentRepoImpl extends StudentRepo{
 
       return right(createStudentModel);
     } catch (e) {
-      return left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, StudentsModel>> fetchStudents() async {
-    try {
-      var data = await (dioApiService.get(
-        endPoint: '/secretary/student/showAllStudent',
-        token: await SharedPreferencesHelper.getJwtToken(),
-      ));
-      log(data.toString());
-      StudentsModel studentsModel;
-      studentsModel = StudentsModel.fromJson(data);
-      List<Datum> allStudents = [];
-      for (var item in studentsModel.students.data!) {
-        allStudents.add(item);
-      }
-      return right(studentsModel);
-
-    } catch (e) {
-      if (e is DioException){
-        return left(ServerFailure.fromDioError(e),);
-      }
       return left(ServerFailure(e.toString()));
     }
   }
@@ -171,6 +168,26 @@ class StudentRepoImpl extends StudentRepo{
 
       return right(detailsStudentModel);
 
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SearchStudentModel>> fetchSearchStudent({required String querySearch, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/student/searchStudent/$querySearch?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      SearchStudentModel searchStudentModel;
+      searchStudentModel = SearchStudentModel.fromJson(data);
+
+      return right(searchStudentModel);
     } catch (e) {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);

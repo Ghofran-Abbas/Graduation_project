@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/create_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/delete_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/details_student_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/search_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/update_student_model.dart';
 import 'package:dartz/dartz.dart';
 
@@ -11,7 +12,7 @@ import '../models/students_model.dart';
 
 abstract class StudentRepo {
 
-  Future<Either<Failure, StudentsModel>> fetchStudents();
+  Future<Either<Failure, StudentsModel>> fetchStudents({required int page});
 
   Future<Either<Failure, CreateStudentModel>> fetchCreateStudent({
     required String name,
@@ -38,4 +39,6 @@ abstract class StudentRepo {
   Future<Either<Failure, DetailsStudentModel>> fetchDetailsStudent({
     required int id,
   });
+
+  Future<Either<Failure, SearchStudentModel>> fetchSearchStudent({required String querySearch, required int page});
 }

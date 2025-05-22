@@ -19,7 +19,7 @@ class VerificationView extends StatelessWidget {
           getIt.get<VerificationRepoImpl>(),
         );
       },
-      child: VerificationViewBody(),
+      child: Scaffold(body: VerificationViewBody()),
     );
   }
 }

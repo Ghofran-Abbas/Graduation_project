@@ -1,4 +1,7 @@
-import 'package:alhadara_dashboard/features/login/data/repos/login_repo_impl.dart';
+import 'package:alhadara_dashboard/features/login/data/repos/login_secretary_repo_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/department/data/repos/department_repo_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/logout/data/repos/logout_secretary_impl.dart';
+import 'package:alhadara_dashboard/features/secretary_features/report/data/repos/report_repo_impl.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/repos/student_repo_impl.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/repos/trainer_repo_impl.dart';
 import 'package:alhadara_dashboard/features/secretary_features/verification/data/repos/verification_repo_impl.dart';
@@ -25,6 +28,12 @@ void setupServiceLocator() {
     ),
   );
 
+  getIt.registerSingleton<LogoutSecretaryRepoImpl>(
+    LogoutSecretaryRepoImpl(
+      getIt.get<DioApiService>(),
+    ),
+  );
+
   getIt.registerSingleton<ForgotPasswordRepoImpl>(
     ForgotPasswordRepoImpl(
       getIt.get<DioApiService>(),
@@ -34,6 +43,12 @@ void setupServiceLocator() {
   getIt.registerSingleton<VerificationRepoImpl>(
     VerificationRepoImpl(
       getIt.get<DioApiService>(),
+    ),
+  );
+
+  getIt.registerSingleton<DepartmentRepoImpl>(
+    DepartmentRepoImpl(
+        getIt.get<DioApiService>(),
     ),
   );
 
@@ -51,6 +66,12 @@ void setupServiceLocator() {
 
   getIt.registerSingleton<TrainerRepoImpl>(
     TrainerRepoImpl(
+      getIt.get<DioApiService>(),
+    ),
+  );
+
+  getIt.registerSingleton<ReportRepoImpl>(
+    ReportRepoImpl(
       getIt.get<DioApiService>(),
     ),
   );

@@ -1,29 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:number_paginator/number_paginator.dart';
 
+import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/app_colors.dart';
 import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/utils/styles.dart';
+import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
+import '../../../../../../core/widgets/custom_error_widget.dart';
 import '../../../../../../core/widgets/secretary/custom_course_information.dart';
+import '../../../../../../core/widgets/secretary/custom_over_loading_card.dart';
 import '../../../../../../core/widgets/secretary/custom_overloading_avatar.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
+import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 import '../../../../../../core/widgets/secretary/grid_view_files.dart';
+import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
+import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 import '../../../../course/presentation/views/widgets/course_details_view_body.dart';
 
 class CompleteDetailsViewBody extends StatelessWidget {
   const CompleteDetailsViewBody({super.key});
 
-  //int _currentPage = 0;
-  final int _numPages = 10;
-
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = ((screenWidth - 210) / 250).floor();
+    crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
+    int count = 10;
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
-        title: 'Languages',
+        title: 'Video Editing',
         showSearchField: true,
         textFirstButton: 'Section 2',
         showFirstButton: true,
@@ -40,6 +50,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                 Column(
                   children: [
                     CustomCourseInformation(
+                      showSectionInformation: true,
                       ratingText: '2.8',
                       ratingPercent: 1,
                       ratingPercentText: '100%',
@@ -61,14 +72,53 @@ class CompleteDetailsViewBody extends StatelessWidget {
                       onTapDate: (){
                         context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeCalendar}');
                       },
+                      onTapFirstIcon: (){},
+                      onTapSecondIcon: (){},
                     ),
                     SizedBox(height: 22.h),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        CustomOverloadingAvatar(labelText: 'Look at 38 students in this class', tailText: 'See more', avatarCount: 5,),
+                        CustomOverloadingAvatar(
+                          labelText: '${AppLocalizations.of(context).translate('Look at')} 17 ${AppLocalizations.of(context).translate('students in this class')}',
+                          tailText: AppLocalizations.of(context).translate('See more'),
+                          firstImage: '',
+                          secondImage: '',
+                          thirdImage: '',
+                          fourthImage: '',
+                          fifthImage: '',
+                          avatarCount: 5,
+                          onTap: (){
+                            context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
+                            //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${state.section.id}');
+                          },
+                        ),
                         SizedBox(width: calculateWidthBetweenAvatars(avatarCount: 5)/*270.w*/,),
-                        CustomOverloadingAvatar(labelText: 'Look at trainers in this class', tailText: 'See more', avatarCount: 2,),
+                        BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
+                            builder: (contextTS, stateTS) {
+                              if(stateTS is TrainersSectionSuccess) {
+                                return CustomOverloadingAvatar(
+                                  labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                  tailText: AppLocalizations.of(context).translate('See more'),
+                                  firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                  secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                  thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                  fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                  fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                  avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                  onTap: () {
+                                    context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/2');
+                                    //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                  },
+                                );
+                              } else if(stateTS is TrainersSectionFailure) {
+                                return CustomErrorWidget(
+                                    errorMessage: stateTS.errorMessage);
+                              } else {
+                                return CustomCircularProgressIndicator();
+                              }
+                            }
+                        ),
                       ],
                     ),
                     Padding(
@@ -91,8 +141,8 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                 labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                                 unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
                                 tabs: [
-                                  Tab(text: '         File         ',),
-                                  Tab(text: 'Announcement'),
+                                  Tab(text: AppLocalizations.of(context).translate('         File         '),),
+                                  Tab(text: AppLocalizations.of(context).translate('Announcement')),
                                 ],
                               ),
                             ),
@@ -107,34 +157,49 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                         cardCount: 5,
                                       ),
                                       NumberPaginator(
-                                        numberPages: _numPages,
+                                        numberPages: 1,
                                         onPageChange: (int index) {
                                         },
                                       ),
                                     ],
                                   ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      //Image(image: AssetImage(Assets.empty)),
-                                      Expanded(
-                                        child: Text(
-                                          'No courses at this time',
-                                          style: Styles.h3Bold(color: AppColors.t3),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          'Courses will appear here after they enroll in your school.',
-                                          style: Styles.l1Normal(color: AppColors.t3),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
+                                  CustomOverLoadingCard(
+                                    cardCount: count,
+                                    onTapSeeMore: () {
+                                      context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.announcementsC}/1');
+                                      //context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsC}/1');
+                                      //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcementsA}/1');
+                                    },
+                                    widget: GridView
+                                        .builder(
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossAxisCount,
+                                          crossAxisSpacing: 10
+                                              .w,
+                                          mainAxisExtent: 354.66
+                                              .h),
+                                      itemBuilder: (
+                                          BuildContext context,
+                                          int index) {
+                                        return Align(
+                                            child: CustomCard(
+                                              text: 'Discount 30%',
+                                              onTap: () {
+                                                context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.announcementsC}/1${GoRouterPath.announcementCDetails}/1');
+                                                //context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsC}/1${GoRouterPath.announcementCDetails}/1');
+                                                //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcements}/1');
+                                              },
+                                              onTapFirstIcon: () {},
+                                              onTapSecondIcon: () {},
+                                            ));
+                                      },
+                                      itemCount: count >
+                                          4
+                                          ? 4
+                                          : count,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                    ),
                                   ),
                                 ],
                               ),

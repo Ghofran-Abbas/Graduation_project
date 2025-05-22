@@ -75,7 +75,7 @@ import '../custom_image_network.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.showRating, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.showCheckEndCourse,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.showRating, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.showCheckEndCourse, required this.onTapFirstIcon, required this.onTapSecondIcon,
   });
 
   final double? width;
@@ -106,6 +106,8 @@ class CustomCard extends StatelessWidget {
   final String? ratingText;
   final Color? ratingTextColor;
   final bool? showCheckEndCourse;
+  final Function onTapFirstIcon;
+  final Function onTapSecondIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -131,9 +133,15 @@ class CustomCard extends StatelessWidget {
               //image
               Stack(
                 children: [
-                  CustomImageAsset(
-                    imageWidth: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageWidth ?? 104.w,
-                    imageHeight: (showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : imageHeight ?? 104.w,
+                  image != null ? CustomImageNetwork(
+                    image: image,
+                    imageWidth: /*(showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : */imageWidth ?? 104.w,
+                    imageHeight: /*(showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : */imageHeight ?? 104.w,
+                    borderRadius: imageBorderRadius ?? 80.r,
+                  )
+                      : CustomImageAsset(
+                    imageWidth: /*(showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : */imageWidth ?? 104.w,
+                    imageHeight: /*(showDetailsText ?? false) && (showIcons ?? false) ? 81.02.w : */imageHeight ?? 104.w,
                     borderRadius: imageBorderRadius ?? 80.r,
                   ),
                   showCheckEndCourse ?? false ?Positioned(
@@ -193,9 +201,9 @@ class CustomCard extends StatelessWidget {
               showIcons ?? false ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomIconButton(icon: leftIcon ?? Icons.edit_outlined, onTap: (){},),
+                  CustomIconButton(icon: leftIcon ?? Icons.edit_outlined, onTap: (){onTapFirstIcon();},),
                   SizedBox(width: 10.8.w,),
-                  CustomIconButton(icon: rightIcon ?? Icons.delete_outline, onTap: (){},),
+                  CustomIconButton(icon: rightIcon ?? Icons.delete_outline, onTap: (){onTapSecondIcon();},),
                 ],
               ) : SizedBox(width: 0, height: 0,),
               showRating ?? false ? Row(
