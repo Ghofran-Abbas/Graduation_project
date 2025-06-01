@@ -41,7 +41,7 @@ class CoursesView extends StatelessWidget {
           create: (context) {
             return CoursesCubit(
               getIt.get<CourseRepoImpl>(),
-            )..fetchCourses(page: 1);
+            )..fetchCourses(departmentId: departmentId, page: 1);
           },
         ),
         BlocProvider(

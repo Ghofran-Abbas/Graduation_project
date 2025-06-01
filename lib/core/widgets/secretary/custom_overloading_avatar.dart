@@ -27,6 +27,8 @@ class CustomOverloadingAvatar extends StatelessWidget {
         Text(
           labelText,
           style: Styles.l2Bold(color: AppColors.t4),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 38.h,),
         GestureDetector(
@@ -35,6 +37,7 @@ class CustomOverloadingAvatar extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Stack(
+                clipBehavior: Clip.none,
                 children: [
                   avatarCount >= 1 ? firstImage != null ? CustomImageNetwork(
                     imageWidth: 48.w,
@@ -46,8 +49,8 @@ class CustomOverloadingAvatar extends StatelessWidget {
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
                   ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                  avatarCount >= 2 ? secondImage != null ? Align(
-                    widthFactor: 2.1.w,
+                  avatarCount >= 2 ? secondImage != null ? Positioned(
+                    left: 30.1.w,
                     child: CustomImageNetwork(
                       imageWidth: 48.w,
                       imageHeight: 44.w,
@@ -59,8 +62,8 @@ class CustomOverloadingAvatar extends StatelessWidget {
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
                   ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                  avatarCount >= 3 ? thirdImage != null ? Align(
-                    widthFactor: 3.3.w,
+                  avatarCount >= 3 ? thirdImage != null ? Positioned(
+                    left: 60.3.w,
                     child: CustomImageNetwork(
                       imageWidth: 48.w,
                       imageHeight: 44.w,
@@ -72,8 +75,8 @@ class CustomOverloadingAvatar extends StatelessWidget {
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
                   ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                  avatarCount >= 4 ? fourthImage != null ? Align(
-                    widthFactor: 4.5.w,
+                  avatarCount >= 4 ? fourthImage != null ? Positioned(
+                    left: 90.5.w,
                     child: CustomImageNetwork(
                       imageWidth: 48.w,
                       imageHeight: 44.w,
@@ -85,8 +88,8 @@ class CustomOverloadingAvatar extends StatelessWidget {
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
                   ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                  avatarCount >= 5 ? fifthImage != null ? Align(
-                    widthFactor: 5.7.w,
+                  avatarCount >= 5 ? fifthImage != null ? Positioned(
+                    left: 120.7.w,
                     child: CustomImageNetwork(
                       imageWidth: 48.w,
                       imageHeight: 44.w,
@@ -98,7 +101,7 @@ class CustomOverloadingAvatar extends StatelessWidget {
                     imageHeight: 44.w,
                     borderRadius: 50.67.r,
                   ) : SizedBox(width: 0.0.w, height: 0.0.h,),
-                  Align(
+                  /*Align(
                     widthFactor: width,
                     heightFactor: 4.3.h,
                     child: Text(
@@ -107,8 +110,15 @@ class CustomOverloadingAvatar extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
+                  ),*/
                 ],
+              ),
+              SizedBox(width: width,),
+              Text(
+                tailText,
+                style: Styles.l3Normal(color: AppColors.purple),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -141,19 +151,19 @@ double calculateWidthAvatar({
 {
   double width = 8.6;
   if(avatarCount >= 1) {
-    width = 3.8.w;
+    width = 6.w;
   }
   if(avatarCount >= 2) {
-    width = 5.w;
+    width = 45.w;
   }
   if(avatarCount >= 3) {
-    width = 6.2.w;
+    width = 78.w;
   }
   if(avatarCount >= 4) {
-    width = 7.4.w;
+    width = 105.w;
   }
   if(avatarCount >= 5) {
-    width = 8.6.w;
+    width = 138.w;
   }
   return width;
 }

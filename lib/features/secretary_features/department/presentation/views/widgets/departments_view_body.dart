@@ -6,10 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../../core/localization/app_localizations.dart';
+import '../../../../../../core/utils/app_colors.dart';
+import '../../../../../../core/utils/assets.dart';
 import '../../../../../../core/utils/go_router_path.dart';
+import '../../../../../../core/utils/styles.dart';
 import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../core/widgets/custom_error_widget.dart';
 import '../../../../../../core/widgets/custom_number_pagination.dart';
+import '../../../../../../core/widgets/secretary/custom_empty_widget.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 
@@ -61,7 +65,10 @@ class DepartmentsViewBody extends StatelessWidget {
                         itemCount: state.showResult.departments.data!.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                      ) : Center(heightFactor: 20.h,child: CustomErrorWidget(errorMessage: AppLocalizations.of(context).translate('No thing to display'))),
+                      ) : CustomEmptyWidget(
+                        firstText: AppLocalizations.of(context).translate('No departments at this time'),
+                        secondText: AppLocalizations.of(context).translate('Departments will appear here after they enroll in your institute.'),
+                      ),
                       CustomNumberPagination(
                         numberPages: state.showResult.departments.lastPage,
                         initialPage: state.showResult.departments.currentPage,

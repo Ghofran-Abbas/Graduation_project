@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/app_colors.dart';
 
-class GridViewFiles extends StatelessWidget {
+/*class GridViewFiles extends StatelessWidget {
   const GridViewFiles({super.key, required this.cardCount, required this.fileName});
 
   final String fileName;
@@ -22,6 +22,7 @@ class GridViewFiles extends StatelessWidget {
         return Align(child: FileItem(
           fileName: fileName,
           color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
+          onTap: () {},
         ));
       },
       itemCount: cardCount,
@@ -29,34 +30,38 @@ class GridViewFiles extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
     );
   }
-}
+}*/
 
 class FileItem extends StatelessWidget {
-  const FileItem({super.key, required this.fileName, this.color});
+  const FileItem({super.key, required this.fileName, this.color, required this.onTap});
 
   final String fileName;
   final Color? color;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 484.2.w,
-      height: 100.h,
-      color: color ?? AppColors.white,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 22.46.w),
-        child: Row(
-          children: [
-            Icon(
-              Icons.file_copy_outlined,
-              color: AppColors.purple,
-              size: 20.r,
-            ),
-            SizedBox(width: 30.w,),
-            Text(
-              fileName,
-            ),
-          ],
+    return GestureDetector(
+      onTap: () {onTap();},
+      child: Container(
+        width: 484.2.w,
+        height: 100.h,
+        color: color ?? AppColors.white,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 22.46.w),
+          child: Row(
+            children: [
+              Icon(
+                Icons.file_copy_outlined,
+                color: AppColors.purple,
+                size: 20.r,
+              ),
+              SizedBox(width: 30.w,),
+              Text(
+                fileName,
+              ),
+            ],
+          ),
         ),
       ),
     );

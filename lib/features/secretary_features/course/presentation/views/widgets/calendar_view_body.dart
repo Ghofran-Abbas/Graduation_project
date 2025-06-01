@@ -1,43 +1,120 @@
+import 'dart:developer';
+
 import 'package:alhadara_dashboard/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../../../../../../core/localization/app_localizations.dart';
+import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
+import '../../../../../../core/widgets/custom_snack_bar.dart';
+import '../../../data/models/details_section_model.dart';
+import '../../manager/details_section_cubit/details_section_cubit.dart';
+import '../../manager/details_section_cubit/details_section_state.dart';
 
 class CalendarViewBody extends StatelessWidget {
   const CalendarViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SfCalendar(
-      view: CalendarView.week,
-      firstDayOfWeek: 6,
-      dataSource: SectionDataSource(getAppointments()),
-      timeSlotViewSettings: TimeSlotViewSettings(
-        startHour: 0,
-        endHour: 24,
-        timeIntervalHeight: 80, // لزيادة وضوح الفواصل الزمنية
-      ),
-
+    return BlocConsumer<DetailsSectionCubit, DetailsSectionState>(
+      listener: (context, state) {
+        if (state is DetailsSectionFailure) {
+          CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DetailsSectionFailure'),);
+        }
+      },
+      builder: (context, state) {
+        if(state is DetailsSectionSuccess) {
+          final appointments = generateSectionAppointments(state.section.section);
+          return SfCalendar(
+            view: CalendarView.week,
+            firstDayOfWeek: 6,
+            dataSource: SectionDataSource(appointments),
+            timeSlotViewSettings: TimeSlotViewSettings(
+              startHour: 0,
+              endHour: 24,
+              timeIntervalHeight: 80,
+            ),
+          );
+        } else if(state is DetailsSectionFailure) {
+          List<Appointment> meetings = <Appointment>[];
+          return SfCalendar(
+            view: CalendarView.week,
+            firstDayOfWeek: 6,
+            dataSource: SectionDataSource(meetings),
+            timeSlotViewSettings: TimeSlotViewSettings(
+              startHour: 0,
+              endHour: 24,
+              timeIntervalHeight: 80, // لزيادة وضوح الفواصل الزمنية
+            ),
+          );
+        } else {
+          return CustomCircularProgressIndicator();
+        }
+      }
     );
   }
 }
 
-List<Appointment> getAppointments() {
-  List<Appointment> meetings = <Appointment>[];
-  final DateTime today = DateTime.now();
-  final DateTime startTime = DateTime(today.year, today.month, today.day, 5, 0, 0);
-  final DateTime endTime =  startTime.add(const Duration(hours: 2));
+List<Appointment> generateSectionAppointments(Section section) {
+  final List<Appointment> appointments = [];
 
-  meetings.add(Appointment(
-    startTime: startTime,
-    endTime: endTime,
-    subject: 'Section 1',
-    color: AppColors.purple,
-    recurrenceRule: 'FREQ=DAILY;COUNT=10'
+  final startDate = section.startDate;
+  final endDate = section.endDate;
 
-  ));
+  // خريطة تحويل اسم اليوم إلى رقم حسب DateTime
+  final Map<String, int> weekDayToInt = {
+    'monday': DateTime.monday,
+    'tuesday': DateTime.tuesday,
+    'wednesday': DateTime.wednesday,
+    'thursday': DateTime.thursday,
+    'friday': DateTime.friday,
+    'saturday': DateTime.saturday,
+    'sunday': DateTime.sunday,
+  };
 
-  return meetings;
+  for (final day in section.weekDays) {
+    final dayNumber = weekDayToInt[day.name.toLowerCase()] ?? DateTime.monday;
+
+    // نبدأ من تاريخ البداية ونمشي يومًا بيوم حتى نصل لنهاية الفترة
+    DateTime current = startDate;
+    while (current.isBefore(endDate) || current.isAtSameMomentAs(endDate)) {
+      if (current.weekday == dayNumber) {
+        final startParts = day.startTime.split(':').map(int.parse).toList();
+        final endParts = day.endTime.split(':').map(int.parse).toList();
+
+        final DateTime startTime = DateTime(
+          current.year,
+          current.month,
+          current.day,
+          startParts[0],
+          startParts[1],
+        );
+        final DateTime endTime = DateTime(
+          current.year,
+          current.month,
+          current.day,
+          endParts[0],
+          endParts[1],
+        );
+
+        appointments.add(
+          Appointment(
+            startTime: startTime,
+            endTime: endTime,
+            subject: section.name,
+            color: AppColors.purple,
+          ),
+        );
+      }
+
+      current = current.add(const Duration(days: 1));
+    }
+  }
+
+  return appointments;
 }
+
 
 class SectionDataSource extends CalendarDataSource {
   SectionDataSource(List<Appointment> source) {

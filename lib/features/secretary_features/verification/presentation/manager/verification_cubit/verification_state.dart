@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data/models/verification_model.dart';
-
 abstract class VerificationState extends Equatable {
   const VerificationState();
 
@@ -17,7 +15,7 @@ class VerificationFailure extends VerificationState {
   const VerificationFailure(this.errorMessage);
 }
 class VerificationSuccess extends VerificationState {
-  final VerificationModel verificationResult;
+  final dynamic verificationResult;
 
   const VerificationSuccess(this.verificationResult);
 }

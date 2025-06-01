@@ -38,7 +38,12 @@ class LoginRepoImpl extends LoginRepo{
 
       return right(loginSecretaryModel);
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      if (e is DioException) {
+        return left(ServerFailure('DioException ${e.response!.data['Message'].toString()}'));
+      } else {
+        log(e.toString());
+        return left(ServerFailure(e.toString()));
+      }
     }
   }
 

@@ -12,23 +12,25 @@ class CustomInformationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Styles.l2Bold(color: AppColors.t4),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: 14.h,),
-        Text(
-          textBody,
-          style: Styles.l1Normal(color: AppColors.t1),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Styles.l2Bold(color: AppColors.t4),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 14.h,),
+          Text(
+            textBody,
+            style: Styles.l1Normal(color: AppColors.t1),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }

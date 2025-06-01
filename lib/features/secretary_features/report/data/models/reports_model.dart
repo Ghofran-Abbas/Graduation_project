@@ -20,7 +20,7 @@ class ReportsModel {
 
 class Reports {
   final int currentPage;
-  final List<Datum>? data;
+  final List<DatumReport>? data;
   final String firstPageUrl;
   final int? from;
   final int lastPage;
@@ -51,7 +51,7 @@ class Reports {
 
   factory Reports.fromJson(Map<String, dynamic> json) => Reports(
     currentPage: json["current_page"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<DatumReport>.from(json["data"].map((x) => DatumReport.fromJson(x))),
     firstPageUrl: json["first_page_url"],
     from: json["from"],
     lastPage: json["last_page"],
@@ -82,7 +82,7 @@ class Reports {
   };
 }
 
-class Datum {
+class DatumReport {
   final int id;
   final String name;
   final String description;
@@ -92,7 +92,7 @@ class Datum {
   final DateTime updatedAt;
   final Secretary secretary;
 
-  Datum({
+  DatumReport({
     required this.id,
     required this.name,
     required this.description,
@@ -103,7 +103,7 @@ class Datum {
     required this.secretary,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DatumReport.fromJson(Map<String, dynamic> json) => DatumReport(
     id: json["id"],
     name: json["name"],
     description: json["description"],

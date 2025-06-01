@@ -23,10 +23,12 @@ import '../../../../../../core/widgets/custom_error_widget.dart';
 import '../../../../../../core/widgets/custom_number_pagination.dart';
 import '../../../../../../core/widgets/custom_snack_bar.dart';
 import '../../../../../../core/widgets/custom_text_form_field.dart';
+import '../../../../../../core/widgets/secretary/custom_empty_widget.dart';
 import '../../../../../../core/widgets/secretary/custom_label_text_form_field.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/list_view_information_field.dart';
 import '../../../../../../core/widgets/text_icon_button.dart';
+import '../../../data/models/reports_model.dart';
 
 class ReportsViewBody extends StatefulWidget {
   const ReportsViewBody({super.key});
@@ -89,22 +91,11 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
         fileName: name!,
         file: selectedFile!,
       );
-      Navigator.pop(contextS);
+      //Navigator.pop(contextS);
     } else {
-      Navigator.pop(contextS);
+      //Navigator.pop(contextS);
       CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('Error, Please enter all the fields.'),);
     }
-  }
-
-  void update(int id, BuildContext contextS) {
-    context.read<UpdateReportCubit>().fetchUpdateReport(
-      id: id,
-      name: titleController.text,
-      description: descriptionController.text,
-      fileName: name,
-      file: selectedFile,
-    );
-    Navigator.pop(contextS);
   }
 
   @override
@@ -115,6 +106,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
           CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('CreateReportFailure'),);
         } else if (state is CreateReportSuccess) {
           CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('CreateReportSuccess'),);
+          ReportsCubit.get(context).fetchReports(page: 1);
         }
       },
       builder: (context, state) {
@@ -124,6 +116,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
               CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateReportFailure'),);
             } else if (state is UpdateReportSuccess) {
               CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateReportSuccess'),);
+              ReportsCubit.get(context).fetchReports(page: 1);
             }
           },
           builder: (context, state) {
@@ -271,9 +264,11 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                                                             .transparent,
                                                         onPressed: () {
                                                           register(dialogContext);
-                                                          titleController.clear();
-                                                          descriptionController.clear();
-                                                          //Navigator.pop(dialogContext);
+                                                          if(_formKey.currentState!.validate() && selectedFile != null) {
+                                                            titleController.clear();
+                                                            descriptionController.clear();
+                                                            Navigator.pop(dialogContext);
+                                                          }
                                                         },
                                                       ),
                                                       SizedBox(width: 42.w,),
@@ -310,7 +305,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                           },
                         );
                       },
-                      body: state.reports.reports.data != null ? Padding(
+                      body: Padding(
                         padding: EdgeInsets.only(top: 238.0.h,
                             left: 20.0.w,
                             right: 20.0.w,
@@ -319,7 +314,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                           physics: BouncingScrollPhysics(),
                           child: Column(
                             children: [
-                              ListView.builder(
+                              state.reports.reports.data!.isNotEmpty ? ListView.builder(
                                 itemBuilder: (BuildContext context, int index) {
                                   return Align(child: InformationFieldItem(
                                     color: index % 2 != 0 ? AppColors.darkHighlightPurple : AppColors.white,
@@ -331,6 +326,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                                     showFifthDetailsText: true,
                                     isReportStyle: true,
                                     showIcons: true,
+                                    hideSecondIcon: true,
                                     onTap: () {
                                       context.go('${GoRouterPath.reports}${GoRouterPath.detailsReport}/${state.reports.reports.data![index].id}');
                                     },
@@ -338,169 +334,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext dialogContext) {
-                                          return StatefulBuilder(
-                                              builder: (BuildContext context,
-                                                  void Function(void Function()) setStateDialog) {
-                                                return Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: Material(
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                      width: 871.w,
-                                                      height: 858.h,
-                                                      margin: EdgeInsets.symmetric(
-                                                          horizontal: 160.w, vertical: 85.h),
-                                                      padding: EdgeInsets.all(22.r),
-                                                      decoration: BoxDecoration(
-                                                        color: AppColors.white,
-                                                        borderRadius: BorderRadius.circular(6.r),
-                                                      ),
-                                                      child: SingleChildScrollView(
-                                                        physics: BouncingScrollPhysics(),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment
-                                                              .start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: EdgeInsets.only(top: 65.h,
-                                                                  left: 60.w,
-                                                                  right: 155.w),
-                                                              child: Text(
-                                                                AppLocalizations
-                                                                    .of(context)
-                                                                    .translate('Edit report'),
-                                                                style: Styles.h3Bold(
-                                                                    color: AppColors.t3),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets.only(
-                                                                  left: 60.w),
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: EdgeInsets.only(
-                                                                              top: 60.h,
-                                                                              bottom: 0.h,
-                                                                              left: 0.w,
-                                                                              right: 127.w),
-                                                                          child: CustomFilePickerField(
-                                                                            hintText: '(.png, .jpg, .pdf, .doc, .docx, .xls, .xlsx ,*)',
-                                                                            fileName: name,
-                                                                            pickFile: () async {
-                                                                              await pickImage();
-                                                                              setStateDialog(() {});
-                                                                            },
-                                                                          ),
-                                                                        ),
-                                                                        CustomLabelTextFormField(
-                                                                          labelText: AppLocalizations
-                                                                              .of(context)
-                                                                              .translate('Title'),
-                                                                          showLabelText: true,
-                                                                          controller: titleController,
-                                                                          topPadding: 42.h,
-                                                                          bottomPadding: 0.h,
-                                                                          leftPadding: 0.w,
-                                                                          rightPadding: 127.w,
-                                                                          validator: (value) =>
-                                                                          value!.isEmpty
-                                                                              ? AppLocalizations.of(
-                                                                              context).translate(
-                                                                              'This field required')
-                                                                              : null,
-                                                                        ),
-                                                                        CustomLabelTextFormField(
-                                                                          labelText: AppLocalizations
-                                                                              .of(context)
-                                                                              .translate(
-                                                                              'Description'),
-                                                                          showLabelText: true,
-                                                                          controller: descriptionController,
-                                                                          boxHeight: 360.h,
-                                                                          maxLines: 11,
-                                                                          topPadding: 35.h,
-                                                                          bottomPadding: 0.h,
-                                                                          leftPadding: 0.w,
-                                                                          rightPadding: 128.w,
-                                                                          validator: (value) =>
-                                                                          value!.isEmpty
-                                                                              ? AppLocalizations.of(
-                                                                              context).translate(
-                                                                              'This field required')
-                                                                              : null,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets.only(top: 60.h,
-                                                                  bottom: 65.h,
-                                                                  left: 47.w,
-                                                                  right: 155.w),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .start,
-                                                                children: [
-                                                                  TextIconButton(
-                                                                    textButton: AppLocalizations.of(
-                                                                        context).translate(
-                                                                        'Edit report'),
-                                                                    bigText: true,
-                                                                    textColor: AppColors.t3,
-                                                                    icon: Icons.add,
-                                                                    iconSize: 40.01.r,
-                                                                    iconColor: AppColors.t2,
-                                                                    iconLast: false,
-                                                                    firstSpaceBetween: 3.w,
-                                                                    buttonHeight: 53.h,
-                                                                    borderWidth: 0.w,
-                                                                    buttonColor: AppColors.white,
-                                                                    borderColor: Colors
-                                                                        .transparent,
-                                                                    onPressed: () {
-                                                                      update(state.reports.reports.data![index].id, dialogContext);
-                                                                      titleController.clear();
-                                                                      descriptionController.clear();
-                                                                      //Navigator.pop(dialogContext);
-                                                                    },
-                                                                  ),
-                                                                  SizedBox(width: 42.w,),
-                                                                  TextIconButton(
-                                                                    textButton: AppLocalizations.of(
-                                                                        context).translate(
-                                                                        '       Cancel       '),
-                                                                    textColor: AppColors.t3,
-                                                                    iconLast: false,
-                                                                    buttonHeight: 53.h,
-                                                                    borderWidth: 0.w,
-                                                                    borderRadius: 4.r,
-                                                                    buttonColor: AppColors.w1,
-                                                                    borderColor: AppColors.w1,
-                                                                    onPressed: () {
-                                                                      titleController.clear();
-                                                                      descriptionController.clear();
-                                                                      Navigator.pop(
-                                                                          dialogContext);
-                                                                    },
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                          );
+                                          return UpdateReportDialog(report: state.reports.reports.data![index], updateCubit: context.read<UpdateReportCubit>());
                                         },
                                       );
                                     },
@@ -634,6 +468,9 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                                 itemCount: state.reports.reports.data!.length,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
+                              ) : CustomEmptyWidget(
+                                firstText: AppLocalizations.of(context).translate('No reports at this time'),
+                                secondText: AppLocalizations.of(context).translate('Reports will appear here after they enroll in your institute.'),
                               ),
                               CustomNumberPagination(
                                 numberPages: state.reports.reports.lastPage,
@@ -645,7 +482,7 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                             ],
                           ),
                         ),
-                      )  : Center(child: CustomErrorWidget(errorMessage: AppLocalizations.of(context).translate('No thing to display'))),
+                      ),
                     ),
                   );
                 } else if(state is ReportsFailure) {
@@ -658,6 +495,249 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
           }
         );
       }
+    );
+  }
+}
+
+class UpdateReportDialog extends StatefulWidget {
+  const UpdateReportDialog({super.key, required this.report, required this.updateCubit});
+
+  final DatumReport report;
+  final UpdateReportCubit updateCubit;
+
+  @override
+  State<UpdateReportDialog> createState() => _UpdateReportDialogState();
+}
+
+class _UpdateReportDialogState extends State<UpdateReportDialog> {
+
+  late final TextEditingController titleController;
+  late final TextEditingController descriptionController;
+  Uint8List? selectedFile;
+  String? name;
+
+  late final String originalTitle;
+  late final String originalDescription;
+  late final String originalBirthDate;
+  late final String originalGender;
+  late final String? originalImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _initControllers();
+  }
+
+  void _initControllers() {
+    originalTitle = widget.report.name;
+    originalDescription = widget.report.description;
+
+    titleController = TextEditingController(text: originalTitle);
+    descriptionController = TextEditingController(text: originalDescription);
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> pickImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx', 'xls', 'xlsx'],
+          withData: true
+      );
+      if (result != null && result.files.single.bytes != null) {
+        setState(() {
+          selectedFile = result.files.single.bytes!;
+          name = result.files.single.name;
+        });
+      } else {
+        CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('No image selected or image data is unavailable.'),);
+      }
+    } catch (e) {
+      CustomSnackBar.showErrorSnackBar(context, msg: '${AppLocalizations.of(context).translate('Failed to pick image:')} $e',);
+    }
+  }
+
+  void update(int id) {
+    widget.updateCubit.fetchUpdateReport(
+      id: id,
+      name: titleController.text,
+      description: descriptionController.text,
+      fileName: name,
+      file: selectedFile,
+    );
+    //Navigator.pop(contextS);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StatefulBuilder(
+        builder: (BuildContext context,
+            void Function(void Function()) setStateDialog) {
+          return Align(
+            alignment: Alignment.topRight,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: 871.w,
+                height: 858.h,
+                margin: EdgeInsets.symmetric(
+                    horizontal: 160.w, vertical: 85.h),
+                padding: EdgeInsets.all(22.r),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 65.h,
+                            left: 60.w,
+                            right: 155.w),
+                        child: Text(
+                          AppLocalizations
+                              .of(context)
+                              .translate('Edit report'),
+                          style: Styles.h3Bold(
+                              color: AppColors.t3),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 60.w),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 60.h,
+                                        bottom: 0.h,
+                                        left: 0.w,
+                                        right: 127.w),
+                                    child: CustomFilePickerField(
+                                      hintText: '(.png, .jpg, .pdf, .doc, .docx, .xls, .xlsx ,*)',
+                                      fileName: name,
+                                      pickFile: () async {
+                                        await pickImage();
+                                        setStateDialog(() {});
+                                      },
+                                    ),
+                                  ),
+                                  CustomLabelTextFormField(
+                                    labelText: AppLocalizations
+                                        .of(context)
+                                        .translate('Title'),
+                                    showLabelText: true,
+                                    controller: titleController,
+                                    topPadding: 42.h,
+                                    bottomPadding: 0.h,
+                                    leftPadding: 0.w,
+                                    rightPadding: 127.w,
+                                    validator: (value) =>
+                                    value!.isEmpty
+                                        ? AppLocalizations.of(
+                                        context).translate(
+                                        'This field required')
+                                        : null,
+                                  ),
+                                  CustomLabelTextFormField(
+                                    labelText: AppLocalizations
+                                        .of(context)
+                                        .translate(
+                                        'Description'),
+                                    showLabelText: true,
+                                    controller: descriptionController,
+                                    boxHeight: 360.h,
+                                    maxLines: 11,
+                                    topPadding: 35.h,
+                                    bottomPadding: 0.h,
+                                    leftPadding: 0.w,
+                                    rightPadding: 128.w,
+                                    validator: (value) =>
+                                    value!.isEmpty
+                                        ? AppLocalizations.of(
+                                        context).translate(
+                                        'This field required')
+                                        : null,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 60.h,
+                            bottom: 65.h,
+                            left: 47.w,
+                            right: 155.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .start,
+                          children: [
+                            TextIconButton(
+                              textButton: AppLocalizations.of(
+                                  context).translate(
+                                  'Edit report'),
+                              bigText: true,
+                              textColor: AppColors.t3,
+                              icon: Icons.add,
+                              iconSize: 40.01.r,
+                              iconColor: AppColors.t2,
+                              iconLast: false,
+                              firstSpaceBetween: 3.w,
+                              buttonHeight: 53.h,
+                              borderWidth: 0.w,
+                              buttonColor: AppColors.white,
+                              borderColor: Colors
+                                  .transparent,
+                              onPressed: () {
+                                update(widget.report.id);
+                                titleController.clear();
+                                descriptionController.clear();
+                                Navigator.pop(context);
+                              },
+                            ),
+                            SizedBox(width: 42.w,),
+                            TextIconButton(
+                              textButton: AppLocalizations.of(
+                                  context).translate(
+                                  '       Cancel       '),
+                              textColor: AppColors.t3,
+                              iconLast: false,
+                              buttonHeight: 53.h,
+                              borderWidth: 0.w,
+                              borderRadius: 4.r,
+                              buttonColor: AppColors.w1,
+                              borderColor: AppColors.w1,
+                              onPressed: () {
+                                titleController.clear();
+                                descriptionController.clear();
+                                Navigator.pop(
+                                    context);
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
     );
   }
 }

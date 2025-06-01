@@ -12,9 +12,12 @@ class CoursesCubit extends Cubit<CoursesState>{
 
   CoursesCubit(this.courseRepo) : super(CoursesInitial());
 
-  Future<void> fetchCourses({required int page}) async {
+  Future<void> fetchCourses({required int departmentId, required int page}) async {
     emit(CoursesLoading());
-    var result = await courseRepo.fetchCourses(page: page);
+    var result = await courseRepo.fetchCourses(
+      departmentId: departmentId,
+      page: page,
+    );
 
     result.fold((failure) {
       log(failure.errorMessage);

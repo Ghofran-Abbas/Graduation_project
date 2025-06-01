@@ -89,7 +89,7 @@ import '../custom_image_network.dart';
 
 class InformationFieldItem extends StatelessWidget {
   const InformationFieldItem({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor, required this.onTapFirstIcon, required this.onTapSecondIcon, this.fifthText, this.fifthTextColor, this.showFifthDetailsText, this.showJustTowDetailsText, this.showFirstBox, this.hideFirstIcon, this.showSecondBox, this.hideSecondIcon, this.onTapFirstBox, this.onTapSecondBox, this.isReportStyle,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.showDetailsText, this.secondText, this.secondTextColor, this.showSecondDetailsText, this.thirdDetailsText, this.thirdDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.fourthDetailsText, this.fourthDetailsTextColor, required this.onTapFirstIcon, required this.onTapSecondIcon, this.fifthText, this.fifthTextColor, this.showFifthDetailsText, this.showJustTowDetailsText, this.showFirstBox, this.hideFirstIcon, this.showSecondBox, this.hideSecondIcon, this.onTapFirstBox, this.onTapSecondBox, this.isReportStyle, this.hideFirstBox,
   });
 
   final double? width;
@@ -126,6 +126,7 @@ class InformationFieldItem extends StatelessWidget {
   final Function? onTapFirstBox;
   final Function? onTapSecondBox;
   final bool? showFirstBox;
+  final bool? hideFirstBox;
   final bool? showSecondBox;
   final bool? isReportStyle;
 
@@ -206,7 +207,7 @@ class InformationFieldItem extends StatelessWidget {
         ) : Row(
           children: [
             Expanded(
-              flex: showFirstBox ?? false ? showFifthDetailsText ?? false ? 2 : showSecondBox ?? false ? 2 : 1 : 1,
+              flex: showFirstBox ?? false ? (showFifthDetailsText ?? false ? 2 : (showSecondBox ?? false ? 2 : 1)) : (hideFirstBox ?? false ? 2 : 1),
               child: Row(
                 children: [
                   showFirstBox ?? false ? buildCheckOption(

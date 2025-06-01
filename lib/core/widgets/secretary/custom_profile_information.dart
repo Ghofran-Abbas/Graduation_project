@@ -9,10 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/widgets/custom_image_network.dart';
 import '../../../../../../core/widgets/secretary/custom_information_field.dart';
 import '../../localization/app_localizations.dart';
+import '../../utils/assets.dart';
 import 'custom_icon_box_information.dart';
 
 class CustomProfileInformation extends StatelessWidget {
-  const CustomProfileInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, required this.name, this.detailsText, this.showDetailsText, required this.firstBoxText, required this.firstBoxIcon, required this.secondBoxText, required this.secondBoxIcon, this.aboutText, this.showAboutText, this.firstFieldInfoTitle, required this.firstFieldInfoText, this.secondFieldInfoTitle, required this.secondFieldInfoText, this.thirdFieldInfoTitle, this.thirdFieldInfoText, this.showThirdFieldInfo, this.showThirdFieldInfoIcon, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, this.showOverloadingAvatar, required this.avatarCount, required this.onTap});
+  const CustomProfileInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, required this.name, this.detailsText, this.showDetailsText, required this.firstBoxText, required this.firstBoxIcon, required this.secondBoxText, required this.secondBoxIcon, this.aboutText, this.showAboutText, this.firstFieldInfoTitle, required this.firstFieldInfoText, this.secondFieldInfoTitle, required this.secondFieldInfoText, this.thirdFieldInfoTitle, this.thirdFieldInfoText, this.showThirdFieldInfo, this.showThirdFieldInfoIcon, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, this.showOverloadingAvatar, required this.avatarCount, required this.onTap, this.showGifts, this.textGifts, required this.onTapGifts});
 
   final String? image;
   final double? imageWidth;
@@ -44,6 +45,9 @@ class CustomProfileInformation extends StatelessWidget {
   final String tailText;
   final int avatarCount;
   final bool? showOverloadingAvatar;
+  final bool? showGifts;
+  final String? textGifts;
+  final Function onTapGifts;
   final Function onTap;
 
   @override
@@ -96,48 +100,76 @@ class CustomProfileInformation extends StatelessWidget {
             ],
           ),
           SizedBox(width: 186.w,),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              showAboutText ?? false ? SizedBox(
-                width: 380.w,
-                child: CustomAbout(
-                  labelText: AppLocalizations.of(context).translate('About'),
-                  bodyText: aboutText ?? '',
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                showGifts ?? false ? GestureDetector(
+                  onTap: (){onTapGifts();},
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 75.w,
+                        width: 60.w,
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(0),
+                            image: const DecorationImage(
+                              image: AssetImage(Assets.rewards),
+                            )
+                        ),
+                      ),
+                      SizedBox(width: 10.w,),
+                      Text(
+                        textGifts ?? AppLocalizations.of(context).translate('Click to see Kristin’s awards'),
+                        style: Styles.l1Bold(),
+                      ),
+                    ],
+                  ),
+                ) : SizedBox(width: 0.w, height: 0.w,),
+                showAboutText ?? false ? SizedBox(
+                  width: 380.w,
+                  child: CustomAbout(
+                    labelText: AppLocalizations.of(context).translate('About'),
+                    bodyText: aboutText ?? '',
+                  ),
+                ) : SizedBox(width: 0.w, height: 0.w,),
+                //showAboutText ?? false ? SizedBox(height: 75.h) : SizedBox(width: 0.w, height: 0.w,),
+                SizedBox(height: (showAboutText ?? false) || (showGifts ?? false)  ? 75.h : 405.h),
+                SizedBox(
+                  width: 335.w.clamp(250, 355),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CustomInformationField(title: firstFieldInfoTitle ?? AppLocalizations.of(context).translate('Birth date'), textBody: firstFieldInfoText),
+                      SizedBox(width: 73.w,),
+                      CustomInformationField(title: secondFieldInfoTitle ?? AppLocalizations.of(context).translate('Gender'), textBody: secondFieldInfoText),
+                      SizedBox(width: 73.w,),
+                      showThirdFieldInfo ?? false ? CustomInformationField(title: thirdFieldInfoTitle ?? AppLocalizations.of(context).translate('Points'), textBody: thirdFieldInfoText ?? '') : SizedBox(width: 0.w, height: 0.w,),
+                      showThirdFieldInfoIcon ?? false ? SizedBox(width: 15.w,) : SizedBox(width: 0.w, height: 0.w,),
+                      showThirdFieldInfoIcon ?? false ? CustomIconButton(
+                        icon: Icons.edit,
+                        onTap: (){onTap();},
+                      ) : SizedBox(width: 0.w, height: 0.w,),
+                    ],
+                  ),
                 ),
-              ) : SizedBox(width: 0.w, height: 0.w,),
-              //showAboutText ?? false ? SizedBox(height: 75.h) : SizedBox(width: 0.w, height: 0.w,),
-              SizedBox(height: showAboutText ?? false ? 75.h : 405.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CustomInformationField(title: firstFieldInfoTitle ?? AppLocalizations.of(context).translate('Birth date'), textBody: firstFieldInfoText),
-                  SizedBox(width: 73.w,),
-                  CustomInformationField(title: secondFieldInfoTitle ?? AppLocalizations.of(context).translate('Gender'), textBody: secondFieldInfoText),
-                  SizedBox(width: 73.w,),
-                  showThirdFieldInfo ?? false ? CustomInformationField(title: thirdFieldInfoTitle ?? AppLocalizations.of(context).translate('Points'), textBody: thirdFieldInfoText ?? '') : SizedBox(width: 0.w, height: 0.w,),
-                  showThirdFieldInfoIcon ?? false ? SizedBox(width: 15.w,) : SizedBox(width: 0.w, height: 0.w,),
-                  showThirdFieldInfoIcon ?? false ? CustomIconButton(
-                    icon: Icons.edit,
-                    onTap: (){onTap();},
-                  ) : SizedBox(width: 0.w, height: 0.w,),
-                ],
-              ),
-              SizedBox(height: 52.h,),
-              CustomOverloadingAvatar(
-                labelText: labelText,
-                firstImage: firstImage,
-                secondImage: secondImage,
-                thirdImage: thirdImage,
-                fourthImage: fourthImage,
-                fifthImage: fifthImage,
-                tailText: tailText,
-                avatarCount: avatarCount,
-                onTap: (){},
-              ),
-            ],
+                SizedBox(height: 52.h,),
+                showOverloadingAvatar ?? false ? CustomOverloadingAvatar(
+                  labelText: labelText,
+                  firstImage: firstImage,
+                  secondImage: secondImage,
+                  thirdImage: thirdImage,
+                  fourthImage: fourthImage,
+                  fifthImage: fifthImage,
+                  tailText: tailText,
+                  avatarCount: avatarCount,
+                  onTap: (){},
+                ) : SizedBox(width: 0.w, height: 0.w,),
+              ],
+            ),
           ),
         ],
       ),
@@ -146,7 +178,7 @@ class CustomProfileInformation extends StatelessWidget {
 }
 
 class CustomDetailsInformation extends StatelessWidget {
-  const CustomDetailsInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, this.name, this.detailsText, this.showFileTapText, this.aboutText, this.showAboutText, required this.onTap, this.showDetailsText, this.isAnnouncement, this.startDate, this.endDate});
+  const CustomDetailsInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, this.name, this.detailsText, this.showFileTapText, this.aboutText, this.showAboutText, required this.onTap, this.showDetailsText, this.isAnnouncement, this.startDate, this.endDate, this.hideSecondDate});
 
   final String? image;
   final double? imageWidth;
@@ -162,6 +194,7 @@ class CustomDetailsInformation extends StatelessWidget {
   final bool? isAnnouncement;
   final String? startDate;
   final String? endDate;
+  final bool? hideSecondDate;
 
   @override
   Widget build(BuildContext context) {
@@ -192,21 +225,21 @@ class CustomDetailsInformation extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          Icons.rocket_launch_outlined,
+                          hideSecondDate ?? false ? Icons.calendar_today_outlined : Icons.rocket_launch_outlined,
                           color: AppColors.darkLightPurple,
                           size: 45.r,
                         ),
                         SizedBox(width: 15.w,),
                         Text(
                           startDate ?? '',
-                          style: Styles.h3Bold(color: AppColors.t0),
+                          style: Styles.h3Bold(color: hideSecondDate ?? false ? AppColors.t3 : AppColors.t0),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                    SizedBox(height: 30.h),
-                    Row(
+                    hideSecondDate ?? false ? SizedBox(height: 30.h) : SizedBox(width: 0.w, height: 0.h,),
+                    hideSecondDate ?? false ? SizedBox(width: 0.w, height: 0.h,) : Row(
                       children: [
                         Icon(
                           Icons.rocket_launch_outlined,

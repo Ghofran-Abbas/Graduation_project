@@ -20,7 +20,7 @@ class CoursesModel {
 
 class Courses {
   final int currentPage;
-  final List<Datum>? data;
+  final List<CourseDatum>? data;
   final String firstPageUrl;
   final int? from;
   final int lastPage;
@@ -51,7 +51,7 @@ class Courses {
 
   factory Courses.fromJson(Map<String, dynamic> json) => Courses(
     currentPage: json["current_page"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<CourseDatum>.from(json["data"].map((x) => CourseDatum.fromJson(x))),
     firstPageUrl: json["first_page_url"],
     from: json["from"],
     lastPage: json["last_page"],
@@ -82,7 +82,7 @@ class Courses {
   };
 }
 
-class Datum {
+class CourseDatum {
   final int id;
   final String name;
   final String description;
@@ -92,7 +92,7 @@ class Datum {
   final DateTime updatedAt;
   final Department department;
 
-  Datum({
+  CourseDatum({
     required this.id,
     required this.name,
     required this.description,
@@ -103,7 +103,7 @@ class Datum {
     required this.department,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory CourseDatum.fromJson(Map<String, dynamic> json) => CourseDatum(
     id: json["id"],
     name: json["name"],
     description: json["description"],

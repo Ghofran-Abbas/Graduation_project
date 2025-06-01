@@ -21,6 +21,8 @@ import '../../../../../../core/widgets/secretary/grid_view_files.dart';
 import '../../../../../../core/widgets/text_icon_button.dart';
 import '../../../../course/presentation/manager/create_section_cubit/create_section_cubit.dart';
 import '../../../../course/presentation/manager/create_section_cubit/create_section_state.dart';
+import '../../../../course/presentation/manager/students_section_cubit/students_section_cubit.dart';
+import '../../../../course/presentation/manager/students_section_cubit/students_section_state.dart';
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 import '../../../../course/presentation/views/widgets/course_details_view_body.dart';
@@ -192,7 +194,7 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                         );
                       },
                       onTapDate: (){
-                        context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationCalendar}');
+                        context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationCalendar}/1');
                       },
                       onTapFirstIcon: (){},
                       onTapSecondIcon: (){},
@@ -201,41 +203,92 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        CustomOverloadingAvatar(
-                          labelText: '${AppLocalizations.of(context).translate('Look at')} 17 ${AppLocalizations.of(context).translate('students in this class')}',
-                          tailText: AppLocalizations.of(context).translate('See more'),
-                          firstImage: '',
-                          secondImage: '',
-                          thirdImage: '',
-                          fourthImage: '',
-                          fifthImage: '',
-                          avatarCount: 5,
-                          onTap: (){
-                            context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationStudents}/1');
-                            //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${state.section.id}');
-                          },
+                        BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                            builder: (contextSS, stateSS) {
+                              if(stateSS is StudentsSectionSuccess) {
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
+                                      secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
+                                      thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
+                                      fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
+                                      fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
+                                      avatarCount: stateSS.students.students.data![0].students!.length,
+                                      onTap: () {context.go('${GoRouterPath.inPreparationDetails}/${stateSS.students.students.data![0].id}${GoRouterPath.inPreparationStudents}/${stateSS.students.students.data![0].id}');
+                                      //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
+                                  ],
+                                );
+                              } else if(stateSS is StudentsSectionFailure) {
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: '',
+                                      secondImage: '',
+                                      thirdImage: '',
+                                      fourthImage: '',
+                                      fifthImage: '',
+                                      avatarCount: 5,
+                                      onTap: () {context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationTrainers}/1');
+                                      //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                  ],
+                                );
+                              } else {
+                                return CustomCircularProgressIndicator();
+                              }
+                            }
                         ),
-                        SizedBox(width: calculateWidthBetweenAvatars(avatarCount: 5),),
                         BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
                             builder: (contextTS, stateTS) {
                               if(stateTS is TrainersSectionSuccess) {
-                                return CustomOverloadingAvatar(
-                                  labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                  tailText: AppLocalizations.of(context).translate('See more'),
-                                  firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
-                                  secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
-                                  thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
-                                  fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
-                                  fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
-                                  avatarCount: stateTS.trainers.trainers![0].trainers!.length,
-                                  onTap: () {
-                                    context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationTrainers}/1');
-                                    //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
-                                  },
+                                return Expanded(
+                                  child: CustomOverloadingAvatar(
+                                    labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                    tailText: AppLocalizations.of(context).translate('See more'),
+                                    firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                    secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                    thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                    fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                    fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                    avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                    onTap: () {
+                                      context.go('${GoRouterPath.inPreparationDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.inPreparationTrainers}/${stateTS.trainers.trainers![0].id}');
+                                      //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                    },
+                                  ),
                                 );
                               } else if(stateTS is TrainersSectionFailure) {
-                                return CustomErrorWidget(
-                                    errorMessage: stateTS.errorMessage);
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: '',
+                                      secondImage: '',
+                                      thirdImage: '',
+                                      fourthImage: '',
+                                      fifthImage: '',
+                                      avatarCount: 5,
+                                      onTap: () {context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/2${GoRouterPath.sectionStudents}/1');
+                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                  ],
+                                );
                               } else {
                                 return CustomCircularProgressIndicator();
                               }

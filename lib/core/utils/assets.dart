@@ -6,7 +6,8 @@ class Assets{
 ///Images
 
   static const logo = '$imagesPath/alhadara_logo.png';
-  static const login = '$imagesPath/images.jpeg';
-  static const empty = '$imagesPath/empty_departments.png';
+  static const login = '$imagesPath/login.png';
+  static const empty = '$imagesPath/empty_departments_web_safe.png';
+  static const rewards = '$imagesPath/rewards.png';
 
 }

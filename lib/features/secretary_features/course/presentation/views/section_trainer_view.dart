@@ -31,7 +31,7 @@ class SectionTrainerView extends StatelessWidget {
           },
         ),
       ],
-      child: SectionTrainerViewBody(),
+      child: SectionTrainerViewBody(sectionId: sectionId,),
     );
   }
 }

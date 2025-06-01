@@ -9,9 +9,13 @@ import 'package:alhadara_dashboard/features/secretary_features/course/data/model
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/create_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_section_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_section_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_section_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/details_course_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/files_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/reservation_students_section_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/search_course_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/confirmed_students_section_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/update_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/search_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/sections_model.dart';
@@ -22,7 +26,10 @@ import 'package:dio/dio.dart';
 
 import '../../../../../core/utils/api_service.dart';
 import '../../../../../core/utils/shared_preferences_helper.dart';
+import '../models/confirm_reservation_student_model.dart';
 import '../models/create_section_model.dart';
+import '../models/details_section_model.dart';
+import '../models/students_section_model.dart';
 import 'course_repo.dart';
 
 class CourseRepoImpl implements CourseRepo {
@@ -32,10 +39,10 @@ class CourseRepoImpl implements CourseRepo {
   CourseRepoImpl(this.dioApiService);
 
   @override
-  Future<Either<Failure, CoursesModel>> fetchCourses({required int page}) async {
+  Future<Either<Failure, CoursesModel>> fetchCourses({required int departmentId, required int page}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/secretary/courses?page=$page',
+        endPoint: '/secretary/departments/$departmentId/courses?page=$page',
         token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
@@ -182,6 +189,28 @@ class CourseRepoImpl implements CourseRepo {
       searchCourseModel = SearchCourseModel.fromJson(data);
 
       return right(searchCourseModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DetailsSectionModel>> fetchDetailsSection({
+    required int id,
+  }) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/section/ShowByIdCourseSection/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      DetailsSectionModel detailsSectionModel;
+      detailsSectionModel = DetailsSectionModel.fromJson(data);
+
+      return right(detailsSectionModel);
     } catch (e) {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);
@@ -472,20 +501,96 @@ class CourseRepoImpl implements CourseRepo {
     }
   }
 
+  @override
+  Future<Either<Failure, StudentsSectionModel>> fetchStudentsSection({required int id, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/section/getStudentsInSection/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      StudentsSectionModel studentsSectionModel;
+      studentsSectionModel = StudentsSectionModel.fromJson(data);
+
+      return right(studentsSectionModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ConfirmedStudentsSectionModel>> fetchConfirmedStudentsSection({required int id, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/section/getStudentsInSectionConfirmed/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      ConfirmedStudentsSectionModel confirmedStudentsSectionModel;
+      confirmedStudentsSectionModel = ConfirmedStudentsSectionModel.fromJson(data);
+
+      return right(confirmedStudentsSectionModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReservationStudentsSectionModel>> fetchReservationStudentsSection({required int id, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/reservation/showAllReservation/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      ReservationStudentsSectionModel reservationStudentsSectionModel;
+      reservationStudentsSectionModel = ReservationStudentsSectionModel.fromJson(data);
+
+      return right(reservationStudentsSectionModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ConfirmReservationStudentModel>> fetchConfirmReservationStudent({required int reservationId}) async {
+
+    try {
+      var data = await (dioApiService.post(
+        endPoint: '/secretary/reservation/confirmReservation/$reservationId',
+        data: {},
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      ConfirmReservationStudentModel confirmReservationStudentModel;
+      confirmReservationStudentModel = ConfirmReservationStudentModel.fromJson(data);
+
+      return right(confirmReservationStudentModel);
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
 
   @override
   Future<Either<Failure, AddSectionStudentModel>> fetchAddSectionStudent({
     required int sectionId,
     required int studentId,
   }) async {
-
     try {
       var data = await (dioApiService.post(
         endPoint: '/secretary/section/registerStudentToSection',
         data: {
-          "course_section_id": 1,
-          "student_id": 5
-          ,
+          "course_section_id": sectionId,
+          "student_id": studentId,
         },
         token: await SharedPreferencesHelper.getJwtToken(),
       ));
@@ -499,5 +604,45 @@ class CourseRepoImpl implements CourseRepo {
     }
   }
 
+  @override
+  Future<Either<Failure, DeleteSectionStudentModel>> fetchDeleteSectionStudent({required int sectionId, required int studentId,}) async {
 
+    try {
+      var data = await (dioApiService.post(
+        endPoint: '/secretary/section/deleteStudentFromSection',
+        data: {
+          "course_section_id": sectionId,
+          "student_id": studentId,
+        },
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      DeleteSectionStudentModel deleteSectionStudentModel;
+      deleteSectionStudentModel = DeleteSectionStudentModel.fromJson(data);
+
+      return right(deleteSectionStudentModel);
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FilesModel>> fetchFiles({required int sectionId, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/file/showAllFileInSection/$sectionId?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      FilesModel filesModel;
+      filesModel = FilesModel.fromJson(data);
+
+      return right(filesModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

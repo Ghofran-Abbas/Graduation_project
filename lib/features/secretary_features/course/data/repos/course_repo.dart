@@ -7,6 +7,8 @@ import 'package:alhadara_dashboard/features/secretary_features/course/data/model
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/delete_section_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/details_course_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/details_section_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/files_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/search_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/update_course_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/search_trainer_model.dart';
@@ -17,11 +19,16 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
 import '../models/add_section_student_model.dart';
+import '../models/confirm_reservation_student_model.dart';
+import '../models/delete_section_student_model.dart';
 import '../models/delete_section_trainer_model.dart';
+import '../models/confirmed_students_section_model.dart';
+import '../models/reservation_students_section_model.dart';
+import '../models/students_section_model.dart';
 
 abstract class CourseRepo {
 
-  Future<Either<Failure, CoursesModel>> fetchCourses({required int page});
+  Future<Either<Failure, CoursesModel>> fetchCourses({required int departmentId, required int page});
 
   Future<Either<Failure, CreateCourseModel>> fetchCreateCourse({
     required int departmentId,
@@ -88,6 +95,10 @@ abstract class CourseRepo {
     required int id,
   });
 
+  Future<Either<Failure, DetailsSectionModel>> fetchDetailsSection({
+    required int id,
+  });
+
 
   Future<Either<Failure, TrainersSectionModel>> fetchTrainersSection({required int id, required int page});
 
@@ -101,9 +112,23 @@ abstract class CourseRepo {
     required int trainerId,
   });
 
+  Future<Either<Failure, StudentsSectionModel>> fetchStudentsSection({required int id, required int page});
+
+  Future<Either<Failure, ConfirmedStudentsSectionModel>> fetchConfirmedStudentsSection({required int id, required int page});
+
+  Future<Either<Failure, ReservationStudentsSectionModel>> fetchReservationStudentsSection({required int id, required int page});
+
+  Future<Either<Failure, ConfirmReservationStudentModel>> fetchConfirmReservationStudent({required int reservationId,});
 
   Future<Either<Failure, AddSectionStudentModel>> fetchAddSectionStudent({
     required int sectionId,
     required int studentId,
   });
+
+  Future<Either<Failure, DeleteSectionStudentModel>> fetchDeleteSectionStudent({
+    required int sectionId,
+    required int studentId,
+  });
+
+  Future<Either<Failure, FilesModel>> fetchFiles({required int sectionId, required int page});
 }

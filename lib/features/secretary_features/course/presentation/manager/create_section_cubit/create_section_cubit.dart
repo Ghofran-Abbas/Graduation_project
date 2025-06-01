@@ -59,6 +59,10 @@ class CreateSectionCubit extends Cubit<CreateSectionState> {
 class MultiCheckboxCubit extends Cubit<MultiCheckboxState> {
   MultiCheckboxCubit() : super(MultiCheckboxState(selectedItems: []));
 
+  void initializeSelectedItems(List<String> items) {
+    emit(MultiCheckboxState(selectedItems: items));
+  }
+
 
   void toggleItem(String item) {
     final isSelected = state.selectedItems.contains(item);
@@ -79,6 +83,10 @@ class SingleCheckboxCubit extends Cubit<SingleCheckboxState> {
   static SingleCheckboxCubit get(BuildContext context) => BlocProvider.of(context);
 
   String? selectedItem;
+
+  void initializeSelectedItems(String items) {
+    emit(SingleCheckboxUpdated(items));
+  }
 
   void selectItem(String item) {
     selectedItem = item;
