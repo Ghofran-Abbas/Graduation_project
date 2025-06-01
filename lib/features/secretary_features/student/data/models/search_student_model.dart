@@ -20,7 +20,7 @@ class SearchStudentModel {
 
 class Students {
   final int currentPage;
-  final List<DatumSearch>? data;
+  final List<Datum>? data;
   final String firstPageUrl;
   final int? from;
   final int lastPage;
@@ -51,7 +51,7 @@ class Students {
 
   factory Students.fromJson(Map<String, dynamic> json) => Students(
     currentPage: json["current_page"],
-    data: List<DatumSearch>.from(json["data"].map((x) => DatumSearch.fromJson(x))),
+    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
     firstPageUrl: json["first_page_url"],
     from: json["from"],
     lastPage: json["last_page"],
@@ -82,36 +82,45 @@ class Students {
   };
 }
 
-class DatumSearch {
+class Datum {
   final int id;
   final String name;
   final String email;
   final String phone;
   final String photo;
-  final String birthday;
+  final DateTime birthday;
+  final String gender;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int points;
+  final dynamic referrerId;
 
-  DatumSearch({
+  Datum({
     required this.id,
     required this.name,
     required this.email,
     required this.phone,
     required this.photo,
     required this.birthday,
+    required this.gender,
     required this.createdAt,
     required this.updatedAt,
+    required this.points,
+    required this.referrerId,
   });
 
-  factory DatumSearch.fromJson(Map<String, dynamic> json) => DatumSearch(
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
     name: json["name"],
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    points: json["points"],
+    referrerId: json["referrer_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -120,9 +129,12 @@ class DatumSearch {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "points": points,
+    "referrer_id": referrerId,
   };
 }
 

@@ -49,19 +49,28 @@ class StudentRepoImpl extends StudentRepo{
     required String password,
     required String phone,
     required String birthday,
+    required String gender,
+    int? referredId,
     required Uint8List photo,
   }) async {
-    FormData formData = FormData.fromMap({
+    final Map<String, dynamic> dataMap = {
       "name": name,
       "email": email,
       "password": password,
       "phone": phone,
       "birthday": birthday,
+      "gender": gender,
       "photo": MultipartFile.fromBytes(
         photo,
         filename: 'upload.png',
       ),
-    });
+    };
+
+    if (referredId != null) {
+      dataMap['referrer_id'] = referredId;
+    }
+
+    FormData formData = FormData.fromMap(dataMap);
 
     try {
       var data = await (dioApiService.postWithImage(
@@ -103,7 +112,7 @@ class StudentRepoImpl extends StudentRepo{
     }
 
     if (gender != null && gender.trim().isNotEmpty) {
-      dataMap['gender'] = birthday;
+      dataMap['gender'] = gender;
     }
 
     if (photo != null) {

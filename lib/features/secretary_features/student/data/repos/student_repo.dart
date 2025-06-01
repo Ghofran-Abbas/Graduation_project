@@ -20,6 +20,8 @@ abstract class StudentRepo {
     required String password,
     required String phone,
     required String birthday,
+    required String gender,
+    int? referredId,
     required Uint8List photo,
   });
 

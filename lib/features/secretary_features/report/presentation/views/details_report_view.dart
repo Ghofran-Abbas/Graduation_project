@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../manager/details_report_cubit/details_report_cubit.dart';
+import '../manager/get_file_cubit/get_file_cubit.dart';
 import 'widgets/details_report_view_body.dart';
 
 class DetailsReportView extends StatelessWidget {
@@ -20,6 +21,13 @@ class DetailsReportView extends StatelessWidget {
             return DetailsReportCubit(
               getIt.get<ReportRepoImpl>(),
             )..fetchDetailsReport(id: id);
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return GetFileCubit(
+              getIt.get<ReportRepoImpl>(),
+            );
           },
         ),
       ],

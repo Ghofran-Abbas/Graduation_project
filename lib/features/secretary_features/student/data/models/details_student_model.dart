@@ -24,9 +24,12 @@ class Student {
   final String email;
   final String phone;
   final String photo;
-  final String birthday;
+  final DateTime birthday;
+  final String gender;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int points;
+  final dynamic referrerId;
 
   Student({
     required this.id,
@@ -35,8 +38,11 @@ class Student {
     required this.phone,
     required this.photo,
     required this.birthday,
+    required this.gender,
     required this.createdAt,
     required this.updatedAt,
+    required this.points,
+    required this.referrerId,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) => Student(
@@ -45,9 +51,12 @@ class Student {
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    points: json["points"],
+    referrerId: json["referrer_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,8 +65,11 @@ class Student {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "points": points,
+    "referrer_id": referrerId,
   };
 }

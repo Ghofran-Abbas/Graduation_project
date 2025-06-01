@@ -61,11 +61,12 @@ class StudentDetailsViewBody extends StatelessWidget {
                         firstBoxIcon: Icons.phone_in_talk_outlined,
                         secondBoxText: state.showResult.student.email,
                         secondBoxIcon: Icons.mail_outlined,
-                        firstFieldInfoText: state.showResult.student.birthday,
-                        secondFieldInfoText: 'Female',
+                        firstFieldInfoText: state.showResult.student.birthday.toString().replaceRange(10, 23, ''),
+                        secondFieldInfoText: state.showResult.student.gender,
                         labelText: AppLocalizations.of(context).translate('Students from the same class'),
                         tailText: AppLocalizations.of(context).translate('See more'),
                         avatarCount: 1,
+                        onTapGifts: () {},
                         onTap: () {
                           /*showDialog(
                             context: context,
@@ -175,7 +176,9 @@ class StudentDetailsViewBody extends StatelessWidget {
                             SizedBox(height: 10.h,),
                             CustomOverLoadingCard(
                               cardCount: count,
-                              onTapSeeMore: () {},
+                              onTapSeeMore: () {
+                                context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}');
+                              },
                               widget: GridView.builder(
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: crossAxisCount,
@@ -189,7 +192,7 @@ class StudentDetailsViewBody extends StatelessWidget {
                                     secondDetailsText: 'Languages',
                                     showSecondDetailsText: true,
                                     onTap: () {
-                                      /*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/
+                                      context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionStudentView}/1');
                                     },
                                     onTapFirstIcon: (){},
                                     onTapSecondIcon: (){},

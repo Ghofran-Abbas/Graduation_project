@@ -1,6 +1,6 @@
 class CreateStudentModel {
-  late final String message;
-  late final User user;
+  final String message;
+  final User user;
 
   CreateStudentModel({
     required this.message,
@@ -19,14 +19,16 @@ class CreateStudentModel {
 }
 
 class User {
-  late final String name;
-  late final String email;
-  late final String phone;
-  late final String photo;
-  late final String birthday;
-  late final DateTime updatedAt;
-  late final DateTime createdAt;
-  late final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final String photo;
+  final DateTime birthday;
+  final String gender;
+  final int points;
+  final DateTime updatedAt;
+  final DateTime createdAt;
+  final int id;
 
   User({
     required this.name,
@@ -34,6 +36,8 @@ class User {
     required this.phone,
     required this.photo,
     required this.birthday,
+    required this.gender,
+    required this.points,
     required this.updatedAt,
     required this.createdAt,
     required this.id,
@@ -44,7 +48,9 @@ class User {
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
+    points: json["points"],
     updatedAt: DateTime.parse(json["updated_at"]),
     createdAt: DateTime.parse(json["created_at"]),
     id: json["id"],
@@ -55,7 +61,9 @@ class User {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
+    "points": points,
     "updated_at": updatedAt.toIso8601String(),
     "created_at": createdAt.toIso8601String(),
     "id": id,

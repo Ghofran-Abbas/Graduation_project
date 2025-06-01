@@ -26,7 +26,12 @@ class LoginViewBody extends StatelessWidget {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginFailure) {
-          CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('LoginFailure'),);
+          if(state.errorMessage.startsWith('DioException')) {
+            context.go(GoRouterPath.verification);
+            CustomSnackBar.showErrorSnackBar(context, msg: state.errorMessage.replaceRange(0, 12, ''),);
+          } else {
+            CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('LoginFailure'),);
+          }
         } else if(state is LoginSuccess) {
           emailController.clear();
           passwordController.clear();
@@ -61,7 +66,7 @@ class LoginViewBody extends StatelessWidget {
                       height: 400.h,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(Assets.logo),
+                          image: AssetImage(Assets.login),
                         ),
                       ),
                     ),
@@ -91,7 +96,7 @@ class LoginViewBody extends StatelessWidget {
                           Align(
                             alignment: AlignmentDirectional.centerEnd,
                             child: GestureDetector(
-                              onTap: (){context.go(GoRouterPath.verification);},
+                              onTap: (){context.go(GoRouterPath.passwordReset);},
                               child: Padding(
                                 padding: EdgeInsets.only(right: 127.w),
                                 child: Text(

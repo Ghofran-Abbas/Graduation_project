@@ -66,6 +66,7 @@ class TrainerDetailsViewBody extends StatelessWidget {
                         labelText: AppLocalizations.of(context).translate('Trainers teach the same subject'),
                         tailText: AppLocalizations.of(context).translate('See more'),
                         avatarCount: 1,
+                        onTapGifts: () {},
                         onTap: () {},
                       ),
                       Padding(
@@ -81,7 +82,9 @@ class TrainerDetailsViewBody extends StatelessWidget {
                             SizedBox(height: 10.h,),
                             CustomOverLoadingCard(
                               cardCount: count,
-                              onTapSeeMore: () {},
+                              onTapSeeMore: () {
+                                context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}');
+                              },
                               widget: GridView.builder(
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: crossAxisCount,
@@ -95,7 +98,7 @@ class TrainerDetailsViewBody extends StatelessWidget {
                                     secondDetailsText: 'Languages',
                                     showSecondDetailsText: true,
                                     onTap: () {
-                                      /*context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}');*/
+                                      context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}${GoRouterPath.archiveSectionTrainerView}/1');
                                     },
                                     onTapFirstIcon: (){},
                                     onTapSecondIcon: (){},

@@ -12,17 +12,9 @@ class VerificationCubit extends Cubit<VerificationState>{
 
   final VerificationRepo verificationRepo;
 
-  Future<void> fetchVerification({
-    required String token,
-    required String password,
-    required String password_confirmation,
-  }) async {
+  Future<void> fetchVerification({required String token,}) async {
     emit(VerificationLoading());
-    var result = await verificationRepo.fetchVerification(
-      token: token,
-      password: password,
-      password_confirmation: password_confirmation,
-    );
+    var result = await verificationRepo.fetchVerification(token: token,);
 
     result.fold((failure) {
       log(failure.errorMessage);

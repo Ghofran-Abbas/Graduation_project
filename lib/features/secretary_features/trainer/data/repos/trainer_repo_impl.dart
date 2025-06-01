@@ -109,7 +109,7 @@ class TrainerRepoImpl extends TrainerRepo{
     }
 
     if (gender != null && gender.trim().isNotEmpty) {
-      dataMap['gender'] = birthday;
+      dataMap['gender'] = gender;
     }
 
     if (photo != null) {

@@ -33,7 +33,7 @@ abstract class SelectSectionState extends Equatable{
 
 class SelectSectionInitial extends SelectSectionState{}
 class SelectSectionSuccess extends SelectSectionState {
-  final Section section;
+  final DatumSection section;
   final DateTime timestamp;
 
   SelectSectionSuccess(this.section) : timestamp = DateTime.now();

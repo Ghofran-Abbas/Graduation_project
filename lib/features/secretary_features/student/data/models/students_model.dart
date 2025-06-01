@@ -1,6 +1,6 @@
 class StudentsModel {
-  late final String message;
-  late final Students students;
+  final String message;
+  final Students students;
 
   StudentsModel({
     required this.message,
@@ -19,19 +19,19 @@ class StudentsModel {
 }
 
 class Students {
-  late final int currentPage;
-  late final List<Datum>? data;
-  late final String firstPageUrl;
-  late final int? from;
-  late final int lastPage;
-  late final String lastPageUrl;
-  late final List<Link> links;
-  late final String? nextPageUrl;
-  late final String path;
-  late final int perPage;
-  late final String? prevPageUrl;
-  late final int? to;
-  late final int total;
+  final int currentPage;
+  final List<DatumStudent>? data;
+  final String firstPageUrl;
+  final int? from;
+  final int lastPage;
+  final String lastPageUrl;
+  final List<Link> links;
+  final String? nextPageUrl;
+  final String path;
+  final int perPage;
+  final String? prevPageUrl;
+  final int? to;
+  final int total;
 
   Students({
     required this.currentPage,
@@ -51,7 +51,7 @@ class Students {
 
   factory Students.fromJson(Map<String, dynamic> json) => Students(
     currentPage: json["current_page"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<DatumStudent>.from(json["data"].map((x) => DatumStudent.fromJson(x))),
     firstPageUrl: json["first_page_url"],
     from: json["from"],
     lastPage: json["last_page"],
@@ -82,36 +82,45 @@ class Students {
   };
 }
 
-class Datum {
-  late final int id;
-  late final String name;
-  late final String email;
-  late final String? phone;
-  late final String? photo;
-  late final String birthday;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+class DatumStudent {
+  final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final String photo;
+  final DateTime birthday;
+  final String gender;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int points;
+  final dynamic referrerId;
 
-  Datum({
+  DatumStudent({
     required this.id,
     required this.name,
     required this.email,
     required this.phone,
     required this.photo,
     required this.birthday,
+    required this.gender,
     required this.createdAt,
     required this.updatedAt,
+    required this.points,
+    required this.referrerId,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DatumStudent.fromJson(Map<String, dynamic> json) => DatumStudent(
     id: json["id"],
     name: json["name"],
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    points: json["points"],
+    referrerId: json["referrer_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -120,16 +129,19 @@ class Datum {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "points": points,
+    "referrer_id": referrerId,
   };
 }
 
 class Link {
-  late final String? url;
-  late final String label;
-  late final bool active;
+  final String? url;
+  final String label;
+  final bool active;
 
   Link({
     required this.url,

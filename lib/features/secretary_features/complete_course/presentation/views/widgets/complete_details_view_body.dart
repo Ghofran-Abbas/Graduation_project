@@ -10,18 +10,28 @@ import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/utils/styles.dart';
 import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../core/widgets/custom_error_widget.dart';
+import '../../../../../../core/widgets/custom_number_pagination.dart';
+import '../../../../../../core/widgets/custom_snack_bar.dart';
 import '../../../../../../core/widgets/secretary/custom_course_information.dart';
 import '../../../../../../core/widgets/secretary/custom_over_loading_card.dart';
 import '../../../../../../core/widgets/secretary/custom_overloading_avatar.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 import '../../../../../../core/widgets/secretary/grid_view_files.dart';
+import '../../../../course/presentation/manager/files_cubit/files_cubit.dart';
+import '../../../../course/presentation/manager/files_cubit/files_state.dart';
+import '../../../../course/presentation/manager/students_section_cubit/students_section_cubit.dart';
+import '../../../../course/presentation/manager/students_section_cubit/students_section_state.dart';
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 import '../../../../course/presentation/views/widgets/course_details_view_body.dart';
+import '../../../../report/presentation/manager/get_file_cubit/get_file_cubit.dart';
+import '../../../../report/presentation/manager/get_file_cubit/get_file_state.dart';
 
 class CompleteDetailsViewBody extends StatelessWidget {
-  const CompleteDetailsViewBody({super.key});
+  const CompleteDetailsViewBody({super.key, required this.sectionId});
+
+  final int sectionId;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +80,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                           'deserunt reprehenderit elit laborum. ',
                       onTap: (){},
                       onTapDate: (){
-                        context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeCalendar}');
+                        context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeCalendar}/1');
                       },
                       onTapFirstIcon: (){},
                       onTapSecondIcon: (){},
@@ -79,41 +89,92 @@ class CompleteDetailsViewBody extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        CustomOverloadingAvatar(
-                          labelText: '${AppLocalizations.of(context).translate('Look at')} 17 ${AppLocalizations.of(context).translate('students in this class')}',
-                          tailText: AppLocalizations.of(context).translate('See more'),
-                          firstImage: '',
-                          secondImage: '',
-                          thirdImage: '',
-                          fourthImage: '',
-                          fifthImage: '',
-                          avatarCount: 5,
-                          onTap: (){
-                            context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
-                            //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${state.section.id}');
-                          },
+                        BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                            builder: (contextSS, stateSS) {
+                              if(stateSS is StudentsSectionSuccess) {
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
+                                      secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
+                                      thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
+                                      fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
+                                      fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
+                                      avatarCount: stateSS.students.students.data![0].students!.length,
+                                      onTap: () {context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
+                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
+                                  ],
+                                );
+                              } else if(stateSS is StudentsSectionFailure) {
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: '',
+                                      secondImage: '',
+                                      thirdImage: '',
+                                      fourthImage: '',
+                                      fifthImage: '',
+                                      avatarCount: 5,
+                                      onTap: () {context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
+                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                  ],
+                                );
+                              } else {
+                                return CustomCircularProgressIndicator();
+                              }
+                            }
                         ),
-                        SizedBox(width: calculateWidthBetweenAvatars(avatarCount: 5)/*270.w*/,),
                         BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
                             builder: (contextTS, stateTS) {
                               if(stateTS is TrainersSectionSuccess) {
-                                return CustomOverloadingAvatar(
-                                  labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                  tailText: AppLocalizations.of(context).translate('See more'),
-                                  firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
-                                  secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
-                                  thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
-                                  fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
-                                  fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
-                                  avatarCount: stateTS.trainers.trainers![0].trainers!.length,
-                                  onTap: () {
-                                    context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/2');
-                                    //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
-                                  },
+                                return Expanded(
+                                  child: CustomOverloadingAvatar(
+                                    labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                    tailText: AppLocalizations.of(context).translate('See more'),
+                                    firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                    secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                    thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                    fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                    fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                    avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                    onTap: () {
+                                      context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/1');
+                                      //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                    },
+                                  ),
                                 );
                               } else if(stateTS is TrainersSectionFailure) {
-                                return CustomErrorWidget(
-                                    errorMessage: stateTS.errorMessage);
+                                return Row(
+                                  children: [
+                                    CustomOverloadingAvatar(
+                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                      firstImage: '',
+                                      secondImage: '',
+                                      thirdImage: '',
+                                      fourthImage: '',
+                                      fifthImage: '',
+                                      avatarCount: 5,
+                                      onTap: () {context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/1');
+                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                  ],
+                                );
                               } else {
                                 return CustomCircularProgressIndicator();
                               }
@@ -147,23 +208,61 @@ class CompleteDetailsViewBody extends StatelessWidget {
                               ),
                             ),
                             SizedBox(
-                              height: 470.23.h,
+                              height: 570.23.h,
                               child: TabBarView(
                                 children: [
-                                  Column(
-                                    children: [
-                                      GridViewFiles(
-                                        fileName: 'hgjhv',
-                                        cardCount: 5,
-                                      ),
-                                      NumberPaginator(
-                                        numberPages: 1,
-                                        onPageChange: (int index) {
-                                        },
-                                      ),
-                                    ],
+                                  BlocBuilder<FilesCubit, FilesState>(
+                                      builder: (contextF, stateF) {
+                                        return BlocConsumer<GetFileCubit, GetFileState>(
+                                            listener: (context, state) {
+                                              if (state is GetFileLoading) {
+                                                CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileLoading'),color: AppColors.darkLightPurple, textColor: AppColors.black);
+                                              } else if (state is GetFileSuccess) {
+                                                CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileSuccess'),);
+                                              }
+                                            },
+                                            builder: (contextGF, stateGF) {
+                                              if(stateF is FilesSuccess) {
+                                                return Column(
+                                                  children: [
+                                                    GridView.builder(
+                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
+                                                      itemBuilder: (BuildContext context, int index) {
+                                                        return Align(
+                                                          child: FileItem(
+                                                            fileName: stateF.files.files.data![index].fileName,
+                                                            color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
+                                                            onTap: () {
+                                                              GetFileCubit.get(context).fetchFile(filePath: stateF.files.files.data![index].filePath);
+                                                            },
+                                                          ),
+                                                        );
+                                                      },
+                                                      itemCount: stateF.files.files.data!.length,
+                                                      shrinkWrap: true,
+                                                      physics: NeverScrollableScrollPhysics(),
+                                                    ),
+                                                    CustomNumberPagination(
+                                                      numberPages: stateF.files.files.lastPage,
+                                                      initialPage: stateF.files.files.currentPage,
+                                                      onPageChange: (int index) {
+                                                        FilesCubit.get(context).fetchFiles(sectionId: sectionId, page: index+1);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              } else if(stateF is FilesFailure) {
+                                                return CustomErrorWidget(
+                                                    errorMessage: stateF.errorMessage);
+                                              } else {
+                                                return CustomCircularProgressIndicator();
+                                              }
+                                            }
+                                        );
+                                      }
                                   ),
-                                  CustomOverLoadingCard(
+                                  Container(),
+                                  /*CustomOverLoadingCard(
                                     cardCount: count,
                                     onTapSeeMore: () {
                                       context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.announcementsC}/1');
@@ -200,7 +299,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                     ),
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ),

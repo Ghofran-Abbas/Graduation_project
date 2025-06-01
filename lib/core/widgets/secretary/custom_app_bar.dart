@@ -53,7 +53,8 @@ class CustomAppBar extends StatelessWidget {
               showProfileAvatar ?? true ? BlocBuilder<UserCubit, UserState>(
                 builder: (context, state) {
                   if (state is UserLoaded) {
-                    return CustomImageNetwork(
+                    if (state.user.photo != null) {
+                      return CustomImageNetwork(
                       imageWidth: 44.w,
                       imageHeight: 44.w,
                       borderRadius: 50.67.r,
@@ -62,6 +63,18 @@ class CustomAppBar extends StatelessWidget {
                         context.go(GoRouterPath.profile);
                       },
                     );
+                    } else {
+                      return GestureDetector(
+                      child: CustomImageAsset(
+                        imageWidth: 44.w,
+                        imageHeight: 44.w,
+                        borderRadius: 50.67.r,
+                      ),
+                      onTap: () {
+                        context.go(GoRouterPath.profile);
+                      },
+                    );
+                    }
                   } else {
                     return CustomCircularProgressIndicator(); // يمكن عرض صورة افتراضية أثناء التحميل
                   }

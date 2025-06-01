@@ -6,76 +6,9 @@ import '../../utils/styles.dart';
 import '../custom_icon_button.dart';
 import '../custom_image_network.dart';
 
-/*class GridViewCards extends StatelessWidget {
-  const GridViewCards({super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, required this.cardCount});
-
-  final double? width;
-  final double? height;
-  final Color? color;
-  final String? image;
-  final double? imageWidth;
-  final double? imageHeight;
-  final double? imageBorderRadius;
-  final double? heightProfileText;
-  final String text;
-  final Color? textColor;
-  final bool? showDetailsText;
-  final String? detailsText;
-  final Color? detailsTextColor;
-  final bool? showSecondDetailsText;
-  final String? secondDetailsText;
-  final Color? secondDetailsTextColor;
-  final bool? showIcons;
-  final double? heightTextIcon;
-  final IconData? leftIcon;
-  final IconData? rightIcon;
-  final Function onTap;
-  final int cardCount;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    int crossAxisCount = ((screenWidth - 210) / 250).floor();
-    crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
-
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 10.w, mainAxisExtent: 354.66.h),
-      itemBuilder: (BuildContext context, int index) {
-        return Align(child: CustomCard(
-          width: width,
-          height: height,
-          color: color,
-          image: image,
-          imageWidth: imageWidth,
-          imageHeight: imageHeight,
-          imageBorderRadius: imageBorderRadius,
-          heightProfileText: heightProfileText,
-          text: text,
-          textColor: textColor,
-          showDetailsText: showDetailsText,
-          detailsText: detailsText,
-          detailsTextColor: detailsTextColor,
-          showSecondDetailsText: showSecondDetailsText,
-          secondDetailsText: secondDetailsText,
-          secondDetailsTextColor: secondDetailsTextColor,
-          showIcons: showIcons,
-          heightTextIcon: heightProfileText,
-          leftIcon: leftIcon,
-          rightIcon: rightIcon,
-          onTap: (){onTap();},
-        ));
-      },
-      itemCount: cardCount,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-    );
-  }
-}*/
-
 class CustomCard extends StatelessWidget {
   const CustomCard({
-    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.showRating, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.showCheckEndCourse, required this.onTapFirstIcon, required this.onTapSecondIcon,
+    super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.heightProfileText, required this.text, this.textColor, this.showDetailsText, this.detailsText, this.detailsTextColor, this.showSecondDetailsText, this.secondDetailsText, this.secondDetailsTextColor, this.showIcons, this.heightTextIcon, this.leftIcon, this.rightIcon, required this.onTap, this.showRating, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.showCheckEndCourse, required this.onTapFirstIcon, required this.onTapSecondIcon, this.dateText, this.showDate,
   });
 
   final double? width;
@@ -106,6 +39,8 @@ class CustomCard extends StatelessWidget {
   final String? ratingText;
   final Color? ratingTextColor;
   final bool? showCheckEndCourse;
+  final String? dateText;
+  final bool? showDate;
   final Function onTapFirstIcon;
   final Function onTapSecondIcon;
 
@@ -195,6 +130,15 @@ class CustomCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ) : SizedBox(width: 0, height: 0,),
+              SizedBox(height: showDate ?? false ? 20.08.h : 0.0,),
+              showDate ?? false ? Expanded(
+                child: Text(
+                  dateText ?? '',
+                  style: Styles.b2Normal(color: textColor ?? AppColors.t1),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ) : SizedBox(width: 0, height: 0,),
               //Action icons
               SizedBox(height: showDetailsText ?? false ? 15.08.h : 20.0.h,),

@@ -29,6 +29,8 @@ class CreateStudentCubit extends Cubit<CreateStudentState> {
     required String password,
     required Uint8List photo,
     required String birthday,
+    required String gender,
+    int? referredId,
   }) async {
     emit(CreateStudentLoading());
     var result = await studentRepo.fetchCreateStudent(
@@ -38,6 +40,8 @@ class CreateStudentCubit extends Cubit<CreateStudentState> {
       phone: phone,
       photo: photo,
       birthday: birthday,
+      gender: gender,
+      referredId: referredId,
     );
 
     result.fold((failure) {

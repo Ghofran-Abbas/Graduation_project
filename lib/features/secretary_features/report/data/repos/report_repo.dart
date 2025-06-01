@@ -27,4 +27,8 @@ abstract class ReportRepo {
     String? fileName,
     Uint8List? file,
   });
+
+  Future<Either<Failure, dynamic>> fetchFile({
+    required String filePath,
+  });
 }

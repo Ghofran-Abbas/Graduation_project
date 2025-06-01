@@ -1,6 +1,6 @@
 class UpdateStudentModel {
-  late final String message;
-  late final StudentInfo studentInfo;
+  final String message;
+  final StudentInfo studentInfo;
 
   UpdateStudentModel({
     required this.message,
@@ -19,14 +19,17 @@ class UpdateStudentModel {
 }
 
 class StudentInfo {
-  late final int id;
-  late final String name;
-  late final String email;
-  late final String phone;
-  late final String photo;
-  late final String birthday;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+  final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final String photo;
+  final DateTime birthday;
+  final String gender;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int points;
+  final dynamic referrerId;
 
   StudentInfo({
     required this.id,
@@ -35,8 +38,11 @@ class StudentInfo {
     required this.phone,
     required this.photo,
     required this.birthday,
+    required this.gender,
     required this.createdAt,
     required this.updatedAt,
+    required this.points,
+    required this.referrerId,
   });
 
   factory StudentInfo.fromJson(Map<String, dynamic> json) => StudentInfo(
@@ -45,9 +51,12 @@ class StudentInfo {
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    points: json["points"],
+    referrerId: json["referrer_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,8 +65,11 @@ class StudentInfo {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "points": points,
+    "referrer_id": referrerId,
   };
 }

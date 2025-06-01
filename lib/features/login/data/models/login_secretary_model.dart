@@ -1,6 +1,6 @@
 class LoginSecretaryModel {
-  late final String message;
-  late final AccessToken accessToken;
+  final String message;
+  final AccessToken accessToken;
 
   LoginSecretaryModel({
     required this.message,
@@ -19,9 +19,9 @@ class LoginSecretaryModel {
 }
 
 class AccessToken {
-  late final String accessToken;
-  late final String tokenType;
-  late final User user;
+  final String accessToken;
+  final String tokenType;
+  final User user;
 
   AccessToken({
     required this.accessToken,
@@ -43,15 +43,16 @@ class AccessToken {
 }
 
 class User {
-  late final int id;
-  late final String name;
-  late final String email;
-  late final String phone;
-  late final String photo;
-  late final String birthday;
-  late final String gender;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+  final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final dynamic photo;
+  final DateTime birthday;
+  final String gender;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int points;
 
   User({
     required this.id,
@@ -63,6 +64,7 @@ class User {
     required this.gender,
     required this.createdAt,
     required this.updatedAt,
+    required this.points,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -71,10 +73,11 @@ class User {
     email: json["email"],
     phone: json["phone"],
     photo: json["photo"],
-    birthday: json["birthday"],
+    birthday: DateTime.parse(json["birthday"]),
     gender: json["gender"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    points: json["points"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -83,9 +86,10 @@ class User {
     "email": email,
     "phone": phone,
     "photo": photo,
-    "birthday": birthday,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
     "gender": gender,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "points": points,
   };
 }

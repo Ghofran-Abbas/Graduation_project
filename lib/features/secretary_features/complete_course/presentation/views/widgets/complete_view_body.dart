@@ -43,7 +43,7 @@ class CompleteViewBody extends StatelessWidget {
                       showCheckEndCourse: true,
                       ratingText: '2.8',
                       ratingIcon: Icons.star,
-                      onTap: (){context.go('${GoRouterPath.completeDetails}/2');},
+                      onTap: (){context.go('${GoRouterPath.completeDetails}/1');},
                       onTapFirstIcon: (){},
                       onTapSecondIcon: (){},
                     ));

@@ -1,16 +1,14 @@
-import 'dart:developer';
-
+import 'package:alhadara_dashboard/core/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/app_colors.dart';
 import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/widgets/custom_snack_bar.dart';
-import '../../../../../../core/widgets/secretary/custom_label_text_form_field.dart';
 import '../../../../../../core/widgets/text_icon_button.dart';
 import '../../manager/verification_cubit/verification_cubit.dart';
 import '../../manager/verification_cubit/verification_state.dart';
@@ -20,8 +18,6 @@ class VerificationViewBody extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController verificationController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordConfirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +25,9 @@ class VerificationViewBody extends StatelessWidget {
         listener: (context, state) {
           if(state is VerificationSuccess) {
             context.go(GoRouterPath.login);
-            CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('VerificationSuccess'),);
+            //CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('VerificationSuccess'),);
           } else if(state is VerificationFailure) {
-            CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('VerificationFailure'),);
+            //CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('VerificationFailure'),);
           }
         },
         builder: (context, state) {
@@ -62,38 +58,23 @@ class VerificationViewBody extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 5.h,),
+                  SizedBox(height: 45.h,),
                   Row(
                     children: [
                       Expanded(
                         child: Column(
                           children: [
+                            Text(
+                              'You should verification your account first',
+                              style: Styles.h2Bold(),
+                            ),
+                            SizedBox(height: 120.h,),
                             Pinput(
                               length: 5,
                               defaultPinTheme: defaultPinTheme,
                               onCompleted: (pin) {
                                 verificationController.text = pin;
                               },
-                              validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
-                            ),
-                            CustomLabelTextFormField(
-                              labelText: AppLocalizations.of(context).translate('Password'),
-                              showLabelText: true,
-                              controller: passwordController,
-                              topPadding: 38.h,
-                              bottomPadding: 0.h,
-                              leftPadding: 375.w,
-                              rightPadding: 327.w,
-                              validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
-                            ),
-                            CustomLabelTextFormField(
-                              labelText: AppLocalizations.of(context).translate('Password confirmation'),
-                              showLabelText: true,
-                              controller: passwordConfirmationController,
-                              topPadding: 48.h,
-                              bottomPadding: 0.h,
-                              leftPadding: 375.w,
-                              rightPadding: 327.w,
                               validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
                             ),
                             SizedBox(height: 100.h,),
@@ -109,13 +90,11 @@ class VerificationViewBody extends StatelessWidget {
                               buttonColor: AppColors.purple,
                               borderColor: Colors.transparent,
                               onPressed: (){
-                                if(_formKey.currentState!.validate()) {
+                                //if(_formKey.currentState!.validate()) {
                                   cubit.fetchVerification(
-                                  token: verificationController.text,
-                                  password: passwordController.text,
-                                  password_confirmation: passwordConfirmationController.text,
-                                );
-                                }
+                                    token: verificationController.text,
+                                  );
+                                //}
                               },
                             ),
                           ],
@@ -123,7 +102,7 @@ class VerificationViewBody extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 5.h,),
+                  SizedBox(height: 44.h,),
                   Align(
                     alignment: AlignmentDirectional.bottomEnd,
                     child: Container(
@@ -143,4 +122,3 @@ class VerificationViewBody extends StatelessWidget {
     );
   }
 }
-
