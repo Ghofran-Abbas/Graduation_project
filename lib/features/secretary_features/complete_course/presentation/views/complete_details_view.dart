@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/service_locator.dart';
 import '../../../course/data/repos/course_repo_impl.dart';
 import '../../../course/presentation/manager/files_cubit/files_cubit.dart';
+import '../../../course/presentation/manager/section_rating_cubit/section_rating_cubit.dart';
 import '../../../course/presentation/manager/students_section_cubit/students_section_cubit.dart';
 import '../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../../../report/data/repos/report_repo_impl.dart';
@@ -45,6 +46,13 @@ class CompleteDetailsView extends StatelessWidget {
             return GetFileCubit(
               getIt.get<ReportRepoImpl>(),
             );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return SectionRatingCubit(
+              getIt.get<CourseRepoImpl>(),
+            )..fetchSectionRating(sectionId: sectionId);
           },
         ),
       ],

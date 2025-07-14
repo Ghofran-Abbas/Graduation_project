@@ -9,7 +9,7 @@ import '../custom_image_network.dart';
 import 'custom_about.dart';
 
 class CustomCourseInformation extends StatelessWidget {
-  const CustomCourseInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, this.infoTopPadding, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.ratingPercent, this.ratingPercentText, this.ratingPercentTextColor, this.circleStatusSize, this.circleStatusColor, this.courseStatusText, this.showEditStatusIcon, this.startDateIcon, this.startDateIconColor, this.startDateIconSize, this.startDateText, this.showCourseCalenderIcon, this.courseCalenderIcon, this.courseCalenderIconColor, this.courseCalenderIconSize, this.endDateIcon, this.endDateIconColor, this.endDateIconSize, this.endDateText, this.numberSeatsIcon, this.numberSeatsIconColor, this.numberSeatsIconSize, this.numberSeatsText, this.labelText, required this.bodyText, this.bigText, required this.onTap, required this.onTapDate, this.showSectionInformation, this.showIcons, this.hideFirstIcon, required this.onTapFirstIcon, required this.onTapSecondIcon,});
+  const CustomCourseInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, this.infoTopPadding, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.ratingPercent, this.ratingPercentText, this.ratingPercentTextColor, this.circleStatusSize, this.circleStatusColor, this.courseStatusText, this.showEditStatusIcon, this.startDateIcon, this.startDateIconColor, this.startDateIconSize, this.startDateText, this.showCourseCalenderIcon, this.courseCalenderIcon, this.courseCalenderIconColor, this.courseCalenderIconSize, this.endDateIcon, this.endDateIconColor, this.endDateIconSize, this.endDateText, this.numberSeatsIcon, this.numberSeatsIconColor, this.numberSeatsIconSize, this.numberSeatsText, this.labelText, required this.bodyText, this.bigText, required this.onTap, required this.onTapDate, this.showSectionInformation, this.showIcons, this.hideFirstIcon, required this.onTapFirstIcon, required this.onTapSecondIcon, this.onTapRating,});
 
   final String? image;
   final double? imageWidth;
@@ -50,6 +50,7 @@ class CustomCourseInformation extends StatelessWidget {
   final bool? bigText;
   final Function onTap;
   final Function onTapDate;
+  final Function? onTapRating;
   final bool? showSectionInformation;
   final bool? showIcons;
   final bool? hideFirstIcon;
@@ -100,11 +101,14 @@ class CustomCourseInformation extends StatelessWidget {
                     size: ratingIconSize ?? 52.r,
                   ),
                   SizedBox(width: 8.w,),
-                  Text(
-                    ratingText ?? '',
-                    style: Styles.h3Bold(color: ratingTextColor ?? AppColors.blue),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  GestureDetector(
+                    onTap: () {onTapRating!() ?? () {};},
+                    child: Text(
+                      ratingText ?? '',
+                      style: Styles.h3Bold(color: ratingTextColor ?? AppColors.blue),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   SizedBox(width: 38.w,),
                   CircularPercentIndicator(

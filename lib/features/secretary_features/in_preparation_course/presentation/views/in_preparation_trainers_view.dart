@@ -31,7 +31,7 @@ class InPreparationTrainersView extends StatelessWidget {
           },
         ),
       ],
-      child: InPreparationTrainersViewBody(),
+      child: InPreparationTrainersViewBody(sectionId: sectionId,),
     );
   }
 }

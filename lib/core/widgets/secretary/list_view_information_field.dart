@@ -328,3 +328,140 @@ Widget buildCheckOption({
     ),
   );
 }
+
+class RatingFieldItem extends StatelessWidget {
+  const RatingFieldItem({super.key, this.width, this.height, this.color, this.image, this.imageWidth, this.imageHeight, this.imageBorderRadius, this.widthProfileText, required this.name, this.nameColor, this.onTap, required this.rating, required this.dateText, this.dataColor, required this.commentText, this.commentColor});
+
+  final double? width;
+  final double? height;
+  final Color? color;
+  final String? image;
+  final double? imageWidth;
+  final double? imageHeight;
+  final double? imageBorderRadius;
+  final double? widthProfileText;
+  final String name;
+  final Color? nameColor;
+  final int rating;
+  final String dateText;
+  final Color? dataColor;
+  final String commentText;
+  final Color? commentColor;
+  final Function? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        onTap!() ?? () {};
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 7.0.w, right: 37.0.w),
+        width: width ?? 1151.24.w,
+        height: height ?? 180.h,
+        decoration: BoxDecoration(
+          color: color ?? AppColors.white,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10.h.clamp(10, 100),),
+            Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      image != null ? CustomImageNetwork(
+                        imageWidth: imageWidth ?? 24.w.clamp(24, 30),
+                        imageHeight: imageHeight ?? 24.w.clamp(24, 30),
+                        borderRadius: imageBorderRadius ?? 30.r,
+                        image: image,
+                      ) : CustomImageAsset(
+                        imageWidth: imageWidth ?? 24.w.clamp(24, 30),
+                        imageHeight: imageHeight ?? 24.w.clamp(24, 30),
+                        borderRadius: imageBorderRadius ?? 30.r,
+                      ),
+                      //Information
+                      SizedBox(width: widthProfileText ?? 25.w.clamp(20, 30),),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: Styles.l1Normal(color: nameColor ?? AppColors.t3),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 25.h.clamp(25, 100),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ReadOnlyRatingStars(
+                  rating: rating,
+                ),
+                SizedBox(width: 20.w.clamp(20, 30),),
+                Expanded(
+                  child: Text(
+                    dateText,
+                    style: Styles.l2Medium(color: dataColor ?? AppColors.t3),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h.clamp(10, 60),),
+            Expanded(
+              child: Text(
+                commentText,
+                style: Styles.l1Normal(color: commentColor ?? AppColors.t3),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: 10.h.clamp(10, 60),),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ReadOnlyRatingStars extends StatelessWidget {
+  final int rating;
+  final double size;
+  final Color filledColor;
+  final Color emptyColor;
+
+  const ReadOnlyRatingStars({
+    super.key,
+    required this.rating,
+    this.size = 18,
+    this.filledColor = Colors.amber,
+    this.emptyColor = Colors.grey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final int fullStars = rating.floor();
+    final bool hasHalfStar = (rating - fullStars) >= 0.5;
+    final int totalStars = 5;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(totalStars, (index) {
+        if (index < fullStars) {
+          return Icon(Icons.star, size: size.sp.clamp(15, 30), color: filledColor);
+        } else if (index == fullStars && hasHalfStar) {
+          return Icon(Icons.star_half, size: size.sp.clamp(15, 30), color: filledColor);
+        } else {
+          return Icon(Icons.star_border, size: size.sp.clamp(15, 30), color: emptyColor);
+        }
+      }),
+    );
+  }
+}

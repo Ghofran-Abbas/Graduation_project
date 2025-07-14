@@ -31,8 +31,9 @@ import '../../manager/students_section_cubit/students_section_cubit.dart';
 import '../../manager/students_section_cubit/students_section_state.dart';
 
 class SectionStudentsViewBody extends StatelessWidget {
-  const SectionStudentsViewBody({super.key, required this.sectionId});
+  const SectionStudentsViewBody({super.key, required this.sectionId, required this.departmentId});
 
+  final int departmentId;
   final int sectionId;
 
   @override
@@ -43,6 +44,8 @@ class SectionStudentsViewBody extends StatelessWidget {
           CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('ConfirmReservationStudentFailure'),);
         } else if (state is ConfirmReservationStudentSuccess) {
           CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('ConfirmReservationStudentSuccess'),);
+          ConfirmedStudentsSectionCubit.get(context).fetchConfirmedStudentsSection(id: sectionId, page: 1);
+          ReservationStudentsSectionCubit.get(context).fetchReservationStudentsSection(id: sectionId, page: 1);
         }
       },
       builder: (contextCR, stateCR) {
@@ -74,11 +77,11 @@ class SectionStudentsViewBody extends StatelessWidget {
                             onPressedFirst: () {},
                             onPressedSecond: () {
                               context.go(
-                                  '${GoRouterPath.courses}/1${GoRouterPath
+                                  '${GoRouterPath.courses}/$departmentId${GoRouterPath
                                       .courseDetails}/${stateCS
                                       .confirmedStudents.students.data![0]
                                       .courseId}${GoRouterPath
-                                      .sectionStudents}/${stateCS
+                                      .sectionStudents}/$departmentId/${stateCS
                                       .confirmedStudents.students.data![0]
                                       .id}${GoRouterPath
                                       .searchStudentSection}/${stateCS
@@ -758,8 +761,8 @@ class SectionStudentsViewBody extends StatelessWidget {
                                                                                     .white,
                                                                                 borderColor: Colors.transparent,
                                                                                 onPressed: () {
-                                                                                  log(stateRS.reservationStudents.reservations.data![0].students![index].id.toString());
-                                                                                  ConfirmReservationStudentCubit.get(context).fetchConfirmReservationStudent(reservationId: stateRS.reservationStudents.reservations.data![0].students![index].id);
+                                                                                  log(stateRS.reservationStudents.reservations.data![0].students![index].pivot.id.toString());
+                                                                                  ConfirmReservationStudentCubit.get(context).fetchConfirmReservationStudent(reservationId: stateRS.reservationStudents.reservations.data![0].students![index].pivot.id);
                                                                                   Navigator.pop(dialogContext);
                                                                                 },
                                                                               ),

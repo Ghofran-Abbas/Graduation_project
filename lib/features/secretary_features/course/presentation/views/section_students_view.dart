@@ -11,8 +11,9 @@ import '../manager/students_section_cubit/students_section_cubit.dart';
 import 'widgets/section_students_view_body.dart';
 
 class SectionStudentsView extends StatelessWidget {
-  const SectionStudentsView({super.key, required this.sectionId});
+  const SectionStudentsView({super.key, required this.sectionId, required this.departmentId});
 
+  final int departmentId;
   final int sectionId;
 
   @override
@@ -55,7 +56,7 @@ class SectionStudentsView extends StatelessWidget {
           },
         ),
       ],
-      child: SectionStudentsViewBody(sectionId: sectionId,),
+      child: SectionStudentsViewBody(departmentId: departmentId, sectionId: sectionId,),
     );
   }
 }

@@ -216,5 +216,11 @@
   "End time should be after start time!": "يجب أن يكون وقت الانتهاء بعد وقت البدء!",
   "Please choose start time first!": "يرجى اختيار وقت البدء أولًا!",
 
+  "         Active         ": "         نشطة         ",
+  "        Complete        ": "        مكتملة        ",
+
+  "Sessions number": "Sessions number",
+
+
   "ضع ترجمة المعلم تحت هذا السطر": "******************************************"
 }

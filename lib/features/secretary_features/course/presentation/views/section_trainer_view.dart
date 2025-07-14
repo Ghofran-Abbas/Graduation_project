@@ -8,8 +8,9 @@ import '../manager/trainers_section_cubit/trainers_section_cubit.dart';
 import 'widgets/section_trainer_view_body.dart';
 
 class SectionTrainerView extends StatelessWidget {
-  const SectionTrainerView({super.key, required this.sectionId});
+  const SectionTrainerView({super.key, required this.departmentId, required this.sectionId});
 
+  final int departmentId;
   final int sectionId;
 
   @override
@@ -31,7 +32,7 @@ class SectionTrainerView extends StatelessWidget {
           },
         ),
       ],
-      child: SectionTrainerViewBody(sectionId: sectionId,),
+      child: SectionTrainerViewBody(departmentId: departmentId, sectionId: sectionId,),
     );
   }
 }

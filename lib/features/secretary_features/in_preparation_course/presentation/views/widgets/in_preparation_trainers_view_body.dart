@@ -23,7 +23,9 @@ import '../../../../course/presentation/manager/trainers_section_cubit/trainers_
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 
 class InPreparationTrainersViewBody extends StatelessWidget {
-  const InPreparationTrainersViewBody({super.key});
+  const InPreparationTrainersViewBody({super.key, required this.sectionId});
+
+  final int sectionId;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class InPreparationTrainersViewBody extends StatelessWidget {
             CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionTrainerFailure'),);
           } else if (state is DeleteSectionTrainerSuccess) {
             CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionTrainerSuccess'),);
+            TrainersSectionCubit.get(context).fetchTrainersSection(id: sectionId, page: 1);
           }
         },
         builder: (context, state) {

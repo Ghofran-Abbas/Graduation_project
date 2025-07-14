@@ -64,7 +64,7 @@ class ArchiveSectionTrainerViewBody extends StatelessWidget {
                       ratingPercent: 1,
                       ratingPercentText: '100%',
                       circleStatusColor: AppColors.mintGreen,
-                      courseStatusText: 'Complete',
+                      courseStatusText: 'Finished',
                       startDateText: '2025-09-02',
                       showCourseCalenderIcon: true,
                       endDateText: '2025-12-02',

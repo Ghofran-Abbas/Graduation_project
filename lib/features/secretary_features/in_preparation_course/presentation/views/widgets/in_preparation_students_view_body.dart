@@ -29,7 +29,9 @@ import '../../../../course/presentation/manager/reservation_students_section_cub
 import '../../../../course/presentation/manager/reservation_students_section_cubit/reservation_students_section_state.dart';
 
 class InPreparationStudentsViewBody extends StatelessWidget {
-  const InPreparationStudentsViewBody({super.key});
+  const InPreparationStudentsViewBody({super.key, required this.sectionId});
+
+  final int sectionId;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,8 @@ class InPreparationStudentsViewBody extends StatelessWidget {
             CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('ConfirmReservationStudentFailure'),);
           } else if (state is ConfirmReservationStudentSuccess) {
             CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('ConfirmReservationStudentSuccess'),);
+            ConfirmedStudentsSectionCubit.get(context).fetchConfirmedStudentsSection(id: sectionId, page: 1);
+            ReservationStudentsSectionCubit.get(context).fetchReservationStudentsSection(id: sectionId, page: 1);
           }
         },
         builder: (contextCR, stateCR) {
@@ -48,6 +52,8 @@ class InPreparationStudentsViewBody extends StatelessWidget {
                   CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionStudentFailure'),);
                 } else if (state is DeleteSectionStudentSuccess) {
                   CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionStudentSuccess'),);
+                  ConfirmedStudentsSectionCubit.get(context).fetchConfirmedStudentsSection(id: sectionId, page: 1);
+                  ReservationStudentsSectionCubit.get(context).fetchReservationStudentsSection(id: sectionId, page: 1);
                 }
               },
               builder: (contextDS, stateDS) {
@@ -65,7 +71,7 @@ class InPreparationStudentsViewBody extends StatelessWidget {
                                     showSecondButton: true,
                                     onPressedFirst: () {},
                                     onPressedSecond: () {
-                                      context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/${stateCS.confirmedStudents.students.data![0].courseId}${GoRouterPath.sectionStudents}/${stateCS.confirmedStudents.students.data![0].id}${GoRouterPath.searchStudentSection}/${stateCS.confirmedStudents.students.data![0].id}');
+                                      context.go('${GoRouterPath.inPreparationDetails}/${stateCS.confirmedStudents.students.data![0].id}${GoRouterPath.inPreparationStudents}/${stateCS.confirmedStudents.students.data![0].id}${GoRouterPath.searchStudentIp}/${stateCS.confirmedStudents.students.data![0].id}');
                                       //context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/${state.trainers.trainers![0].courseId}${GoRouterPath.sectionTrainers}/${state.trainers.trainers![0].id}${GoRouterPath.searchTrainerSection}/${state.trainers.trainers![0].id}');
                                     },
                                     body: Padding(
@@ -580,8 +586,8 @@ class InPreparationStudentsViewBody extends StatelessWidget {
                                                                                   borderColor: Colors
                                                                                       .transparent,
                                                                                   onPressed: () {
-                                                                                    log(stateRS.reservationStudents.reservations.data![0].students![index].id.toString());
-                                                                                    ConfirmReservationStudentCubit.get(context).fetchConfirmReservationStudent(reservationId: stateRS.reservationStudents.reservations.data![0].students![index].id);
+                                                                                    log(stateRS.reservationStudents.reservations.data![0].students![index].pivot.id.toString());
+                                                                                    ConfirmReservationStudentCubit.get(context).fetchConfirmReservationStudent(reservationId: stateRS.reservationStudents.reservations.data![0].students![index].pivot.id);
                                                                                     Navigator
                                                                                         .pop(
                                                                                         dialogContext);

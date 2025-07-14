@@ -39,30 +39,28 @@ class CustomAbout extends StatelessWidget {
 
         final isOverflowing = textPainter.didExceedMaxLines;
 
-        return Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                labelText ?? 'About',
-                style: Styles.b2Bold(color: AppColors.t4),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              labelText ?? 'About',
+              style: Styles.b2Bold(color: AppColors.t4),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              bodyText,
+              style: textStyle,
+              maxLines: maxLines ?? _maxLines,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (isOverflowing)
+              TextButton(
+                onPressed: () => _showFullTextDialog(context, width, height, horizontal, vertical),
+                child: const Text("See More"),
               ),
-              const SizedBox(height: 16),
-              Text(
-                bodyText,
-                style: textStyle,
-                maxLines: maxLines ?? _maxLines,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (isOverflowing)
-                TextButton(
-                  onPressed: () => _showFullTextDialog(context, width, height, horizontal, vertical),
-                  child: const Text("See More"),
-                ),
-            ],
-          ),
+          ],
         );
       },
     );

@@ -47,7 +47,7 @@ class InPreparationStudentsView extends StatelessWidget {
           },
         ),
       ],
-      child: InPreparationStudentsViewBody(),
+      child: InPreparationStudentsViewBody(sectionId: sectionId,),
     );
   }
 }

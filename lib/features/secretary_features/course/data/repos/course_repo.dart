@@ -10,7 +10,9 @@ import 'package:alhadara_dashboard/features/secretary_features/course/data/model
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/details_section_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/files_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/search_course_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/course/data/models/trainer_rating_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/update_course_model.dart';
+import 'package:alhadara_dashboard/features/secretary_features/in_preparation_course/data/models/in_preparation_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/search_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/sections_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/trainers_section_model.dart';
@@ -19,11 +21,14 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
 import '../models/add_section_student_model.dart';
+import '../models/all_courses_model.dart';
 import '../models/confirm_reservation_student_model.dart';
 import '../models/delete_section_student_model.dart';
 import '../models/delete_section_trainer_model.dart';
 import '../models/confirmed_students_section_model.dart';
 import '../models/reservation_students_section_model.dart';
+import '../models/section_progress_model.dart';
+import '../models/section_rating_model.dart';
 import '../models/students_section_model.dart';
 
 abstract class CourseRepo {
@@ -58,12 +63,15 @@ abstract class CourseRepo {
 
   Future<Either<Failure, SectionsModel>> fetchSections({
     required int id,
+    required int page,
   });
 
   Future<Either<Failure, CreateSectionModel>> fetchCreateSection({
     required int courseId,
     required String name,
+    required String state,
     required int seatsOfNumber,
+    required int totalSessions,
     required String startDate,
     required String endDate,
     required Map<String, dynamic>? sunday,
@@ -79,6 +87,7 @@ abstract class CourseRepo {
     required int courseId,
     String? name,
     int? seatsOfNumber,
+    int? totalSessions,
     String? startDate,
     String? endDate,
     String? state,
@@ -131,4 +140,14 @@ abstract class CourseRepo {
   });
 
   Future<Either<Failure, FilesModel>> fetchFiles({required int sectionId, required int page});
+
+  Future<Either<Failure, SectionRatingModel>> fetchSectionRating({required int sectionId});
+
+  Future<Either<Failure, TrainerRatingModel>> fetchTrainerRating({required int trainerId, required int sectionId});
+
+  Future<Either<Failure, InPreparationModel>> fetchPendingSection({required int courseId, required int page});
+
+  Future<Either<Failure, AllCoursesModel>> fetchAllCourses({required int page});
+
+  Future<Either<Failure, SectionProgressModel>> fetchSectionProgress({required int sectionId});
 }
