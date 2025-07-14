@@ -66,24 +66,28 @@ class DatumSection {
   final int id;
   final String name;
   final int seatsOfNumber;
+  final int reservedSeats;
   final DateTime startDate;
   final DateTime endDate;
   final String state;
   final int courseId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int totalSessions;
   final List<dynamic> weekDays;
 
   DatumSection({
     required this.id,
     required this.name,
     required this.seatsOfNumber,
+    required this.reservedSeats,
     required this.startDate,
     required this.endDate,
     required this.state,
     required this.courseId,
     required this.createdAt,
     required this.updatedAt,
+    required this.totalSessions,
     required this.weekDays,
   });
 
@@ -91,12 +95,14 @@ class DatumSection {
     id: json["id"],
     name: json["name"],
     seatsOfNumber: json["seatsOfNumber"],
+    reservedSeats: json["reservedSeats"],
     startDate: DateTime.parse(json["startDate"]),
     endDate: DateTime.parse(json["endDate"]),
     state: json["state"],
     courseId: json["courseId"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    totalSessions: json["total_sessions"],
     weekDays: List<dynamic>.from(json["week_days"].map((x) => x)),
   );
 
@@ -104,12 +110,14 @@ class DatumSection {
     "id": id,
     "name": name,
     "seatsOfNumber": seatsOfNumber,
+    "reservedSeats": reservedSeats,
     "startDate": "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
     "endDate": "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
     "state": state,
     "courseId": courseId,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "total_sessions": totalSessions,
     "week_days": List<dynamic>.from(weekDays.map((x) => x)),
   };
 }

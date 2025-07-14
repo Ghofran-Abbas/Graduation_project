@@ -13,7 +13,7 @@ import '../../utils/assets.dart';
 import 'custom_icon_box_information.dart';
 
 class CustomProfileInformation extends StatelessWidget {
-  const CustomProfileInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, required this.name, this.detailsText, this.showDetailsText, required this.firstBoxText, required this.firstBoxIcon, required this.secondBoxText, required this.secondBoxIcon, this.aboutText, this.showAboutText, this.firstFieldInfoTitle, required this.firstFieldInfoText, this.secondFieldInfoTitle, required this.secondFieldInfoText, this.thirdFieldInfoTitle, this.thirdFieldInfoText, this.showThirdFieldInfo, this.showThirdFieldInfoIcon, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, this.showOverloadingAvatar, required this.avatarCount, required this.onTap, this.showGifts, this.textGifts, required this.onTapGifts});
+  const CustomProfileInformation({super.key, this.image, this.imageWidth, this.imageHeight, this.borderRadius, required this.name, this.detailsText, this.showDetailsText, required this.firstBoxText, required this.firstBoxIcon, required this.secondBoxText, required this.secondBoxIcon, this.aboutText, this.showAboutText, this.firstFieldInfoTitle, required this.firstFieldInfoText, this.secondFieldInfoTitle, required this.secondFieldInfoText, this.thirdFieldInfoTitle, this.thirdFieldInfoText, this.showThirdFieldInfo, this.showThirdFieldInfoIcon, required this.labelText, this.firstImage, this.secondImage, this.thirdImage, this.fourthImage, this.fifthImage, required this.tailText, this.showOverloadingAvatar, required this.avatarCount, required this.onTap, this.showGifts, this.textGifts, required this.onTapGifts, this.showRatingText, this.ratingIcon, this.ratingIconColor, this.ratingIconSize, this.ratingText, this.ratingTextColor, this.onTapRating});
 
   final String? image;
   final double? imageWidth;
@@ -22,6 +22,12 @@ class CustomProfileInformation extends StatelessWidget {
   final String name;
   final String? detailsText;
   final bool? showDetailsText;
+  final bool? showRatingText;
+  final IconData? ratingIcon;
+  final Color? ratingIconColor;
+  final double? ratingIconSize;
+  final String? ratingText;
+  final Color? ratingTextColor;
   final String firstBoxText;
   final IconData firstBoxIcon;
   final String secondBoxText;
@@ -48,6 +54,7 @@ class CustomProfileInformation extends StatelessWidget {
   final bool? showGifts;
   final String? textGifts;
   final Function onTapGifts;
+  final Function? onTapRating;
   final Function onTap;
 
   @override
@@ -76,12 +83,38 @@ class CustomProfileInformation extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: showDetailsText ?? false ? 5.h : 0.h,),
-              showDetailsText ?? false ? Text(
-                detailsText ?? '',
-                style: Styles.l1Bold(color: AppColors.t1),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              SizedBox(height: showDetailsText ?? false ? 20.h : 0.h,),
+              showDetailsText ?? false ? Row(
+                children: [
+                  Text(
+                    detailsText ?? '',
+                    style: Styles.l1Bold(color: AppColors.t2),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(width: showRatingText ?? false ? 30.w : 0.w,),
+                  showRatingText ?? false ? GestureDetector(
+                    onTap: () {
+                      onTapRating!() ?? () {};
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          ratingText ?? '',
+                          style: Styles.l1Bold(color: ratingTextColor ?? AppColors.t2),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(width: 8.w,),
+                        Icon(
+                          ratingIcon ?? Icons.star,
+                          color: ratingIconColor ?? AppColors.gold,
+                          size: ratingIconSize ?? 32.r,
+                        ),
+                      ],
+                    ),
+                  ) : SizedBox(width: 0.w, height: 0.h,),
+                ],
               ) : SizedBox(width: 0.w, height: 0.h,),
               SizedBox(height: showDetailsText ?? false ? 45.h : 79.h,),
               Row(

@@ -13,6 +13,8 @@ import '../manager/create_section_cubit/create_section_cubit.dart';
 import '../manager/delete_section_cubit/delete_section_cubit.dart';
 import '../manager/details_course_cubit/details_course_cubit.dart';
 import '../manager/files_cubit/files_cubit.dart';
+import '../manager/section_progress_cubit/section_progress_cubit.dart';
+import '../manager/section_rating_cubit/section_rating_cubit.dart';
 import '../manager/students_section_cubit/students_section_cubit.dart';
 import '../manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../manager/update_section_cubit/update_section_cubit.dart';
@@ -59,7 +61,7 @@ class CourseDetailsView extends StatelessWidget {
           create: (context) {
             return SectionsCubit(
               getIt.get<CourseRepoImpl>(),
-            )..fetchSections(id: courseId);
+            )..fetchSections(id: courseId, page: 1);
           },
         ),
         BlocProvider(
@@ -85,13 +87,6 @@ class CourseDetailsView extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) {
-            return StudentsSectionCubit(
-              getIt.get<CourseRepoImpl>(),
-            );
-          },
-        ),
-        BlocProvider(
-          create: (context) {
             return FilesCubit(
               getIt.get<CourseRepoImpl>(),
             );
@@ -101,6 +96,20 @@ class CourseDetailsView extends StatelessWidget {
           create: (context) {
             return GetFileCubit(
               getIt.get<ReportRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return SectionRatingCubit(
+              getIt.get<CourseRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return SectionProgressCubit(
+              getIt.get<CourseRepoImpl>(),
             );
           },
         ),

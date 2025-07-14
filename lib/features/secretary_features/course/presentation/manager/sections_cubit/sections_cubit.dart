@@ -16,10 +16,12 @@ class SectionsCubit extends Cubit<SectionsState>{
 
   Future<void> fetchSections({
     required int id,
+    required int page,
   }) async {
     emit(SectionsLoading());
     var result = await courseRepo.fetchSections(
       id: id,
+      page: page
     );
 
     result.fold((failure) {

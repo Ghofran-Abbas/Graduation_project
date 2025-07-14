@@ -201,6 +201,7 @@ class Student {
 class Pivot {
   final int courseSectionId;
   final int studentId;
+  final int id;
   final int isConfirmed;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -208,6 +209,7 @@ class Pivot {
   Pivot({
     required this.courseSectionId,
     required this.studentId,
+    required this.id,
     required this.isConfirmed,
     required this.createdAt,
     required this.updatedAt,
@@ -216,6 +218,7 @@ class Pivot {
   factory Pivot.fromJson(Map<String, dynamic> json) => Pivot(
     courseSectionId: json["course_section_id"],
     studentId: json["student_id"],
+    id: json["id"],
     isConfirmed: json["is_confirmed"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -224,6 +227,7 @@ class Pivot {
   Map<String, dynamic> toJson() => {
     "course_section_id": courseSectionId,
     "student_id": studentId,
+    "id": id,
     "is_confirmed": isConfirmed,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),

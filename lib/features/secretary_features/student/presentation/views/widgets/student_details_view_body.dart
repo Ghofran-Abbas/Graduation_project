@@ -1,3 +1,4 @@
+import 'package:alhadara_dashboard/features/secretary_features/student/presentation/manager/archive_section_student_cubit/archive_section_student_state.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/presentation/manager/details_student_cubit/details_student_cubit.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/presentation/manager/details_student_cubit/details_student_state.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,12 @@ import '../../../../../../core/widgets/secretary/custom_profile_information.dart
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 import '../../../../../../core/widgets/text_icon_button.dart';
+import '../../manager/archive_section_student_cubit/archive_section_student_cubit.dart';
 
 class StudentDetailsViewBody extends StatelessWidget {
-  StudentDetailsViewBody({super.key});
+  StudentDetailsViewBody({super.key, required this.studentId});
 
+  final int studentId;
   final TextEditingController pointController = TextEditingController();
 
   @override
@@ -174,34 +177,45 @@ class StudentDetailsViewBody extends StatelessWidget {
                               style: Styles.b2Bold(color: AppColors.t4),
                             ),
                             SizedBox(height: 10.h,),
-                            CustomOverLoadingCard(
-                              cardCount: count,
-                              onTapSeeMore: () {
-                                context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}');
-                              },
-                              widget: GridView.builder(
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    crossAxisSpacing: 10.w,
-                                    mainAxisExtent: 354.66.h),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Align(child: CustomCard(
-                                    text: 'English',
-                                    showDetailsText: true,
-                                    detailsText: 'Section1',
-                                    secondDetailsText: 'Languages',
-                                    showSecondDetailsText: true,
-                                    onTap: () {
-                                      context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionStudentView}/1');
+                            BlocBuilder<ArchiveStudentCubit, ArchiveStudentState>(
+                              builder: (contextAr, stateAr) {
+                                if(stateAr is ArchiveStudentSuccess) {
+                                  return CustomOverLoadingCard(
+                                    cardCount: count,
+                                    onTapSeeMore: () {
+                                      context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}');
                                     },
-                                    onTapFirstIcon: (){},
-                                    onTapSecondIcon: (){},
-                                  ));
-                                },
-                                itemCount: count > 4 ? 4 : count,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                              ),
+                                    widget: GridView.builder(
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossAxisCount,
+                                          crossAxisSpacing: 10.w,
+                                          mainAxisExtent: 354.66.h),
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Align(child: CustomCard(
+                                          image: stateAr.showResult.courses![index].course.photo,
+                                          text: stateAr.showResult.courses![index].course.name,
+                                          showDate: true,
+                                          dateText: stateAr.showResult.courses![index].name,
+                                          //secondDetailsText: 'Languages',
+                                          //showSecondDetailsText: true,
+                                          onTap: () {
+                                            context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionStudentView}/${stateAr.showResult.courses![index].id}/${stateAr.showResult.courses![index].course.id}/$studentId');
+                                          },
+                                          onTapFirstIcon: (){},
+                                          onTapSecondIcon: (){},
+                                        ));
+                                      },
+                                      itemCount: stateAr.showResult.courses!.length > 4 ? 4 : stateAr.showResult.courses!.length,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                    ),
+                                  );
+                                } else if(stateAr is ArchiveStudentFailure) {
+                                  return CustomErrorWidget(errorMessage: stateAr.errorMessage);
+                                } else {
+                                  return CustomCircularProgressIndicator();
+                                }
+                              }
                             ),
                           ],
                         ),

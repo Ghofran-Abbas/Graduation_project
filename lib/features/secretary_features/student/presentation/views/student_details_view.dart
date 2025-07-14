@@ -4,6 +4,7 @@ import 'package:alhadara_dashboard/features/secretary_features/student/presentat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../manager/archive_section_student_cubit/archive_section_student_cubit.dart';
 import 'widgets/student_details_view_body.dart';
 
 class StudentDetailsView extends StatefulWidget {
@@ -17,14 +18,17 @@ class StudentDetailsView extends StatefulWidget {
 
 class _StudentDetailsViewState extends State<StudentDetailsView> {
   late final DetailsStudentCubit _cubit;
+  late final ArchiveStudentCubit _archiveCubit;
   late int _currentId;
 
   @override
   void initState() {
     super.initState();
     _cubit = DetailsStudentCubit(getIt.get<StudentRepoImpl>());
+    _archiveCubit = ArchiveStudentCubit(getIt.get<StudentRepoImpl>());
     _currentId = widget.id;
     _cubit.fetchDetailsStudent(id: _currentId);
+    _archiveCubit.fetchArchiveStudent(id: _currentId, page: 1);
   }
 
   @override
@@ -33,20 +37,30 @@ class _StudentDetailsViewState extends State<StudentDetailsView> {
     if (oldWidget.id != widget.id) {
       _currentId = widget.id;
       _cubit.fetchDetailsStudent(id: _currentId);
+      _archiveCubit.fetchArchiveStudent(id: _currentId, page: 1);
     }
   }
 
   @override
   void dispose() {
     _cubit.close();
+    _archiveCubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _cubit,
-      child: StudentDetailsViewBody(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: _cubit,
+
+        ),
+        BlocProvider.value(
+          value: _archiveCubit,
+        ),
+      ],
+      child: StudentDetailsViewBody(studentId: widget.id,),
     );
   }
 }

@@ -20,6 +20,8 @@ import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 import '../../../../../../core/widgets/secretary/grid_view_files.dart';
 import '../../../../course/presentation/manager/files_cubit/files_cubit.dart';
 import '../../../../course/presentation/manager/files_cubit/files_state.dart';
+import '../../../../course/presentation/manager/section_rating_cubit/section_rating_cubit.dart';
+import '../../../../course/presentation/manager/section_rating_cubit/section_rating_state.dart';
 import '../../../../course/presentation/manager/students_section_cubit/students_section_cubit.dart';
 import '../../../../course/presentation/manager/students_section_cubit/students_section_state.dart';
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
@@ -59,31 +61,38 @@ class CompleteDetailsViewBody extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    CustomCourseInformation(
-                      showSectionInformation: true,
-                      ratingText: '2.8',
-                      ratingPercent: 1,
-                      ratingPercentText: '100%',
-                      circleStatusColor: AppColors.mintGreen,
-                      courseStatusText: 'Complete',
-                      startDateText: '2025-09-02',
-                      showCourseCalenderIcon: true,
-                      endDateText: '2025-12-02',
-                      numberSeatsText: '40 Seats',
-                      bodyText: 'Nulla Lorem mollit cupidatat irure. Laborum\n'
-                          'magna nulla duis ullamco cillum dolor.\n'
-                          'Voluptate exercitation incididunt aliquip\n'
-                          'deserunt reprehenderit elit laborum. Nulla\n'
-                          'Lorem mollit cupidatat irure. Laborum\n'
-                          'magna nulla duis ullamco cillum dolor.\n'
-                          'Voluptate exercitation incididunt aliquip\n'
-                          'deserunt reprehenderit elit laborum. ',
-                      onTap: (){},
-                      onTapDate: (){
-                        context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeCalendar}/1');
-                      },
-                      onTapFirstIcon: (){},
-                      onTapSecondIcon: (){},
+                    BlocBuilder<SectionRatingCubit, SectionRatingState>(
+                        builder: (contextR, stateR) {
+                        return CustomCourseInformation(
+                          showSectionInformation: true,
+                          ratingText: stateR is SectionRatingSuccess ? (stateR.sectionRating.averageRating == null ? '0.0' : stateR.sectionRating.averageRating!.replaceRange(2, 5, '')) : stateR is SectionRatingLoading ? '...' : '!',
+                          ratingPercent: 1,
+                          ratingPercentText: '100%',
+                          circleStatusColor: AppColors.mintGreen,
+                          courseStatusText: 'Finished',
+                          startDateText: '2025-09-02',
+                          showCourseCalenderIcon: true,
+                          endDateText: '2025-12-02',
+                          numberSeatsText: '40 Seats',
+                          bodyText: 'Nulla Lorem mollit cupidatat irure. Laborum\n'
+                              'magna nulla duis ullamco cillum dolor.\n'
+                              'Voluptate exercitation incididunt aliquip\n'
+                              'deserunt reprehenderit elit laborum. Nulla\n'
+                              'Lorem mollit cupidatat irure. Laborum\n'
+                              'magna nulla duis ullamco cillum dolor.\n'
+                              'Voluptate exercitation incididunt aliquip\n'
+                              'deserunt reprehenderit elit laborum. ',
+                          onTap: (){},
+                          onTapDate: (){
+                            context.go('${GoRouterPath.completeDetails}/$sectionId${GoRouterPath.completeCalendar}/1');
+                          },
+                          onTapRating: () {
+                            context.go('${GoRouterPath.completeDetails}/$sectionId${GoRouterPath.completeRating}/$sectionId');
+                          },
+                          onTapFirstIcon: (){},
+                          onTapSecondIcon: (){},
+                        );
+                      }
                     ),
                     SizedBox(height: 22.h),
                     Row(
@@ -150,7 +159,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                     fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
                                     avatarCount: stateTS.trainers.trainers![0].trainers!.length,
                                     onTap: () {
-                                      context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/1');
+                                      context.go('${GoRouterPath.completeDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.completeTrainers}/${stateTS.trainers.trainers![0].id}');
                                       //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
                                     },
                                   ),
@@ -262,44 +271,6 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                       }
                                   ),
                                   Container(),
-                                  /*CustomOverLoadingCard(
-                                    cardCount: count,
-                                    onTapSeeMore: () {
-                                      context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.announcementsC}/1');
-                                      //context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsC}/1');
-                                      //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcementsA}/1');
-                                    },
-                                    widget: GridView
-                                        .builder(
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: crossAxisCount,
-                                          crossAxisSpacing: 10
-                                              .w,
-                                          mainAxisExtent: 354.66
-                                              .h),
-                                      itemBuilder: (
-                                          BuildContext context,
-                                          int index) {
-                                        return Align(
-                                            child: CustomCard(
-                                              text: 'Discount 30%',
-                                              onTap: () {
-                                                context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.announcementsC}/1${GoRouterPath.announcementCDetails}/1');
-                                                //context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsC}/1${GoRouterPath.announcementCDetails}/1');
-                                                //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcements}/1');
-                                              },
-                                              onTapFirstIcon: () {},
-                                              onTapSecondIcon: () {},
-                                            ));
-                                      },
-                                      itemCount: count >
-                                          4
-                                          ? 4
-                                          : count,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                    ),
-                                  ),*/
                                 ],
                               ),
                             ),

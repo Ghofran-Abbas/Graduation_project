@@ -67,7 +67,7 @@ class CompleteTrainersViewBody extends StatelessWidget {
                                 thirdDetailsText: state.trainers.trainers![0].trainers![index].email,
                                 fourthDetailsText: state.trainers.trainers![0].trainers![index].gender,
                                 onTap: () {
-                                  context.go('${GoRouterPath.trainerDetails}/${state.trainers.trainers![0].trainers![index].id}');
+                                  context.go('${GoRouterPath.completeDetails}/${state.trainers.trainers![0].id}${GoRouterPath.completeTrainers}/${state.trainers.trainers![0].id}${GoRouterPath.detailsCompleteTrainer}/${state.trainers.trainers![0].id}/${state.trainers.trainers![0].trainers![index].id}');
                                 },
                                 onTapFirstIcon: () {},
                                 onTapSecondIcon: () {},

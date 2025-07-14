@@ -17,7 +17,9 @@ class CreateSectionCubit extends Cubit<CreateSectionState> {
   Future<void> fetchCreateSection({
     required int courseId,
     required String name,
+    required String state,
     required int seatsOfNumber,
+    required int totalSessions,
     required String startDate,
     required String endDate,
     required Map<String, dynamic>? sunday,
@@ -32,7 +34,9 @@ class CreateSectionCubit extends Cubit<CreateSectionState> {
     var result = await courseRepo.fetchCreateSection(
       courseId: courseId,
       name: name,
+      state: state,
       seatsOfNumber: seatsOfNumber,
+      totalSessions: totalSessions,
       startDate: startDate,
       endDate: endDate,
       sunday: sunday,

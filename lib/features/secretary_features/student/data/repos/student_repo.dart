@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:alhadara_dashboard/features/secretary_features/student/data/models/archive_section_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/create_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/delete_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/student/data/models/details_student_model.dart';
@@ -43,4 +44,6 @@ abstract class StudentRepo {
   });
 
   Future<Either<Failure, SearchStudentModel>> fetchSearchStudent({required String querySearch, required int page});
+
+  Future<Either<Failure, ArchiveSectionStudentModel>> fetchArchiveStudent({required int id, required int page});
 }

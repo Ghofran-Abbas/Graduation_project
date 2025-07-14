@@ -10,9 +10,12 @@ class GoRouterPath {
   static const searchCourse = '/searchCourse';
   static const courseDetails = '/details';
   static const calendar = '/calendar';
+  static const sectionRating = '/sectionRating';
   static const sectionStudents = '/sectionStudents';
   static const searchStudentSection = '/searchStudentSection';
   static const sectionTrainers = '/sectionTrainers';
+  static const detailsSectionTrainer = '/detailsSectionTrainer';
+  static const trainerRating = '/trainerRating';
   static const searchTrainerSection = '/searchTrainerSection';
   static const announcementsA = '/announcementsA';
   static const announcementADetails = '/announcementADetails';
@@ -32,11 +35,14 @@ class GoRouterPath {
   static const inPreparationTrainers = '/inPreparationTrainers';
   static const inPreparationStudents = '/inPreparationStudents';
   static const searchTrainerIp = '/searchTrainerIp';
+  static const searchStudentIp = '/searchStudentIp';
   static const complete = '/complete';
   static const completeDetails = '$complete/completeDetails';
   static const completeCalendar = '/completeCalendar';
+  static const completeRating = '/completeRating';
   static const completeStudents = '/completeStudents';
   static const completeTrainers = '/completeTrainers';
+  static const detailsCompleteTrainer = '/detailsCompleteTrainer';
   static const announcementsC = '/announcementsC';
   static const announcementCDetails = '/announcementCDetails';
   static const reports = '/reports';

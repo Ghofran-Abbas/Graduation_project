@@ -24,8 +24,9 @@ import '../../../../../../core/widgets/text_icon_button.dart';
 import '../../manager/trainers_section_cubit/trainers_section_cubit.dart';
 
 class SectionTrainerViewBody extends StatelessWidget {
-  const SectionTrainerViewBody({super.key, required this.sectionId});
+  const SectionTrainerViewBody({super.key, required this.departmentId, required this.sectionId});
 
+  final int departmentId;
   final int sectionId;
 
   @override
@@ -51,7 +52,7 @@ class SectionTrainerViewBody extends StatelessWidget {
                   showSecondButton: true,
                   onPressedFirst: () {},
                   onPressedSecond: () {
-                    context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/${state.trainers.trainers![0].courseId}${GoRouterPath.sectionTrainers}/${state.trainers.trainers![0].id}${GoRouterPath.searchTrainerSection}/${state.trainers.trainers![0].id}');
+                    context.go('${GoRouterPath.courses}/$departmentId${GoRouterPath.courseDetails}/${state.trainers.trainers![0].courseId}${GoRouterPath.sectionTrainers}/$departmentId/${state.trainers.trainers![0].id}${GoRouterPath.searchTrainerSection}/${state.trainers.trainers![0].id}');
                   },
                   body: Padding(
                     padding: EdgeInsets.only(top: 238.0.h,
@@ -94,7 +95,7 @@ class SectionTrainerViewBody extends StatelessWidget {
                                   showIcons: true,
                                   hideFirstIcon: true,
                                   onTap: () {
-                                    context.go('${GoRouterPath.trainerDetails}/${state.trainers.trainers![0].trainers![index].id}');
+                                    context.go('${GoRouterPath.courses}/$departmentId${GoRouterPath.courseDetails}/${state.trainers.trainers![0].courseId}${GoRouterPath.sectionTrainers}/$departmentId/${state.trainers.trainers![0].id}${GoRouterPath.detailsSectionTrainer}/$departmentId/${state.trainers.trainers![0].courseId}/${state.trainers.trainers![0].id}/${state.trainers.trainers![0].trainers![index].id}');
                                   },
                                   onTapFirstIcon: () {},
                                   onTapSecondIcon: () {
