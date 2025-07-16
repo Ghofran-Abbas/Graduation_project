@@ -222,7 +222,7 @@ class CourseDetailsViewBody extends StatelessWidget {
                                             BlocProvider.of<SelectSectionCubit>(
                                                 context).selectSection(
                                                 section: selectedSection);
-                                            log('✅ Selected ID: ${selectedSection
+                                            log('Selected ID: ${selectedSection
                                                 .id}');
                                           }
                                         },

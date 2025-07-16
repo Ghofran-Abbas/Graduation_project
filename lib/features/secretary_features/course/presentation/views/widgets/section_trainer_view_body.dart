@@ -78,7 +78,7 @@ class SectionTrainerViewBody extends StatelessWidget {
                           state.trainers.trainers![0].trainers!.isNotEmpty ? CustomListInformationFields(
                             secondField: AppLocalizations.of(context).translate('Subject'),
                             showSecondField: true,
-                            showSecondBox: true,
+                            //showSecondBox: true,
                             widget: ListView.builder(
                               itemBuilder: (BuildContext context, int index) {
                                 return Align(child: InformationFieldItem(
@@ -90,8 +90,8 @@ class SectionTrainerViewBody extends StatelessWidget {
                                   showSecondDetailsText: true,
                                   thirdDetailsText: state.trainers.trainers![0].trainers![index].email,
                                   fourthDetailsText: state.trainers.trainers![0].trainers![index].gender,
-                                  showFirstBox: true,
-                                  showSecondBox: true,
+                                  //showFirstBox: true,
+                                  //showSecondBox: true,
                                   showIcons: true,
                                   hideFirstIcon: true,
                                   onTap: () {

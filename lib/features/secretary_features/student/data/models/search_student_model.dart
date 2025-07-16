@@ -86,7 +86,7 @@ class Datum {
   final int id;
   final String name;
   final String email;
-  final String phone;
+  final String? phone;
   final String photo;
   final DateTime birthday;
   final String gender;

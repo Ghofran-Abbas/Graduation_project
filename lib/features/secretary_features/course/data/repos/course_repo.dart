@@ -20,6 +20,7 @@ import 'package:alhadara_dashboard/features/secretary_features/course/data/model
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
+import '../../../complete_course/data/models/complete_model.dart';
 import '../models/add_section_student_model.dart';
 import '../models/all_courses_model.dart';
 import '../models/confirm_reservation_student_model.dart';
@@ -150,4 +151,6 @@ abstract class CourseRepo {
   Future<Either<Failure, AllCoursesModel>> fetchAllCourses({required int page});
 
   Future<Either<Failure, SectionProgressModel>> fetchSectionProgress({required int sectionId});
+
+  Future<Either<Failure, CompleteModel>> fetchFinishedSection({required int courseId, required int page});
 }

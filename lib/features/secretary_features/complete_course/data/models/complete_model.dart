@@ -1,26 +1,6 @@
-class ArchiveSectionStudentModel {
-  final String message;
-  final Courses courses;
-
-  ArchiveSectionStudentModel({
-    required this.message,
-    required this.courses,
-  });
-
-  factory ArchiveSectionStudentModel.fromJson(Map<String, dynamic> json) => ArchiveSectionStudentModel(
-    message: json["message"],
-    courses: Courses.fromJson(json["courses"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "message": message,
-    "courses": courses.toJson(),
-  };
-}
-
-class Courses {
+class CompleteModel {
   final int currentPage;
-  final List<Datum>? data;
+  final List<DatumComplete>? data;
   final String firstPageUrl;
   final int? from;
   final int lastPage;
@@ -33,7 +13,7 @@ class Courses {
   final int? to;
   final int total;
 
-  Courses({
+  CompleteModel({
     required this.currentPage,
     required this.data,
     required this.firstPageUrl,
@@ -49,9 +29,9 @@ class Courses {
     required this.total,
   });
 
-  factory Courses.fromJson(Map<String, dynamic> json) => Courses(
+  factory CompleteModel.fromJson(Map<String, dynamic> json) => CompleteModel(
     currentPage: json["current_page"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<DatumComplete>.from(json["data"].map((x) => DatumComplete.fromJson(x))),
     firstPageUrl: json["first_page_url"],
     from: json["from"],
     lastPage: json["last_page"],
@@ -82,7 +62,7 @@ class Courses {
   };
 }
 
-class Datum {
+class DatumComplete {
   final int id;
   final String name;
   final int seatsOfNumber;
@@ -93,11 +73,10 @@ class Datum {
   final int courseId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final int totalSessions;
-  final Course course;
-  final List<WeekDay> weekDays;
+  final List<dynamic> weekDays;
+  final List<Trainer>? trainers;
 
-  Datum({
+  DatumComplete({
     required this.id,
     required this.name,
     required this.seatsOfNumber,
@@ -108,12 +87,11 @@ class Datum {
     required this.courseId,
     required this.createdAt,
     required this.updatedAt,
-    required this.totalSessions,
-    required this.course,
     required this.weekDays,
+    required this.trainers,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DatumComplete.fromJson(Map<String, dynamic> json) => DatumComplete(
     id: json["id"],
     name: json["name"],
     seatsOfNumber: json["seatsOfNumber"],
@@ -124,9 +102,8 @@ class Datum {
     courseId: json["courseId"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    totalSessions: json["total_sessions"],
-    course: Course.fromJson(json["course"]),
-    weekDays: List<WeekDay>.from(json["week_days"].map((x) => WeekDay.fromJson(x))),
+    weekDays: List<dynamic>.from(json["week_days"].map((x) => x)),
+    trainers: List<Trainer>.from(json["trainers"].map((x) => Trainer.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -140,47 +117,94 @@ class Datum {
     "courseId": courseId,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
-    "total_sessions": totalSessions,
-    "course": course.toJson(),
-    "week_days": List<dynamic>.from(weekDays.map((x) => x.toJson())),
+    "week_days": List<dynamic>.from(weekDays.map((x) => x)),
+    "trainers": List<dynamic>.from(trainers!.map((x) => x)),
   };
 }
 
-class Course {
+class Trainer {
   final int id;
   final String name;
-  final String description;
+  final String email;
+  final String phone;
   final String? photo;
-  final int departmentId;
+  final DateTime birthday;
+  final String gender;
+  final String specialization;
+  final String experience;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final TrainerPivot pivot;
 
-  Course({
+  Trainer({
     required this.id,
     required this.name,
-    required this.description,
+    required this.email,
+    required this.phone,
     required this.photo,
-    required this.departmentId,
+    required this.birthday,
+    required this.gender,
+    required this.specialization,
+    required this.experience,
     required this.createdAt,
     required this.updatedAt,
+    required this.pivot,
   });
 
-  factory Course.fromJson(Map<String, dynamic> json) => Course(
+  factory Trainer.fromJson(Map<String, dynamic> json) => Trainer(
     id: json["id"],
     name: json["name"],
-    description: json["description"],
+    email: json["email"],
+    phone: json["phone"],
     photo: json["photo"],
-    departmentId: json["department_id"],
+    birthday: DateTime.parse(json["birthday"]),
+    gender: json["gender"],
+    specialization: json["specialization"],
+    experience: json["experience"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    pivot: TrainerPivot.fromJson(json["pivot"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "description": description,
+    "email": email,
+    "phone": phone,
     "photo": photo,
-    "department_id": departmentId,
+    "birthday": "${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}",
+    "gender": gender,
+    "specialization": specialization,
+    "experience": experience,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "pivot": pivot.toJson(),
+  };
+}
+
+class TrainerPivot {
+  final int courseSectionId;
+  final int trainerId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  TrainerPivot({
+    required this.courseSectionId,
+    required this.trainerId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory TrainerPivot.fromJson(Map<String, dynamic> json) => TrainerPivot(
+    courseSectionId: json["course_section_id"],
+    trainerId: json["trainer_id"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "course_section_id": courseSectionId,
+    "trainer_id": trainerId,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
@@ -191,7 +215,7 @@ class WeekDay {
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final Pivot pivot;
+  final WeekDayPivot pivot;
 
   WeekDay({
     required this.id,
@@ -206,7 +230,7 @@ class WeekDay {
     name: json["name"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    pivot: Pivot.fromJson(json["pivot"]),
+    pivot: WeekDayPivot.fromJson(json["pivot"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -218,7 +242,7 @@ class WeekDay {
   };
 }
 
-class Pivot {
+class WeekDayPivot {
   final int courseSectionId;
   final int weekDayId;
   final String startTime;
@@ -226,7 +250,7 @@ class Pivot {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Pivot({
+  WeekDayPivot({
     required this.courseSectionId,
     required this.weekDayId,
     required this.startTime,
@@ -235,7 +259,7 @@ class Pivot {
     required this.updatedAt,
   });
 
-  factory Pivot.fromJson(Map<String, dynamic> json) => Pivot(
+  factory WeekDayPivot.fromJson(Map<String, dynamic> json) => WeekDayPivot(
     courseSectionId: json["course_section_id"],
     weekDayId: json["week_day_id"],
     startTime: json["start_time"],

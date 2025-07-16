@@ -192,20 +192,20 @@ class StudentDetailsViewBody extends StatelessWidget {
                                           mainAxisExtent: 354.66.h),
                                       itemBuilder: (BuildContext context, int index) {
                                         return Align(child: CustomCard(
-                                          image: stateAr.showResult.courses![index].course.photo,
-                                          text: stateAr.showResult.courses![index].course.name,
+                                          image: stateAr.showResult.courses.data![index].course.photo,
+                                          text: stateAr.showResult.courses.data![index].course.name,
                                           showDate: true,
-                                          dateText: stateAr.showResult.courses![index].name,
+                                          dateText: stateAr.showResult.courses.data![index].name,
                                           //secondDetailsText: 'Languages',
                                           //showSecondDetailsText: true,
                                           onTap: () {
-                                            context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionStudentView}/${stateAr.showResult.courses![index].id}/${stateAr.showResult.courses![index].course.id}/$studentId');
+                                            context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionStudentView}/${stateAr.showResult.courses.data![index].id}/${stateAr.showResult.courses.data![index].course.id}/$studentId');
                                           },
                                           onTapFirstIcon: (){},
                                           onTapSecondIcon: (){},
                                         ));
                                       },
-                                      itemCount: stateAr.showResult.courses!.length > 4 ? 4 : stateAr.showResult.courses!.length,
+                                      itemCount: stateAr.showResult.courses.data!.length > 4 ? 4 : stateAr.showResult.courses.data!.length,
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                     ),

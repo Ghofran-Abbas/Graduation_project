@@ -1,13 +1,13 @@
-class ArchiveSectionStudentModel {
+class ArchiveSectionTrainerModel {
   final String message;
   final Courses courses;
 
-  ArchiveSectionStudentModel({
+  ArchiveSectionTrainerModel({
     required this.message,
     required this.courses,
   });
 
-  factory ArchiveSectionStudentModel.fromJson(Map<String, dynamic> json) => ArchiveSectionStudentModel(
+  factory ArchiveSectionTrainerModel.fromJson(Map<String, dynamic> json) => ArchiveSectionTrainerModel(
     message: json["message"],
     courses: Courses.fromJson(json["courses"]),
   );
