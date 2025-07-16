@@ -7,6 +7,7 @@ import 'package:alhadara_dashboard/features/secretary_features/trainer/data/mode
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failure.dart';
+import '../models/archive_section_trainer_model.dart';
 import '../models/search_trainer_model.dart';
 import '../models/trainers_model.dart';
 
@@ -43,4 +44,6 @@ abstract class TrainerRepo {
   });
 
   Future<Either<Failure, SearchTrainerModel>> fetchSearchTrainer({required String querySearch, required int page});
+
+  Future<Either<Failure, ArchiveSectionTrainerModel>> fetchArchiveTrainer({required int id, required int page});
 }

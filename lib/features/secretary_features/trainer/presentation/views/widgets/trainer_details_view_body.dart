@@ -16,9 +16,13 @@ import '../../../../../../core/widgets/secretary/custom_profile_cards.dart';
 import '../../../../../../core/widgets/secretary/custom_profile_information.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
+import '../../manager/archive_trainer_cubit/archive_trainer_cubit.dart';
+import '../../manager/archive_trainer_cubit/archive_trainer_state.dart';
 
 class TrainerDetailsViewBody extends StatelessWidget {
-  const TrainerDetailsViewBody({super.key});
+  const TrainerDetailsViewBody({super.key, required this.trainerId});
+
+  final int trainerId;
 
   @override
   Widget build(BuildContext context) {
@@ -80,34 +84,45 @@ class TrainerDetailsViewBody extends StatelessWidget {
                               style: Styles.b2Bold(color: AppColors.t4),
                             ),
                             SizedBox(height: 10.h,),
-                            CustomOverLoadingCard(
-                              cardCount: count,
-                              onTapSeeMore: () {
-                                context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}');
-                              },
-                              widget: GridView.builder(
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    crossAxisSpacing: 10.w,
-                                    mainAxisExtent: 354.66.h),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Align(child: CustomCard(
-                                    text: 'English',
-                                    showDetailsText: true,
-                                    detailsText: 'Section1',
-                                    secondDetailsText: 'Languages',
-                                    showSecondDetailsText: true,
-                                    onTap: () {
-                                      context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}${GoRouterPath.archiveSectionTrainerView}/1');
+                            BlocBuilder<ArchiveTrainerCubit, ArchiveTrainerState>(
+                              builder: (contextAr, stateAr) {
+                                if(stateAr is ArchiveTrainerSuccess) {
+                                  return CustomOverLoadingCard(
+                                    cardCount: count,
+                                    onTapSeeMore: () {
+                                      context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}');
                                     },
-                                    onTapFirstIcon: (){},
-                                    onTapSecondIcon: (){},
-                                  ));
-                                },
-                                itemCount: count > 4 ? 4 : count,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                              ),
+                                    widget: GridView.builder(
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: crossAxisCount,
+                                          crossAxisSpacing: 10.w,
+                                          mainAxisExtent: 354.66.h),
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return Align(child: CustomCard(
+                                          image: stateAr.showResult.courses.data![index].course.photo,
+                                          text: stateAr.showResult.courses.data![index].course.name,
+                                          showDate: true,
+                                          dateText: stateAr.showResult.courses.data![index].name,
+                                          //secondDetailsText: 'Languages',
+                                          //showSecondDetailsText: true,
+                                          onTap: () {
+                                            context.go('${GoRouterPath.trainerDetails}/${state.showResult.trainer.id}${GoRouterPath.trainerArchiveCourseView}/${state.showResult.trainer.id}${GoRouterPath.archiveSectionTrainerView}/${stateAr.showResult.courses.data![index].id}/${stateAr.showResult.courses.data![index].course.id}/$trainerId');
+                                          },
+                                          onTapFirstIcon: (){},
+                                          onTapSecondIcon: (){},
+                                        ));
+                                      },
+                                      itemCount: stateAr.showResult.courses.data!.length > 4 ? 4 : stateAr.showResult.courses.data!.length,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                    ),
+                                  );
+                                } else if(stateAr is ArchiveTrainerFailure) {
+                                  return CustomErrorWidget(errorMessage: stateAr.errorMessage);
+                                } else {
+                                  return CustomCircularProgressIndicator();
+                                }
+                              }
                             ),
                           ],
                         ),

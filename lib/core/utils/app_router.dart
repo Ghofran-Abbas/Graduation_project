@@ -304,10 +304,12 @@ class AppRouter {
                         },
                         routes: [
                           GoRoute(
-                            path: '/archiveSectionTrainerView/:sectionId',
+                            path: '/archiveSectionTrainerView/:sectionId/:courseId/:trainerId',
                             builder: (context, state) {
                               final id = state.pathParameters['sectionId']!;
-                              return ArchiveSectionTrainerView(sectionId: int.parse(id),);
+                              final courseId = state.pathParameters['courseId']!;
+                              final trainerId = state.pathParameters['trainerId']!;
+                              return ArchiveSectionTrainerView(sectionId: int.parse(id), courseId: int.parse(courseId), trainerId: int.parse(trainerId),);
                             },
                               routes: [
                                 GoRoute(
@@ -354,7 +356,7 @@ class AppRouter {
                     path: '/completeDetails/:id',
                     builder: (context, state) {
                       final id = state.pathParameters['id']!;
-                      return CompleteDetailsView(sectionId: int.parse(id),);
+                      return CompleteDetailsView(courseId: int.parse(id),);
                     },
                     routes: [
                       GoRoute(

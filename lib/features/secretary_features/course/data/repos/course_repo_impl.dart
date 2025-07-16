@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:alhadara_dashboard/constants.dart';
 import 'package:alhadara_dashboard/core/errors/failure.dart';
+import 'package:alhadara_dashboard/features/secretary_features/complete_course/data/models/complete_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/add_section_student_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/add_section_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/course/data/models/all_courses_model.dart';
@@ -756,6 +757,26 @@ class CourseRepoImpl implements CourseRepo {
       sectionProgressModel = SectionProgressModel.fromJson(data);
 
       return right(sectionProgressModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CompleteModel>> fetchFinishedSection({required int courseId, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/section/showAllCourseSectionIsPending/$courseId/?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      CompleteModel completeModel;
+      completeModel = CompleteModel.fromJson(data);
+
+      return right(completeModel);
     } catch (e) {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);

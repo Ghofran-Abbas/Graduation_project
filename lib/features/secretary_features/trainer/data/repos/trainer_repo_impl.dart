@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:alhadara_dashboard/core/errors/failure.dart';
 import 'package:alhadara_dashboard/core/utils/api_service.dart';
+import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/archive_section_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/create_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/delete_trainer_model.dart';
 import 'package:alhadara_dashboard/features/secretary_features/trainer/data/models/details_trainer_model.dart';
@@ -194,6 +195,27 @@ class TrainerRepoImpl extends TrainerRepo{
       searchTrainerModel = SearchTrainerModel.fromJson(data);
 
       return right(searchTrainerModel);
+    } catch (e) {
+      if (e is DioException){
+        return left(ServerFailure.fromDioError(e),);
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ArchiveSectionTrainerModel>> fetchArchiveTrainer({required int id, required int page}) async {
+    try {
+      var data = await (dioApiService.get(
+        endPoint: '/secretary/section/getTrainerArchive/$id?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+      log(data.toString());
+      ArchiveSectionTrainerModel archiveSectionTrainerModel;
+      archiveSectionTrainerModel = ArchiveSectionTrainerModel.fromJson(data);
+
+      return right(archiveSectionTrainerModel);
+
     } catch (e) {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);

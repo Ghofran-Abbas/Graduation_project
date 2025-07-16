@@ -7,6 +7,7 @@ import '../../../../../../core/localization/app_localizations.dart';
 import '../../../../../../core/utils/go_router_path.dart';
 import '../../../../../../core/widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../core/widgets/custom_error_widget.dart';
+import '../../../../../../core/widgets/custom_number_pagination.dart';
 import '../../../../../../core/widgets/secretary/custom_empty_widget.dart';
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
@@ -50,38 +51,38 @@ class StudentArchiveCourseViewBody extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      state.showResult.courses!.isNotEmpty ? GridView.builder(
+                      state.showResult.courses.data!.isNotEmpty ? GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, crossAxisSpacing: 10.w, mainAxisExtent: 354.66.h),
                         itemBuilder: (BuildContext context, int index) {
                           return Align(child: CustomCard(
-                            image: state.showResult.courses![index].course.photo,
-                            text: state.showResult.courses![index].course.name,
+                            image: state.showResult.courses.data![index].course.photo,
+                            text: state.showResult.courses.data![index].course.name,
                             showDate: true,
-                            dateText: state.showResult.courses![index].name,
+                            dateText: state.showResult.courses.data![index].name,
                             //secondDetailsText: 'Languages',
                             //showSecondDetailsText: false,
                             onTap: () {
-                              context.go('${GoRouterPath.studentDetails}/$studentId${GoRouterPath.studentArchiveCourseView}/$studentId${GoRouterPath.archiveSectionStudentView}/${state.showResult.courses![index].id}/${state.showResult.courses![index].course.id}/$studentId');
+                              context.go('${GoRouterPath.studentDetails}/$studentId${GoRouterPath.studentArchiveCourseView}/$studentId${GoRouterPath.archiveSectionStudentView}/${state.showResult.courses.data![index].id}/${state.showResult.courses.data![index].course.id}/$studentId');
                               //context.go('${GoRouterPath.studentDetails}/${state.showResult.student.id}${GoRouterPath.studentArchiveCourseView}/${state.showResult.student.id}${GoRouterPath.archiveSectionCourseView}/1');
                             },
                             onTapFirstIcon: () {},
                             onTapSecondIcon: (){},
                           ));
                         },
-                        itemCount: state.showResult.courses!.length/*state.courses.courses.data!.length*/,
+                        itemCount: state.showResult.courses.data!.length/*state.courses.courses.data!.length*/,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                       ) : CustomEmptyWidget(
                         firstText: AppLocalizations.of(context).translate('No active courses at this time'),
                         secondText: AppLocalizations.of(context).translate('Courses will appear here after they enroll in your institute.'),
                       ),
-                      /*CustomNumberPagination(
-                        numberPages: state.courses.courses.lastPage,
-                        initialPage: state.courses.courses.currentPage,
+                      CustomNumberPagination(
+                        numberPages: state.showResult.courses.lastPage,
+                        initialPage: state.showResult.courses.currentPage,
                         onPageChange: (int index) {
-                          context.read<CoursesCubit>().fetchCourses(departmentId: state.courses.courses.data![index].departmentId, page: index + 1);
+                          context.read<ArchiveStudentCubit>().fetchArchiveStudent(id: studentId, page: index + 1);
                         },
-                      ),*/
+                      ),
                     ],
                   ),
                 ),
