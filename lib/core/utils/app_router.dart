@@ -13,6 +13,7 @@ import '../../features/secretary_features/complete_course/presentation/views/com
 import '../../features/secretary_features/complete_course/presentation/views/complete_trainers_view.dart';
 import '../../features/secretary_features/complete_course/presentation/views/complete_view.dart';
 import '../../features/secretary_features/complete_course/presentation/views/details_complete_trainer_view.dart';
+import '../../features/secretary_features/complete_course/presentation/views/search_complete_view.dart';
 import '../../features/secretary_features/course/presentation/views/announcement_a_details_view.dart';
 import '../../features/secretary_features/course/presentation/views/announcement_a_view.dart';
 import '../../features/secretary_features/course/presentation/views/calendar_view.dart';
@@ -33,6 +34,7 @@ import '../../features/secretary_features/in_preparation_course/presentation/vie
 import '../../features/secretary_features/in_preparation_course/presentation/views/in_preparation_students_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/in_preparation_trainers_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/in_preparation_view.dart';
+import '../../features/secretary_features/in_preparation_course/presentation/views/search_in_preparation_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/search_student_ip_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/search_trainer_ip_view.dart';
 import '../../features/secretary_features/password_reset/presentation/views/password_reset_view.dart';
@@ -367,7 +369,7 @@ class AppRouter {
                         },
                       ),
                       GoRoute(
-                        path: '/sectionRating/:sectionId',
+                        path: '/completeRating/:sectionId',
                         builder: (context, state) {
                           final id = state.pathParameters['sectionId']!;
                           return SectionRatingView(sectionId: int.parse(id),);
@@ -464,6 +466,12 @@ class AppRouter {
                       ),
                     ]
                   ),
+                  GoRoute(
+                    path: '/searchComplete',
+                    builder: (context, state) {
+                      return SearchCompleteView();
+                    },
+                  ),
                 ]
               ),
 
@@ -518,6 +526,12 @@ class AppRouter {
                         ]
                       ),
                     ]
+                  ),
+                  GoRoute(
+                    path: '/searchInPreparation',
+                    builder: (context, state) {
+                      return SearchInPreparationView();
+                    },
                   ),
                 ]
               ),

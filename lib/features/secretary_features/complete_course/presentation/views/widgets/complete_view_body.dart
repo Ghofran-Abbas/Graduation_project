@@ -33,6 +33,11 @@ class CompleteViewBody extends StatelessWidget {
               showSearchField: true,
               onPressedFirst: (){},
               onPressedSecond: (){},
+              onTapSearch: () {
+                if(state.allCourses.courses.data!.isNotEmpty) {
+                  context.go(GoRouterPath.searchComplete);
+                }
+              },
               body: Padding(
                 padding: EdgeInsets.only(top: 238.0.h, left: 47.0.w, right: 47.0.w, bottom: 27.0.h),
                 child: SingleChildScrollView(

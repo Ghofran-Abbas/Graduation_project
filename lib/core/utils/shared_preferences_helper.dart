@@ -11,7 +11,7 @@ class SharedPreferencesHelper {
 
   static const _fcmTokenKey = 'fcm_token';
 
-  static Future<void> saveFcmToken(String fcmToken) async {
+/*  static Future<void> saveFcmToken(String fcmToken) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_fcmTokenKey, fcmToken);
   }
@@ -19,7 +19,7 @@ class SharedPreferencesHelper {
   static Future<String?> getFcmToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_fcmTokenKey);
-  }
+  }*/
 
   static Future<void> saveJwtToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,28 +38,6 @@ class SharedPreferencesHelper {
   static Future<void> clearFcmToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_fcmTokenKey);
-  }
-
-
-
-  static Future<bool> isLoggedIn() async {
-    final token = await getJwtToken();
-    return token != null && token.isNotEmpty;
-  }
-
-  static Future<void> saveUserRole(String role) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userRoleKey, role);
-  }
-
-  static Future<String?> getUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userRoleKey);
-  }
-
-  static Future<void> clearUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userRoleKey);
   }
 
   static Future<void> saveUserID(int id) async {

@@ -26,7 +26,7 @@ class CompleteRatingViewBody extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.only(top: 56.0.h,),
               child: CustomScreenBody(
-                title: AppLocalizations.of(context).translate('Students'),
+                title: AppLocalizations.of(context).translate('Rating'),
                 onPressedFirst: () {},
                 onPressedSecond: () {},
                 body: Padding(

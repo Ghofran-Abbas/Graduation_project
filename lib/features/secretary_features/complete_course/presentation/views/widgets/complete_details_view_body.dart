@@ -61,90 +61,86 @@ class CompleteDetailsViewBody extends StatelessWidget {
             builder: (context, state) {
               if (state is CompleteSuccess) {
                 final List<DatumComplete> sections = state.createResult.data!;
+                final current = state.currentPage;
+                final last = state.lastPage;
                 return Padding(
                   padding: EdgeInsets.only(top: 56.0.h,),
                   child: CustomScreenBody(
                     title: stateDC.course.course.name,
                     textFirstButton: 'Section 2',
                     showFirstButton: true,
-                    widget: BlocBuilder<SelectCompleteCubit, SelectCompleteState>(
-                      builder: (context, selectState) {
-                        DatumComplete? selected;
-                        if (selectState is SelectCompleteSuccess) {
-                          selected = selectState.section;
-                        }
-                        return Padding(
-                          padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
-                          child: DropdownMenu<DatumComplete>(
-                            enableSearch: false,
-                            requestFocusOnTap: false,
-                            width: 200.w,
-                            hintText: AppLocalizations.of(context).translate('No section'),
-                            initialSelection: selected,
-                            inputDecorationTheme: InputDecorationTheme(
-                              constraints: BoxConstraints(
-                                  maxHeight: 53.h),
-                              hintStyle: Styles.l1Normal(
-                                  color: AppColors.t0),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColors.purple,
-                                  width: 1.23,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    24.67.r),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColors.purple,
-                                  width: 1.23,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                    24.67.r),
-                              ),
-                            ),
-                            alignmentOffset: Offset(4, 2),
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStateColor
-                                  .resolveWith(
-                                    (states) {
-                                  return AppColors.white;
-                                },
-                              ),
-                              elevation: WidgetStateProperty.resolveWith(
-                                    (states) {
-                                  return 0;
-                                },
-                              ),
-                              side: WidgetStateBorderSide.resolveWith(
-                                    (states) {
-                                  return BorderSide(
-                                    width: 1.23,
-                                    color: AppColors.purple,
-
-                                  );
-                                },
-                              ),
-
-                            ),
-                            dropdownMenuEntries: sections.map((section) {
-                              return DropdownMenuEntry<DatumComplete>(
-                                value: section,
-                                label: section.name,
-                              );
-                            }).toList(),
-                            onSelected: (DatumComplete? selectedSection) {
-                              if (selectedSection != null) {
-                                BlocProvider.of<SelectCompleteCubit>(
-                                    context).selectSection(
-                                    section: selectedSection);
-                                log('✅ Selected ID: ${selectedSection
-                                    .id}');
+                    widget: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.chevron_left, color: current > 1
+                              ? AppColors.purple
+                              : AppColors.t0
+                          ),
+                          onPressed: current > 1
+                              ? () => context.read<CompleteCubit>()
+                              .fetchComplete(courseId: courseId, page: current - 1)
+                              : null,
+                        ),
+                        SizedBox(
+                          width: 200.w,
+                          child: BlocBuilder<SelectCompleteCubit, SelectCompleteState>(
+                            builder: (ctx, selectState) {
+                              DatumComplete? selected;
+                              if (selectState is SelectCompleteSuccess) {
+                                selected = selectState.section;
                               }
+                              return DropdownMenu<DatumComplete>(
+                                enableSearch: false,
+                                requestFocusOnTap: false,
+                                width: 200.w,
+                                hintText: AppLocalizations.of(context)
+                                    .translate('No section'),
+                                initialSelection: selected,
+                                inputDecorationTheme: InputDecorationTheme(
+                                  constraints: BoxConstraints(maxHeight: 53.h),
+                                  hintStyle: Styles.l1Normal(color: AppColors.t0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.purple, width: 1.23),
+                                    borderRadius: BorderRadius.circular(24.67.r),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.purple, width: 1.23),
+                                    borderRadius: BorderRadius.circular(24.67.r),
+                                  ),
+                                ),
+                                alignmentOffset: Offset(4, 2),
+                                menuStyle: MenuStyle(
+                                  backgroundColor: WidgetStateColor.resolveWith((_) => AppColors.white),
+                                  elevation: WidgetStateProperty.resolveWith((_) => 0),
+                                  side: WidgetStateBorderSide.resolveWith((_) =>
+                                      BorderSide(width: 1.23, color: AppColors.purple)),
+                                ),
+                                dropdownMenuEntries: sections.map((sec) {
+                                  return DropdownMenuEntry<DatumComplete>(
+                                    value: sec,
+                                    label: sec.name,
+                                  );
+                                }).toList(),
+                                onSelected: (DatumComplete? sec) {
+                                  if (sec != null) {
+                                    ctx.read<SelectCompleteCubit>().selectSection(section: sec);
+                                    log('Selected ID: ${sec.id}');
+                                  }
+                                },
+                              );
                             },
                           ),
-                        );
-                      },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.chevron_right, color: current < last
+                              ? AppColors.purple
+                              : AppColors.t0),
+                          onPressed: current < last
+                              ? () => context.read<CompleteCubit>()
+                              .fetchComplete(courseId: courseId, page: current + 1)
+                              : null,
+                        ),
+                      ],
                     ),
                     onPressedFirst: (){},
                     onPressedSecond: (){},
@@ -193,7 +189,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                                         context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeCalendar}/${stateSec.section.id}');
                                                       },
                                                       onTapRating: () {
-                                                        context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeRating}/$courseId');
+                                                        context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeRating}/${stateSec.section.id}');
                                                       },
                                                       onTapFirstIcon: (){},
                                                       onTapSecondIcon: (){},
@@ -348,7 +344,7 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                                                   if(stateF is FilesSuccess) {
                                                                     return Column(
                                                                       children: [
-                                                                        GridView.builder(
+                                                                        stateF.files.files.data!.isNotEmpty ? GridView.builder(
                                                                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
                                                                           itemBuilder: (BuildContext context, int index) {
                                                                             return Align(
@@ -364,6 +360,9 @@ class CompleteDetailsViewBody extends StatelessWidget {
                                                                           itemCount: stateF.files.files.data!.length,
                                                                           shrinkWrap: true,
                                                                           physics: NeverScrollableScrollPhysics(),
+                                                                        ) : CustomEmptyWidget(
+                                                                          firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
+                                                                          secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
                                                                         ),
                                                                         CustomNumberPagination(
                                                                           numberPages: stateF.files.files.lastPage,

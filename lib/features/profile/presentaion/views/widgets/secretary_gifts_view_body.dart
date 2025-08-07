@@ -30,7 +30,6 @@ class SecretaryGiftsViewBody extends StatelessWidget {
             padding: EdgeInsets.only(top: 56.0.h,),
             child: CustomScreenBody(
               title: AppLocalizations.of(context).translate('Gifts'),
-              showSearchField: true,
               onPressedFirst: () {},
               onPressedSecond: () {},
               body: Padding(

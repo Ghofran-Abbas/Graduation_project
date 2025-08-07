@@ -64,19 +64,18 @@ class InPreparationTrainersViewBody extends StatelessWidget {
                               CustomTopInformationField(
                                 firstText: '${state.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('Trainer')}',
                                 firstIconColor: AppColors.purple,
-                                secondText: '${DateFormat('yyyy-MM-dd').format(DateTime.now())}    ${DateFormat.EEEE().format(DateTime.now())}',
+                                secondText: '',
                                 secondIcon: Icons.calendar_today_outlined,
-                                secondIconColor: AppColors.purple,
-                                thirdText: '10:00 Am - 11:00 Am',
+                                secondIconColor: Colors.transparent,
+                                thirdText: '',
                                 thirdIcon: Icons.watch_later_outlined,
-                                thirdIconColor: AppColors.purple,
+                                thirdIconColor: Colors.transparent,
                                 isTrainer: true,
                               ),
                               SizedBox(height: 40.h,),
                               CustomListInformationFields(
                                 secondField: AppLocalizations.of(context).translate('Subject'),
                                 showSecondField: true,
-                                showSecondBox: true,
                                 widget: state.trainers.trainers![0].trainers!.isNotEmpty ? ListView.builder(
                                   itemBuilder: (BuildContext context, int index) {
                                     return Align(child: InformationFieldItem(
@@ -88,8 +87,6 @@ class InPreparationTrainersViewBody extends StatelessWidget {
                                       showSecondDetailsText: true,
                                       thirdDetailsText: state.trainers.trainers![0].trainers![index].email,
                                       fourthDetailsText: state.trainers.trainers![0].trainers![index].gender,
-                                      showFirstBox: true,
-                                      showSecondBox: true,
                                       showIcons: true,
                                       hideFirstIcon: true,
                                       onTap: () {

@@ -7,7 +7,6 @@ import '../../../data/models/complete_model.dart';
 import 'complete_state.dart';
 
 class CompleteCubit extends Cubit<CompleteState>{
-
   static CompleteCubit get(context) => BlocProvider.of(context);
 
   final CourseRepo courseRepo;
@@ -28,7 +27,9 @@ class CompleteCubit extends Cubit<CompleteState>{
       log(failure.errorMessage);
       emit(CompleteFailure(failure.errorMessage));
     }, (complete) {
-      emit(CompleteSuccess(complete));
+      final current = complete.currentPage;
+      final last    = complete.lastPage;
+      emit(CompleteSuccess(createResult: complete, currentPage: current, lastPage: last,),);
     });
   }
 }

@@ -18,8 +18,13 @@ class SectionsFailure extends SectionsState{
 }
 class SectionsSuccess extends SectionsState{
   final SectionsModel createResult;
+  final int currentPage;
+  final int lastPage;
 
-  const SectionsSuccess(this.createResult);
+  const SectionsSuccess({required this.createResult, required this.currentPage, required this.lastPage,});
+
+  @override
+  List<Object?> get props => [createResult, currentPage, lastPage];
 }
 
 

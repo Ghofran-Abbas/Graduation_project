@@ -31,8 +31,29 @@
 
   <title>alhadara_dashboard</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Firebase core -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Messaging -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-messaging-compat.js"></script>
+
+
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // تهيئة تهيئة مشروعك (استبدل بالقيم من Firebase Console > Project Settings)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBrBrrP8RmHbdj0CA9aXhonShhB10k0ryo",
+      authDomain: "graduationproject-3d3b0.firebaseapp.com",
+      projectId: "graduationproject-3d3b0",
+      storageBucket: "graduationproject-3d3b0.firebasestorage.app",
+      messagingSenderId: "425903761784",
+      appId: "1:425903761784:web:29ce80432a0313e58f808d"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
 </body>
 </html>
