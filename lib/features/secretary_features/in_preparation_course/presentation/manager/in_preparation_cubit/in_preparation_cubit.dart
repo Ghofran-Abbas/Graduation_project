@@ -28,7 +28,9 @@ class InPreparationCubit extends Cubit<InPreparationState>{
       log(failure.errorMessage);
       emit(InPreparationFailure(failure.errorMessage));
     }, (inPreparation) {
-      emit(InPreparationSuccess(inPreparation));
+      final current = inPreparation.currentPage;
+      final last    = inPreparation.lastPage;
+      emit(InPreparationSuccess(createResult: inPreparation, currentPage: current, lastPage: last,));
     });
   }
 }

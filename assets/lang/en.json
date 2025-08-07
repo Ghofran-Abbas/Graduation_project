@@ -220,6 +220,9 @@
   "No gifts at this time": "No gifts at this time",
   "Gifts will appear here after they enroll in your institute.": "Gifts will appear here after they enroll in your institute.",
 
+  "No files in this section at this time": "No files in this section at this time",
+  "Files will appear here after they add to the section.": "Files will appear here after they add to the section.",
+
 
   "Gifts": "Gifts",
   "Click to see Kristin’s awards": "Click to see Kristin’s awards",
@@ -237,6 +240,9 @@
   "        Complete        ": "        Finished        ",
 
   "Sessions number": "Sessions number",
+
+  "Rating": "Rating",
+
 
   "Put Trainer translation under this line": "******************************************"
 }

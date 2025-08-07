@@ -18,8 +18,10 @@ class InPreparationFailure extends InPreparationState{
 }
 class InPreparationSuccess extends InPreparationState{
   final InPreparationModel createResult;
+  final int currentPage;
+  final int lastPage;
 
-  const InPreparationSuccess(this.createResult);
+  const InPreparationSuccess({required this.createResult, required this.currentPage, required this.lastPage,});
 }
 
 

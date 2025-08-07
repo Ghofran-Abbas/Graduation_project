@@ -18,11 +18,14 @@ class CompleteFailure extends CompleteState{
 }
 class CompleteSuccess extends CompleteState{
   final CompleteModel createResult;
+  final int currentPage;
+  final int lastPage;
 
-  const CompleteSuccess(this.createResult);
+  const CompleteSuccess({required this.createResult, required this.currentPage, required this.lastPage,});
+
+  @override
+  List<Object?> get props => [createResult, currentPage, lastPage];
 }
-
-
 
 abstract class SelectCompleteState extends Equatable{
   const SelectCompleteState();

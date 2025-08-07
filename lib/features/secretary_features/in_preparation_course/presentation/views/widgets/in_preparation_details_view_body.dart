@@ -107,90 +107,115 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                     builder: (context, state) {
                       if (state is InPreparationSuccess) {
                         final List<DatumInPreparation> sections = state.createResult.data!;
+                        final current = state.currentPage;
+                        final last = state.lastPage;
                         return Padding(
                           padding: EdgeInsets.only(top: 56.0.h,),
                           child: CustomScreenBody(
                             title: stateDC.course.course.name,
                             textFirstButton: 'Section 2',
                             showFirstButton: true,
-                            widget: BlocBuilder<SelectInPreparationCubit, SelectInPreparationState>(
-                              builder: (context, selectState) {
-                                DatumInPreparation? selected;
-                                if (selectState is SelectInPreparationSuccess) {
-                                  selected = selectState.section;
-                                }
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
-                                  child: DropdownMenu<DatumInPreparation>(
-                                    enableSearch: false,
-                                    requestFocusOnTap: false,
-                                    width: 200.w,
-                                    hintText: AppLocalizations.of(context).translate('No section'),
-                                    initialSelection: selected,
-                                    inputDecorationTheme: InputDecorationTheme(
-                                      constraints: BoxConstraints(
-                                          maxHeight: 53.h),
-                                      hintStyle: Styles.l1Normal(
-                                          color: AppColors.t0),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.purple,
-                                          width: 1.23,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                            24.67.r),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.purple,
-                                          width: 1.23,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                            24.67.r),
-                                      ),
-                                    ),
-                                    alignmentOffset: Offset(4, 2),
-                                    menuStyle: MenuStyle(
-                                      backgroundColor: WidgetStateColor
-                                          .resolveWith(
-                                            (states) {
-                                          return AppColors.white;
-                                        },
-                                      ),
-                                      elevation: WidgetStateProperty.resolveWith(
-                                            (states) {
-                                          return 0;
-                                        },
-                                      ),
-                                      side: WidgetStateBorderSide.resolveWith(
-                                            (states) {
-                                          return BorderSide(
-                                            width: 1.23,
-                                            color: AppColors.purple,
-
-                                          );
-                                        },
-                                      ),
-
-                                    ),
-                                    dropdownMenuEntries: sections.map((section) {
-                                      return DropdownMenuEntry<DatumInPreparation>(
-                                        value: section,
-                                        label: section.name,
-                                      );
-                                    }).toList(),
-                                    onSelected: (DatumInPreparation? selectedSection) {
-                                      if (selectedSection != null) {
-                                        BlocProvider.of<SelectInPreparationCubit>(
-                                            context).selectSection(
-                                            section: selectedSection);
-                                        log('✅ Selected ID: ${selectedSection
-                                            .id}');
+                            widget: Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.chevron_left, color: current > 1
+                                      ? AppColors.purple
+                                      : AppColors.t0
+                                  ),
+                                  onPressed: current > 1
+                                      ? () => context.read<InPreparationCubit>()
+                                      .fetchInPreparation(courseId: courseId, page: current - 1)
+                                      : null,
+                                ),
+                                SizedBox(
+                                  width: 200.w,
+                                  child: BlocBuilder<SelectInPreparationCubit, SelectInPreparationState>(
+                                    builder: (context, selectState) {
+                                      DatumInPreparation? selected;
+                                      if (selectState is SelectInPreparationSuccess) {
+                                        selected = selectState.section;
                                       }
+                                      return Padding(
+                                        padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
+                                        child: DropdownMenu<DatumInPreparation>(
+                                          enableSearch: false,
+                                          requestFocusOnTap: false,
+                                          width: 200.w,
+                                          hintText: AppLocalizations.of(context).translate('No section'),
+                                          initialSelection: selected,
+                                          inputDecorationTheme: InputDecorationTheme(
+                                            constraints: BoxConstraints(
+                                                maxHeight: 53.h),
+                                            hintStyle: Styles.l1Normal(
+                                                color: AppColors.t0),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: AppColors.purple,
+                                                width: 1.23,
+                                              ),
+                                              borderRadius: BorderRadius.circular(
+                                                  24.67.r),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: AppColors.purple,
+                                                width: 1.23,
+                                              ),
+                                              borderRadius: BorderRadius.circular(
+                                                  24.67.r),
+                                            ),
+                                          ),
+                                          alignmentOffset: Offset(4, 2),
+                                          menuStyle: MenuStyle(
+                                            backgroundColor: WidgetStateColor
+                                                .resolveWith(
+                                                  (states) {
+                                                return AppColors.white;
+                                              },
+                                            ),
+                                            elevation: WidgetStateProperty.resolveWith(
+                                                  (states) {
+                                                return 0;
+                                              },
+                                            ),
+                                            side: WidgetStateBorderSide.resolveWith(
+                                                  (states) {
+                                                return BorderSide(
+                                                  width: 1.23,
+                                                  color: AppColors.purple,
+
+                                                );
+                                              },
+                                            ),
+
+                                          ),
+                                          dropdownMenuEntries: sections.map((section) {
+                                            return DropdownMenuEntry<DatumInPreparation>(
+                                              value: section,
+                                              label: section.name,
+                                            );
+                                          }).toList(),
+                                          onSelected: (DatumInPreparation? selectedSection) {
+                                            if (selectedSection != null) {
+                                              BlocProvider.of<SelectInPreparationCubit>(context).selectSection(section: selectedSection);
+                                              log('Selected ID: ${selectedSection.id}');
+                                            }
+                                          },
+                                        ),
+                                      );
                                     },
                                   ),
-                                );
-                              },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.chevron_right, color: current < last
+                                      ? AppColors.purple
+                                      : AppColors.t0),
+                                  onPressed: current < last
+                                      ? () => context.read<InPreparationCubit>()
+                                      .fetchInPreparation(courseId: courseId, page: current + 1)
+                                      : null,
+                                ),
+                              ],
                             ),
                             showButtonIcon: true,
                             onPressedFirst: (){},
@@ -474,30 +499,17 @@ class DetailsInPreparationViewBody extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                height: 470.23.h,
+                                                                height: 570.23.h,
                                                                 child: TabBarView(
                                                                   children: [
                                                                     Column(
                                                                       mainAxisSize: MainAxisSize.max,
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
-                                                                        //Image(image: AssetImage(Assets.empty)),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            AppLocalizations.of(context).translate('No courses at this time'),
-                                                                            style: Styles.h3Bold(color: AppColors.t3),
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                          ),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            AppLocalizations.of(context).translate('Courses will appear here after they enroll in your school.'),
-                                                                            style: Styles.l1Normal(color: AppColors.t3),
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                          ),
-                                                                        ),
+                                                                        CustomEmptyWidget(
+                                                                          firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
+                                                                          secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
+                                                                        )
                                                                       ],
                                                                     ),
                                                                     Column(

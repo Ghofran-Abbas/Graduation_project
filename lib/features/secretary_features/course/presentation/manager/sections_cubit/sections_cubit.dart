@@ -28,7 +28,9 @@ class SectionsCubit extends Cubit<SectionsState>{
       log(failure.errorMessage);
       emit(SectionsFailure(failure.errorMessage));
     }, (sections) {
-      emit(SectionsSuccess(sections));
+      final current = sections.currentPage;
+      final last    = sections.lastPage;
+      emit(SectionsSuccess(createResult: sections, currentPage: current, lastPage: last,));
     });
   }
 }
