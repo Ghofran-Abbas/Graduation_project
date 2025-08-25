@@ -37,6 +37,7 @@ import '../models/confirm_reservation_student_model.dart';
 import '../models/create_section_model.dart';
 import '../models/details_section_model.dart';
 import '../models/students_section_model.dart';
+import '../models/update_state_section_model.dart';
 import 'course_repo.dart';
 
 class CourseRepoImpl implements CourseRepo {
@@ -234,7 +235,7 @@ class CourseRepoImpl implements CourseRepo {
   }) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/secretary/section/showAllCourseSection/$id?page=$page',
+        endPoint: '/section/showAllCourseSectionInProgress/$id?page=$page',
         token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
@@ -650,7 +651,7 @@ class CourseRepoImpl implements CourseRepo {
       var data = await (dioApiService.get(
         endPoint: '/file/showAllFileInSection/$sectionId?page=$page',
         //token: await SharedPreferencesHelper.getJwtToken(),
-        token: Constants.trainerToken,
+        token: '',
       ));
       log(data.toString());
       FilesModel filesModel;
@@ -769,7 +770,7 @@ class CourseRepoImpl implements CourseRepo {
   Future<Either<Failure, CompleteModel>> fetchFinishedSection({required int courseId, required int page}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/section/showAllCourseSectionIsPending/$courseId/?page=$page',
+        endPoint: '/section/showAllCourseSectionFinished/$courseId/?page=$page',
         token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
@@ -781,6 +782,46 @@ class CourseRepoImpl implements CourseRepo {
       if (e is DioException){
         return left(ServerFailure.fromDioError(e),);
       }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UpdateStateSectionModel>> fetchUpdateStateSection({required int courseId, String? state,}) async {
+    final Map<String, dynamic> updateData = {};
+    log('this is state method');
+
+    if (state != null && state.trim().isNotEmpty) {
+      if(state == 'Pending') {
+        updateData['state'] = 'pending';
+      } else if(state == 'In progress') {
+        updateData['state'] = 'in_progress';
+      } else if(state == 'Finished') {
+        updateData['state'] = 'finished';
+      } else {
+        updateData['state'] = state;
+      }
+    }
+
+    if (updateData.isEmpty) {
+      return left(ServerFailure('يجب ادخال حقل واحد على الأقل قبل الإرسال.'));
+    }
+
+    log("Update data is: ${updateData.toString()}");
+
+    try {
+      var data = await (dioApiService.post(
+        endPoint: '/secretary/section/changeStatusCourseSection/$courseId',
+        data: updateData,
+        token: await SharedPreferencesHelper.getJwtToken(),
+      ));
+
+      log(data.toString());
+      UpdateStateSectionModel updateStateSectionModel;
+      updateStateSectionModel = UpdateStateSectionModel.fromJson(data);
+
+      return right(updateStateSectionModel);
+    } catch (e) {
       return left(ServerFailure(e.toString()));
     }
   }

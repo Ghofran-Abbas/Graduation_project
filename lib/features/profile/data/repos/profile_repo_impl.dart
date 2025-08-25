@@ -42,8 +42,8 @@ class ProfileRepoImpl extends ProfileRepo{
   Future<Either<Failure, DetailsGiftModel>> fetchDetailsGift({required int id}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/admin/gifts/$id',
-        token: Constants.adminToken,
+        endPoint: '/secretary/gifts/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
       DetailsGiftModel detailsGiftModel;

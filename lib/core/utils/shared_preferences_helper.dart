@@ -35,6 +35,17 @@ class SharedPreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_jwtTokenKey);
   }
+
+  static Future<void> saveFcmToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_fcmTokenKey, token);
+  }
+
+  static Future<String?> getFcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_fcmTokenKey);
+  }
+
   static Future<void> clearFcmToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_fcmTokenKey);

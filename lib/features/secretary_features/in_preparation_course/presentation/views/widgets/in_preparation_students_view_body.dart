@@ -66,7 +66,7 @@ class InPreparationStudentsViewBody extends StatelessWidget {
                                 return Padding(
                                   padding: EdgeInsets.only(top: 56.0.h,),
                                   child: CustomScreenBody(
-                                    title: 'Students',
+                                    title: AppLocalizations.of(context).translate('Students'),
                                     textSecondButton: AppLocalizations.of(context).translate('Add student'),
                                     showSecondButton: true,
                                     onPressedFirst: () {},

@@ -37,10 +37,10 @@
   "DeleteSectionTrainerSuccess": "تم حذف المدرب من الشعبة بنجاح",
   "AddSectionStudentFailure": "فشل في إضافة الطالب إلى الشعبة. يرجى المحاولة لاحقًا",
   "AddSectionStudentSuccess": "تمت إضافة الطالب إلى الشعبة بنجاح",
-  "DeleteSectionStudentFailure": "DeleteSectionStudentFailure",
-  "DeleteSectionStudentSuccess": "DeleteSectionStudentSuccess",
-  "ConfirmReservationStudentFailure": "ConfirmReservationStudentFailure",
-  "ConfirmReservationStudentSuccess": "ConfirmReservationStudentSuccess",
+  "DeleteSectionStudentFailure": "فشل في حذف الطالب من الشعبة. يرجى المحاولة لاحقًا",
+  "DeleteSectionStudentSuccess": "تم حذف الطالب من الشعبة بنجاح",
+  "ConfirmReservationStudentFailure": "فشل في تأكيد تسجيل الطالب في الشعبة. يرجى المحاولة لاحقًا",
+  "ConfirmReservationStudentSuccess": "تم تأكيد تسجيل الطالب في الشعبة بنجاح",
 
   "Are you sure you want to delete this section?": "هل أنت متأكد أنك تريد حذف هذه الشعبة؟",
   "Are you sure you want to add this trainer to section?": "هل أنت متأكد أنك تريد إضافة هذا المدرب إلى الشعبة؟",
@@ -68,8 +68,8 @@
   "CreateReportSuccess": "تمت إضافة التقرير بنجاح",
   "UpdateReportFailure": "فشل في تحديث التقرير. يرجى المحاولة لاحقًا",
   "UpdateReportSuccess": "تم تحديث معلومات التقرير بنجاح",
-  "GetFileLoading": "GetFileLoading",
-  "GetFileSuccess": "GetFileSuccess",
+  "GetFileLoading": "جارٍ تحميل الملف",
+  "GetFileSuccess": "تم تحميل الملف بنجاح",
 
   "Dashboard": "لوحة التحكم",
   "Reports": "التقارير",
@@ -176,42 +176,42 @@
   "Search here...": "ابحث هنا...",
 
 
-  "No departments at this time": "No departments at this time",
-  "Departments will appear here after they enroll in your institute.": "Departments will appear here after they enroll in your institute.",
+  "No departments at this time": "لا توجد أقسام في الوقت الحالي",
+  "Departments will appear here after they enroll in your institute.": "ستظهر الأقسام هنا بعد تسجيلها في معهدك.",
 
-  "No active courses at this time": "No active courses at this time",
-  "Courses will appear here after they enroll in your institute.": "Courses will appear here after they enroll in your institute.",
+  "No active courses at this time": "لا توجد دورات تدريبية في الوقت الحالي",
+  "Courses will appear here after they enroll in your institute.": "ستظهر الدورات التدريبية هنا بعد تسجيلها في معهدك.",
 
-  "No students in this section at this time": "No students in this section at this time",
-  "Students will appear here after they add to the section.": "Students will appear here after they add to the section.",
+  "No students in this section at this time": "لا يوجد طلاب في الفترة الحالي",
+  "Students will appear here after they add to the section.": "سيظهر الطلاب هنا بعد اضافتهم الى الفترة.",
 
-  "No trainers in this section at this time": "No trainers in this section at this time",
-  "Trainers will appear here after they add to the section.": "Trainers will appear here after they add to the section.",
+  "No trainers in this section at this time": "لا يوجد مدربين في الفترة الحالي",
+  "Trainers will appear here after they add to the section.": "سيظهر المدربين هنا بعد اضافتهم الى الفترة.",
 
-  "No more at this time": "No more at this time",
-  "Add a section to see more options.": "Add a section to see more options.",
+  "No more at this time": "لا يوجد المزيد في الوقت الحالي",
+  "Add a section to see more options.": "اختر فترة لرؤية المزيد.",
 
-  "No students at this time": "No students at this time",
-  "Students will appear here after they enroll in your institute.": "Students will appear here after they enroll in your institute.",
+  "No students at this time": "لا يوجد طلاب في الوقت الحالي",
+  "Students will appear here after they enroll in your institute.": "سيظهر الطلاب هنا بعد تسجيلهم في معهدك.",
 
-  "No trainers at this time": "No trainers at this time",
-  "Trainers will appear here after they enroll in your institute.": "Trainers will appear here after they enroll in your institute.",
+  "No trainers at this time": "لا يوجد مدربين في الوقت الحالي",
+  "Trainers will appear here after they enroll in your institute.": "سيظهر المدربين هنا بعد تسجيلهم في معهدك.",
 
-  "No reports at this time": "No reports at this time",
-  "Reports will appear here after they enroll in your institute.": "Reports will appear here after they enroll in your institute.",
+  "No reports at this time": "لا يوجد تقارير في الوقت الحالي",
+  "Reports will appear here after they enroll in your institute.": "ستظهر التقارير هنا بعد تسجيلها في معهدك.",
 
-  "No gifts at this time": "No gifts at this time",
-  "Gifts will appear here after they enroll in your institute.": "Gifts will appear here after they enroll in your institute.",
+  "No gifts at this time": "لا يوجد جوائز في الوقت الحالي",
+  "Gifts will appear here after they enroll in your institute.": "ستظهر الجوائز بعد تسجيلها في معهدك.",
 
-  "No files in this section at this time": "No files in this section at this time",
-  "Files will appear here after they add to the section.": "Files will appear here after they add to the section.",
+  "No files in this section at this time": "لا يوجد ملفات في الوقت الحالي",
+  "Files will appear here after they add to the section.": "ستظهر الملفات هنا بعد تسجيلها في معهدك.",
 
 
-  "Gifts": "Gifts",
-  "Click to see Kristin’s awards": "Click to see Kristin’s awards",
+  "Gifts": "الجوائز",
+  "Click to see Kristin’s awards": "اضغط لرؤية جوائز Kristin’s",
   "Referred student": "Referred student",
 
-  "DetailsSectionFailure": "Failed to load week days. Please try again later",
+  "DetailsSectionFailure": "فشل في تحميل ايام الاسبوع. يرجى المحاولة لاحقًا",
 
   "SelectEndDateFailure": "فشل في اختيار تاريخ الانتهاء. يرجى المحاولة لاحقًا",
   "SelectEndTimeFailure": "فشل في اختيار وقت الانتهاء. يرجى المحاولة لاحقًا",
@@ -222,9 +222,16 @@
   "         Active         ": "         نشطة         ",
   "        Complete        ": "        مكتملة        ",
 
-  "Sessions number": "Sessions number",
+  "Sessions number": "عدد الجلسات",
 
-  "Rating": "Rating",
+  "Rating": "التقييم",
+
+  "Tasks": "المهام",
+  "Created at": "تاريخ الاضافة",
+  "State": "الحالة",
+  "UpdateTaskStateFailure": "فشل في تعديل حالة المهمة. يرجى المحاولة لاحقًا",
+  "UpdateTaskStateSuccess": "تم تحديث حالة المهمة بنجاح",
+  "Notifications": "الاشعارات",
 
 
   "ضع ترجمة المعلم تحت هذا السطر": "******************************************"

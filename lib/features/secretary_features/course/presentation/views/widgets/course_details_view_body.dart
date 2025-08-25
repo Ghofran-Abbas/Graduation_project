@@ -55,6 +55,8 @@ import '../../manager/students_section_cubit/students_section_cubit.dart';
 import '../../manager/students_section_cubit/students_section_state.dart';
 import '../../manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../../manager/trainers_section_cubit/trainers_section_state.dart';
+import '../../manager/update_state_section_cubit/update_state_section_cubit.dart';
+import '../../manager/update_state_section_cubit/update_state_section_state.dart';
 
 
 class CourseDetailsViewBody extends StatelessWidget {
@@ -123,853 +125,905 @@ class CourseDetailsViewBody extends StatelessWidget {
           },
           builder: (context, state) {
             UpdateSectionCubit updateSectionCubit = BlocProvider.of(context);
-            return BlocConsumer<DeleteSectionCubit, DeleteSectionState>(
-              listener: (context, state) {
-                if (state is DeleteSectionFailure) {
-                  CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionFailure'),);
-                } else if (state is DeleteSectionSuccess) {
-                  CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionSuccess'),);
+            return BlocConsumer<UpdateStateSectionCubit, UpdateStateSectionState>(
+              listener: (contextUS, stateUS) {
+                if (stateUS is UpdateStateSectionFailure) {
+                  CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateSectionFailure'),);
+                } else if (stateUS is UpdateStateSectionSuccess) {
+                  CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateSectionSuccess'),);
                   context.read<SelectSectionCubit>().clearSelection();
                   context.read<SectionsCubit>().fetchSections(id: courseId, page: 1);
                   context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
                 }
               },
-              builder: (context, state) {
-                return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
-                  listener: (contextDC, stateDC) {},
-                  builder: (contextDC, stateDC) {
-                    if(stateDC is DetailsCourseSuccess) {
-                      return BlocConsumer<SectionsCubit, SectionsState>(
-                        listener: (context, state) {},
-                        builder: (context, state) {
-                          if (state is SectionsSuccess) {
-                            final List<DatumSection> sections = state.createResult.data!;
-                            final current = state.currentPage;
-                            final last = state.lastPage;
-                            return Padding(
-                              padding: EdgeInsets.only(top: 56.0.h,),
-                              child: CustomScreenBody(
-                                title: stateDC.course.course.name,
-                                textFirstButton: 'Section 2',
-                                showFirstButton: true,
-                                widget: Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.chevron_left, color: current > 1
-                                          ? AppColors.purple
-                                          : AppColors.t0
-                                      ),
-                                      onPressed: current > 1
-                                          ? () => context.read<SectionsCubit>()
-                                          .fetchSections(id: courseId, page: current - 1)
-                                          : null,
-                                    ),
-                                    SizedBox(
-                                      width: 200.w,
-                                      child: BlocBuilder<SelectSectionCubit, SelectSectionState>(
-                                        builder: (context, selectState) {
-                                          DatumSection? selected;
-                                          if (selectState is SelectSectionSuccess) {
-                                            selected = selectState.section;
-                                          }
-                                          return Padding(
-                                            padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
-                                            child: DropdownMenu<DatumSection>(
-                                              enableSearch: false,
-                                              requestFocusOnTap: false,
-                                              width: 200.w,
-                                              hintText: AppLocalizations.of(context).translate('No section'),
-                                              initialSelection: selected,
-                                              inputDecorationTheme: InputDecorationTheme(
-                                                constraints: BoxConstraints(
-                                                    maxHeight: 53.h),
-                                                hintStyle: Styles.l1Normal(
-                                                    color: AppColors.t0),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: AppColors.purple,
-                                                    width: 1.23,
+              builder: (contextUS, stateUS) {
+                return BlocConsumer<DeleteSectionCubit, DeleteSectionState>(
+                  listener: (context, state) {
+                    if (state is DeleteSectionFailure) {
+                      CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionFailure'),);
+                    } else if (state is DeleteSectionSuccess) {
+                      CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionSuccess'),);
+                      context.read<SelectSectionCubit>().clearSelection();
+                      context.read<SectionsCubit>().fetchSections(id: courseId, page: 1);
+                      context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
+                    }
+                  },
+                  builder: (context, state) {
+                    return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
+                      listener: (contextDC, stateDC) {},
+                      builder: (contextDC, stateDC) {
+                        if(stateDC is DetailsCourseSuccess) {
+                          return BlocConsumer<SectionsCubit, SectionsState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              if (state is SectionsSuccess) {
+                                final List<DatumSection> sections = state.createResult.data!;
+                                final current = state.currentPage;
+                                final last = state.lastPage;
+                                return Padding(
+                                  padding: EdgeInsets.only(top: 56.0.h,),
+                                  child: CustomScreenBody(
+                                    title: stateDC.course.course.name,
+                                    textFirstButton: 'Section 2',
+                                    showFirstButton: true,
+                                    widget: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.chevron_left, color: current > 1
+                                              ? AppColors.purple
+                                              : AppColors.t0
+                                          ),
+                                          onPressed: current > 1
+                                              ? () => context.read<SectionsCubit>()
+                                              .fetchSections(id: courseId, page: current - 1)
+                                              : null,
+                                        ),
+                                        SizedBox(
+                                          width: 200.w,
+                                          child: BlocBuilder<SelectSectionCubit, SelectSectionState>(
+                                            builder: (context, selectState) {
+                                              DatumSection? selected;
+                                              if (selectState is SelectSectionSuccess) {
+                                                selected = selectState.section;
+                                              }
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
+                                                child: DropdownMenu<DatumSection>(
+                                                  enableSearch: false,
+                                                  requestFocusOnTap: false,
+                                                  width: 200.w,
+                                                  hintText: AppLocalizations.of(context).translate('No section'),
+                                                  initialSelection: selected,
+                                                  inputDecorationTheme: InputDecorationTheme(
+                                                    constraints: BoxConstraints(
+                                                        maxHeight: 53.h),
+                                                    hintStyle: Styles.l1Normal(
+                                                        color: AppColors.t0),
+                                                    enabledBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: AppColors.purple,
+                                                        width: 1.23,
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(
+                                                          24.67.r),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: AppColors.purple,
+                                                        width: 1.23,
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(
+                                                          24.67.r),
+                                                    ),
                                                   ),
-                                                  borderRadius: BorderRadius.circular(
-                                                      24.67.r),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: AppColors.purple,
-                                                    width: 1.23,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(
-                                                      24.67.r),
-                                                ),
-                                              ),
-                                              alignmentOffset: Offset(4, 2),
-                                              menuStyle: MenuStyle(
-                                                backgroundColor: WidgetStateColor
-                                                    .resolveWith(
-                                                      (states) {
-                                                    return AppColors.white;
-                                                  },
-                                                ),
-                                                elevation: WidgetStateProperty.resolveWith(
-                                                      (states) {
-                                                    return 0;
-                                                  },
-                                                ),
-                                                side: WidgetStateBorderSide.resolveWith(
-                                                      (states) {
-                                                    return BorderSide(
-                                                      width: 1.23,
-                                                      color: AppColors.purple,
+                                                  alignmentOffset: Offset(4, 2),
+                                                  menuStyle: MenuStyle(
+                                                    backgroundColor: WidgetStateColor
+                                                        .resolveWith(
+                                                          (states) {
+                                                        return AppColors.white;
+                                                      },
+                                                    ),
+                                                    elevation: WidgetStateProperty.resolveWith(
+                                                          (states) {
+                                                        return 0;
+                                                      },
+                                                    ),
+                                                    side: WidgetStateBorderSide.resolveWith(
+                                                          (states) {
+                                                        return BorderSide(
+                                                          width: 1.23,
+                                                          color: AppColors.purple,
 
+                                                        );
+                                                      },
+                                                    ),
+
+                                                  ),
+                                                  dropdownMenuEntries: sections.map((section) {
+                                                    return DropdownMenuEntry<DatumSection>(
+                                                      value: section,
+                                                      label: section.name,
                                                     );
+                                                  }).toList(),
+                                                  onSelected: (DatumSection? selectedSection) {
+                                                    if (selectedSection != null) {
+                                                      BlocProvider.of<SelectSectionCubit>(context).selectSection(section: selectedSection);
+                                                      log('Selected ID: ${selectedSection
+                                                          .id}');
+                                                    }
                                                   },
                                                 ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.chevron_right, color: current < last
+                                              ? AppColors.purple
+                                              : AppColors.t0),
+                                          onPressed: current < last
+                                              ? () => context.read<SectionsCubit>()
+                                              .fetchSections(id: courseId, page: current + 1)
+                                              : null,
+                                        ),
+                                      ],
+                                    ),
+                                    onPressedFirst: () {},
+                                    showButtonIcon: true,
+                                    textSecondButton: AppLocalizations.of(context).translate('New section'),
+                                    showSecondButton: true,
+                                    onPressedSecond: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext dialogContext) {
+                                          return BlocProvider(
+                                            create: (_) => MultiCheckboxCubit(),
+                                            child: BlocBuilder<MultiCheckboxCubit, MultiCheckboxState>(
+                                              builder: (context, state) {
+                                                return Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      width: 871.w,
+                                                      height: 918.h,
+                                                      margin: EdgeInsets.symmetric(horizontal: 160.w, vertical: 55.h),
+                                                      padding: EdgeInsets.all(22.r),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.white,
+                                                        borderRadius: BorderRadius.circular(6.r),
+                                                      ),
+                                                      child: SingleChildScrollView(
+                                                        physics: BouncingScrollPhysics(),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  top: 65.h,
+                                                                  left: 60.w,
+                                                                  right: 155.w),
+                                                              child: Text(
+                                                                AppLocalizations.of(context).translate('Add Section'),
+                                                                style: Styles.h3Bold(
+                                                                    color: AppColors.t3),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  right: 155.w),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment
+                                                                    .start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    flex: 3,
+                                                                    child: CustomLabelTextFormField(
+                                                                      labelText: AppLocalizations.of(context).translate('Name'),
+                                                                      showLabelText: true,
+                                                                      controller: nameController,
+                                                                      topPadding: 60.h,
+                                                                      rightPadding: 0.w,
+                                                                      bottomPadding: 0.h,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 19.w,),
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: CustomLabelTextFormField(
+                                                                      labelText: AppLocalizations.of(context).translate('Sessions number'),
+                                                                      showLabelText: true,
+                                                                      controller: sessionsController,
+                                                                      topPadding: 60.h,
+                                                                      leftPadding: 0.w,
+                                                                      rightPadding: 0.w,
+                                                                      bottomPadding: 0.h,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  left: 60.w,
+                                                                  right: 155.w),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment
+                                                                    .start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: CustomLabelTextFormField(
+                                                                      labelText: AppLocalizations.of(context).translate('Seats number'),
+                                                                      showLabelText: true,
+                                                                      controller: seatsController,
+                                                                      topPadding: 38.h,
+                                                                      leftPadding: 0.w,
+                                                                      rightPadding: 0.w,
+                                                                      bottomPadding: 38.h,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 19.w,),
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: CustomDropdownList(
+                                                                      hintText: AppLocalizations.of(context).translate('Status'),
+                                                                      statusController: stateController,
+                                                                      dropdownMenuEntries: [
+                                                                        DropdownMenuEntry(
+                                                                          value: 'Pending',
+                                                                          label: AppLocalizations.of(context).translate('In preparation'),
+                                                                        ),
+                                                                        DropdownMenuEntry(
+                                                                          value: 'In progress',
+                                                                          label: AppLocalizations.of(context).translate('Active now'),
+                                                                        ),
+                                                                        DropdownMenuEntry(
+                                                                          value: 'Finished',
+                                                                          label: AppLocalizations.of(context).translate('Complete'),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 19.w,),
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: CustomLabelTextFormField(
+                                                                      hintText: AppLocalizations.of(context).translate('Start date'),
+                                                                      readOnly: true,
+                                                                      controller: startDateController,
+                                                                      topPadding: 65.h,
+                                                                      leftPadding: 0.w,
+                                                                      rightPadding: 0.w,
+                                                                      bottomPadding: 33.h,
+                                                                      onTap: () async {
+                                                                        DateTime? pickedDate = await showDatePicker(
+                                                                          context: context,
+                                                                          initialDate: startDateController.text.isEmpty ? DateTime.now().add(Duration(days: 1)) : DateTime.parse(startDateController.text),
+                                                                          firstDate: DateTime.now().add(Duration(days: 1)),
+                                                                          lastDate: DateTime(2100),
+                                                                        );
+                                                                        if (pickedDate != null) {
+                                                                          startDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
+                                                                          endDateController.clear();
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 19.w,),
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: CustomLabelTextFormField(
+                                                                      hintText: AppLocalizations.of(context).translate('End date'),
+                                                                      readOnly: true,
+                                                                      controller: endDateController,
+                                                                      topPadding: 65.h,
+                                                                      leftPadding: 0.w,
+                                                                      rightPadding: 0.w,
+                                                                      bottomPadding: 38.h,
+                                                                      onTap: () async {
+                                                                        if (startDateController.text.isEmpty) {
+                                                                          CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('SelectEndDateFailure'),);
+                                                                          return;
+                                                                        }
 
-                                              ),
-                                              dropdownMenuEntries: sections.map((section) {
-                                                return DropdownMenuEntry<DatumSection>(
-                                                  value: section,
-                                                  label: section.name,
+                                                                        DateTime parsedStartDate = DateTime.parse(startDateController.text);
+                                                                        DateTime initialEndDate = parsedStartDate.add(Duration(days: 1));
+
+                                                                        DateTime? pickedDate = await showDatePicker(
+                                                                          context: context,
+                                                                          initialDate: endDateController.text.isEmpty
+                                                                              ? initialEndDate
+                                                                              : DateTime.parse(endDateController.text),
+                                                                          firstDate: initialEndDate,
+                                                                          lastDate: DateTime(2100),
+                                                                        );
+
+                                                                        if (pickedDate != null) {
+                                                                          endDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  bottom: 38.h,
+                                                                  left: 60.w,
+                                                                  right: 55.w),
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize
+                                                                    .max,
+                                                                crossAxisAlignment: CrossAxisAlignment
+                                                                    .start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                        left: 0.w,
+                                                                        bottom: 4.h),
+                                                                    child: Text(
+                                                                      AppLocalizations.of(context).translate('Class days'),
+                                                                      style: Styles
+                                                                          .l1Normal(
+                                                                          color: AppColors
+                                                                              .t2),
+                                                                      maxLines: 1,
+                                                                      overflow: TextOverflow
+                                                                          .ellipsis,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 728.w,
+                                                                    child: Wrap(
+                                                                      spacing: 12.w,
+                                                                      runSpacing: 8,
+                                                                      children: dayOptions
+                                                                          .map((option) {
+                                                                        final isSelected = state
+                                                                            .selectedItems
+                                                                            .contains(
+                                                                            option);
+                                                                        selectedDays =
+                                                                            state
+                                                                                .selectedItems;
+                                                                        return CustomMultipleCheckBox(
+                                                                          isSelected: isSelected,
+                                                                          option: option,
+                                                                        );
+                                                                      }).toList(),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  left: 60.w,
+                                                                  right: 155.w),
+                                                              child: Wrap(
+                                                                children: [
+                                                                  selectedDays.contains(
+                                                                      'Sunday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Sunday'),
+                                                                      startTimeController: sundayStartController,
+                                                                      endTimeController: sundayEndController,
+                                                                    ),
+                                                                  ) : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Sunday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Monday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Monday'),
+                                                                      startTimeController: mondayStartController,
+                                                                      endTimeController: mondayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Monday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Tuesday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Tuesday'),
+                                                                      startTimeController: tuesdayStartController,
+                                                                      endTimeController: tuesdayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Tuesday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Wednesday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Wednesday'),
+                                                                      startTimeController: wednesdayStartController,
+                                                                      endTimeController: wednesdayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Wednesday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Thursday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Thursday'),
+                                                                      startTimeController: thursdayStartController,
+                                                                      endTimeController: thursdayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Thursday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Friday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Friday'),
+                                                                      startTimeController: fridayStartController,
+                                                                      endTimeController: fridayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                  selectedDays.contains(
+                                                                      'Friday')
+                                                                      ? SizedBox(
+                                                                    width: 13.w,)
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+
+                                                                  selectedDays.contains(
+                                                                      'Saturday')
+                                                                      ? SizedBox(
+                                                                    width: 187.w,
+                                                                    child: CustomStartEndTimePicker(
+                                                                      dayName: AppLocalizations.of(context).translate('Saturday'),
+                                                                      startTimeController: saturdayStartController,
+                                                                      endTimeController: saturdayEndController,
+                                                                    ),
+                                                                  )
+                                                                      : SizedBox(
+                                                                    width: 0.w,
+                                                                    height: 0.h,),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: EdgeInsets.only(top: 22.h, bottom: 65.h, left: 47.w, right: 155.w),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  TextIconButton(
+                                                                    textButton: AppLocalizations.of(context).translate('Add Section'),
+                                                                    bigText: true,
+                                                                    textColor: AppColors.t3,
+                                                                    icon: Icons.add,
+                                                                    iconSize: 40.01.r,
+                                                                    iconColor: AppColors.t2,
+                                                                    iconLast: false,
+                                                                    firstSpaceBetween: 3.w,
+                                                                    buttonHeight: 53.h,
+                                                                    borderWidth: 0.w,
+                                                                    buttonColor: AppColors.white,
+                                                                    borderColor: Colors.transparent,
+                                                                    onPressed: () {
+                                                                      Navigator.pop(
+                                                                          dialogContext);
+                                                                      createSectionCubit.fetchCreateSection(
+                                                                        courseId: stateDC.course.course.id,
+                                                                        name: nameController.text,
+                                                                        state: handleSendState(state: stateController.text),
+                                                                        seatsOfNumber: int.parse(seatsController.text),
+                                                                        totalSessions: int.parse(sessionsController.text),
+                                                                        startDate: startDateController.text,
+                                                                        endDate: endDateController.text,
+                                                                        sunday: {
+                                                                          "start_time": sundayStartController.text,
+                                                                          "end_time": sundayEndController.text,
+                                                                        },
+                                                                        monday: {
+                                                                          "start_time": mondayStartController.text,
+                                                                          "end_time": mondayEndController.text,
+                                                                        },
+                                                                        tuesday: {
+                                                                          "start_time": tuesdayStartController.text,
+                                                                          "end_time": tuesdayEndController.text,
+                                                                        },
+                                                                        wednesday: {
+                                                                          "start_time": wednesdayStartController.text,
+                                                                          "end_time": wednesdayEndController.text,
+                                                                        },
+                                                                        thursday: {
+                                                                          "start_time": thursdayStartController.text,
+                                                                          "end_time": thursdayEndController.text,
+                                                                        },
+                                                                        friday: {
+                                                                          "start_time": fridayStartController.text,
+                                                                          "end_time": fridayEndController.text,
+                                                                        },
+                                                                        saturday: {
+                                                                          "start_time": saturdayStartController.text,
+                                                                          "end_time": saturdayEndController.text,
+                                                                        },
+                                                                      );
+                                                                      nameController.clear();
+                                                                      seatsController.clear();
+                                                                      statusController.clear();
+                                                                      startDateController.clear();
+                                                                      endDateController.clear();
+                                                                      sundayStartController.clear();
+                                                                      sundayEndController.clear();
+                                                                      mondayStartController.clear();
+                                                                      mondayEndController.clear();
+                                                                      tuesdayStartController.clear();
+                                                                      tuesdayEndController.clear();
+                                                                      wednesdayStartController.clear();
+                                                                      wednesdayEndController.clear();
+                                                                      thursdayStartController.clear();
+                                                                      thursdayEndController.clear();
+                                                                      fridayStartController.clear();
+                                                                      fridayEndController.clear();
+                                                                      saturdayStartController.clear();
+                                                                      saturdayEndController.clear();
+                                                                    },
+                                                                  ),
+                                                                  SizedBox(width: 42.w,),
+                                                                  TextIconButton(
+                                                                    textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                                    textColor: AppColors
+                                                                        .t3,
+                                                                    iconLast: false,
+                                                                    buttonHeight: 53.h,
+                                                                    borderWidth: 0.w,
+                                                                    borderRadius: 4.r,
+                                                                    buttonColor: AppColors
+                                                                        .w1,
+                                                                    borderColor: AppColors
+                                                                        .w1,
+                                                                    onPressed: () {
+                                                                      nameController
+                                                                          .clear();
+                                                                      seatsController
+                                                                          .clear();
+                                                                      statusController
+                                                                          .clear();
+                                                                      startDateController
+                                                                          .clear();
+                                                                      endDateController
+                                                                          .clear();
+                                                                      sundayStartController.clear();
+                                                                      sundayEndController.clear();
+                                                                      mondayStartController.clear();
+                                                                      mondayEndController.clear();
+                                                                      tuesdayStartController.clear();
+                                                                      tuesdayEndController.clear();
+                                                                      wednesdayStartController.clear();
+                                                                      wednesdayEndController.clear();
+                                                                      thursdayStartController.clear();
+                                                                      thursdayEndController.clear();
+                                                                      fridayStartController.clear();
+                                                                      fridayEndController.clear();
+                                                                      saturdayStartController.clear();
+                                                                      saturdayEndController.clear();
+                                                                      Navigator.pop(
+                                                                          dialogContext);
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 );
-                                              }).toList(),
-                                              onSelected: (DatumSection? selectedSection) {
-                                                if (selectedSection != null) {
-                                                  BlocProvider.of<SelectSectionCubit>(context).selectSection(section: selectedSection);
-                                                  log('Selected ID: ${selectedSection
-                                                      .id}');
-                                                }
                                               },
                                             ),
                                           );
                                         },
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.chevron_right, color: current < last
-                                          ? AppColors.purple
-                                          : AppColors.t0),
-                                      onPressed: current < last
-                                          ? () => context.read<SectionsCubit>()
-                                          .fetchSections(id: courseId, page: current + 1)
-                                          : null,
-                                    ),
-                                  ],
-                                ),
-                                onPressedFirst: () {},
-                                showButtonIcon: true,
-                                textSecondButton: AppLocalizations.of(context).translate('New section'),
-                                showSecondButton: true,
-                                onPressedSecond: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext dialogContext) {
-                                      return BlocProvider(
-                                        create: (_) => MultiCheckboxCubit(),
-                                        child: BlocBuilder<MultiCheckboxCubit, MultiCheckboxState>(
-                                          builder: (context, state) {
-                                            return Align(
-                                              alignment: Alignment.topRight,
-                                              child: Material(
-                                                color: Colors.transparent,
-                                                child: Container(
-                                                  width: 871.w,
-                                                  height: 918.h,
-                                                  margin: EdgeInsets.symmetric(horizontal: 160.w, vertical: 55.h),
-                                                  padding: EdgeInsets.all(22.r),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.white,
-                                                    borderRadius: BorderRadius.circular(6.r),
-                                                  ),
-                                                  child: SingleChildScrollView(
-                                                    physics: BouncingScrollPhysics(),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              top: 65.h,
-                                                              left: 60.w,
-                                                              right: 155.w),
-                                                          child: Text(
-                                                            AppLocalizations.of(context).translate('Add Section'),
-                                                            style: Styles.h3Bold(
-                                                                color: AppColors.t3),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              right: 155.w),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment
-                                                                .start,
-                                                            children: [
-                                                              Expanded(
-                                                                flex: 3,
-                                                                child: CustomLabelTextFormField(
-                                                                  labelText: AppLocalizations.of(context).translate('Name'),
-                                                                  showLabelText: true,
-                                                                  controller: nameController,
-                                                                  topPadding: 60.h,
-                                                                  rightPadding: 0.w,
-                                                                  bottomPadding: 0.h,
-                                                                ),
-                                                              ),
-                                                              SizedBox(width: 19.w,),
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child: CustomLabelTextFormField(
-                                                                  labelText: AppLocalizations.of(context).translate('Sessions number'),
-                                                                  showLabelText: true,
-                                                                  controller: sessionsController,
-                                                                  topPadding: 60.h,
-                                                                  leftPadding: 0.w,
-                                                                  rightPadding: 0.w,
-                                                                  bottomPadding: 0.h,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              left: 60.w,
-                                                              right: 155.w),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment
-                                                                .start,
-                                                            children: [
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child: CustomLabelTextFormField(
-                                                                  labelText: AppLocalizations.of(context).translate('Seats number'),
-                                                                  showLabelText: true,
-                                                                  controller: seatsController,
-                                                                  topPadding: 38.h,
-                                                                  leftPadding: 0.w,
-                                                                  rightPadding: 0.w,
-                                                                  bottomPadding: 38.h,
-                                                                ),
-                                                              ),
-                                                              SizedBox(width: 19.w,),
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child: CustomDropdownList(
-                                                                  hintText: AppLocalizations.of(context).translate('Status'),
-                                                                  statusController: stateController,
-                                                                  dropdownMenuEntries: [
-                                                                    DropdownMenuEntry(
-                                                                      value: 'Pending',
-                                                                      label: AppLocalizations.of(context).translate('In preparation'),
-                                                                    ),
-                                                                    DropdownMenuEntry(
-                                                                      value: 'In progress',
-                                                                      label: AppLocalizations.of(context).translate('Active now'),
-                                                                    ),
-                                                                    DropdownMenuEntry(
-                                                                      value: 'Finished',
-                                                                      label: AppLocalizations.of(context).translate('Complete'),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              SizedBox(width: 19.w,),
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child: CustomLabelTextFormField(
-                                                                  hintText: AppLocalizations.of(context).translate('Start date'),
-                                                                  readOnly: true,
-                                                                  controller: startDateController,
-                                                                  topPadding: 65.h,
-                                                                  leftPadding: 0.w,
-                                                                  rightPadding: 0.w,
-                                                                  bottomPadding: 33.h,
-                                                                  onTap: () async {
-                                                                    DateTime? pickedDate = await showDatePicker(
-                                                                      context: context,
-                                                                      initialDate: startDateController.text.isEmpty ? DateTime.now().add(Duration(days: 1)) : DateTime.parse(startDateController.text),
-                                                                      firstDate: DateTime.now().add(Duration(days: 1)),
-                                                                      lastDate: DateTime(2100),
-                                                                    );
-                                                                    if (pickedDate != null) {
-                                                                      startDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
-                                                                      endDateController.clear();
-                                                                    }
-                                                                  },
-                                                                ),
-                                                              ),
-                                                              SizedBox(width: 19.w,),
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child: CustomLabelTextFormField(
-                                                                  hintText: AppLocalizations.of(context).translate('End date'),
-                                                                  readOnly: true,
-                                                                  controller: endDateController,
-                                                                  topPadding: 65.h,
-                                                                  leftPadding: 0.w,
-                                                                  rightPadding: 0.w,
-                                                                  bottomPadding: 38.h,
-                                                                  onTap: () async {
-                                                                    if (startDateController.text.isEmpty) {
-                                                                      CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('SelectEndDateFailure'),);
-                                                                      return;
-                                                                    }
-
-                                                                    DateTime parsedStartDate = DateTime.parse(startDateController.text);
-                                                                    DateTime initialEndDate = parsedStartDate.add(Duration(days: 1));
-
-                                                                    DateTime? pickedDate = await showDatePicker(
-                                                                      context: context,
-                                                                      initialDate: endDateController.text.isEmpty
-                                                                          ? initialEndDate
-                                                                          : DateTime.parse(endDateController.text),
-                                                                      firstDate: initialEndDate,
-                                                                      lastDate: DateTime(2100),
-                                                                    );
-
-                                                                    if (pickedDate != null) {
-                                                                      endDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
-                                                                    }
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              bottom: 38.h,
-                                                              left: 60.w,
-                                                              right: 55.w),
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize
-                                                                .max,
-                                                            crossAxisAlignment: CrossAxisAlignment
-                                                                .start,
-                                                            children: [
-                                                              Padding(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                    left: 0.w,
-                                                                    bottom: 4.h),
-                                                                child: Text(
-                                                                  AppLocalizations.of(context).translate('Class days'),
-                                                                  style: Styles
-                                                                      .l1Normal(
-                                                                      color: AppColors
-                                                                          .t2),
-                                                                  maxLines: 1,
-                                                                  overflow: TextOverflow
-                                                                      .ellipsis,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 728.w,
-                                                                child: Wrap(
-                                                                  spacing: 12.w,
-                                                                  runSpacing: 8,
-                                                                  children: dayOptions
-                                                                      .map((option) {
-                                                                    final isSelected = state
-                                                                        .selectedItems
-                                                                        .contains(
-                                                                        option);
-                                                                    selectedDays =
-                                                                        state
-                                                                            .selectedItems;
-                                                                    return CustomMultipleCheckBox(
-                                                                      isSelected: isSelected,
-                                                                      option: option,
-                                                                    );
-                                                                  }).toList(),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(
-                                                              left: 60.w,
-                                                              right: 155.w),
-                                                          child: Wrap(
-                                                            children: [
-                                                              selectedDays.contains(
-                                                                  'Sunday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Sunday'),
-                                                                  startTimeController: sundayStartController,
-                                                                  endTimeController: sundayEndController,
-                                                                ),
-                                                              ) : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Sunday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Monday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Monday'),
-                                                                  startTimeController: mondayStartController,
-                                                                  endTimeController: mondayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Monday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Tuesday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Tuesday'),
-                                                                  startTimeController: tuesdayStartController,
-                                                                  endTimeController: tuesdayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Tuesday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Wednesday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Wednesday'),
-                                                                  startTimeController: wednesdayStartController,
-                                                                  endTimeController: wednesdayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Wednesday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Thursday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Thursday'),
-                                                                  startTimeController: thursdayStartController,
-                                                                  endTimeController: thursdayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Thursday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Friday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Friday'),
-                                                                  startTimeController: fridayStartController,
-                                                                  endTimeController: fridayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                              selectedDays.contains(
-                                                                  'Friday')
-                                                                  ? SizedBox(
-                                                                width: 13.w,)
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-
-                                                              selectedDays.contains(
-                                                                  'Saturday')
-                                                                  ? SizedBox(
-                                                                width: 187.w,
-                                                                child: CustomStartEndTimePicker(
-                                                                  dayName: AppLocalizations.of(context).translate('Saturday'),
-                                                                  startTimeController: saturdayStartController,
-                                                                  endTimeController: saturdayEndController,
-                                                                ),
-                                                              )
-                                                                  : SizedBox(
-                                                                width: 0.w,
-                                                                height: 0.h,),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(top: 22.h, bottom: 65.h, left: 47.w, right: 155.w),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              TextIconButton(
-                                                                textButton: AppLocalizations.of(context).translate('Add Section'),
-                                                                bigText: true,
-                                                                textColor: AppColors.t3,
-                                                                icon: Icons.add,
-                                                                iconSize: 40.01.r,
-                                                                iconColor: AppColors.t2,
-                                                                iconLast: false,
-                                                                firstSpaceBetween: 3.w,
-                                                                buttonHeight: 53.h,
-                                                                borderWidth: 0.w,
-                                                                buttonColor: AppColors.white,
-                                                                borderColor: Colors.transparent,
-                                                                onPressed: () {
-                                                                  Navigator.pop(
-                                                                      dialogContext);
-                                                                  createSectionCubit.fetchCreateSection(
-                                                                    courseId: stateDC.course.course.id,
-                                                                    name: nameController.text,
-                                                                    state: handleSendState(state: stateController.text),
-                                                                    seatsOfNumber: int.parse(seatsController.text),
-                                                                    totalSessions: int.parse(sessionsController.text),
-                                                                    startDate: startDateController.text,
-                                                                    endDate: endDateController.text,
-                                                                    sunday: {
-                                                                      "start_time": sundayStartController.text,
-                                                                      "end_time": sundayEndController.text,
-                                                                    },
-                                                                    monday: {
-                                                                      "start_time": mondayStartController.text,
-                                                                      "end_time": mondayEndController.text,
-                                                                    },
-                                                                    tuesday: {
-                                                                      "start_time": tuesdayStartController.text,
-                                                                      "end_time": tuesdayEndController.text,
-                                                                    },
-                                                                    wednesday: {
-                                                                      "start_time": wednesdayStartController.text,
-                                                                      "end_time": wednesdayEndController.text,
-                                                                    },
-                                                                    thursday: {
-                                                                      "start_time": thursdayStartController.text,
-                                                                      "end_time": thursdayEndController.text,
-                                                                    },
-                                                                    friday: {
-                                                                      "start_time": fridayStartController.text,
-                                                                      "end_time": fridayEndController.text,
-                                                                    },
-                                                                    saturday: {
-                                                                      "start_time": saturdayStartController.text,
-                                                                      "end_time": saturdayEndController.text,
-                                                                    },
-                                                                  );
-                                                                  nameController.clear();
-                                                                  seatsController.clear();
-                                                                  statusController.clear();
-                                                                  startDateController.clear();
-                                                                  endDateController.clear();
-                                                                  sundayStartController.clear();
-                                                                  sundayEndController.clear();
-                                                                  mondayStartController.clear();
-                                                                  mondayEndController.clear();
-                                                                  tuesdayStartController.clear();
-                                                                  tuesdayEndController.clear();
-                                                                  wednesdayStartController.clear();
-                                                                  wednesdayEndController.clear();
-                                                                  thursdayStartController.clear();
-                                                                  thursdayEndController.clear();
-                                                                  fridayStartController.clear();
-                                                                  fridayEndController.clear();
-                                                                  saturdayStartController.clear();
-                                                                  saturdayEndController.clear();
-                                                                },
-                                                              ),
-                                                              SizedBox(width: 42.w,),
-                                                              TextIconButton(
-                                                                textButton: AppLocalizations.of(context).translate('       Cancel       '),
-                                                                textColor: AppColors
-                                                                    .t3,
-                                                                iconLast: false,
-                                                                buttonHeight: 53.h,
-                                                                borderWidth: 0.w,
-                                                                borderRadius: 4.r,
-                                                                buttonColor: AppColors
-                                                                    .w1,
-                                                                borderColor: AppColors
-                                                                    .w1,
-                                                                onPressed: () {
-                                                                  nameController
-                                                                      .clear();
-                                                                  seatsController
-                                                                      .clear();
-                                                                  statusController
-                                                                      .clear();
-                                                                  startDateController
-                                                                      .clear();
-                                                                  endDateController
-                                                                      .clear();
-                                                                  sundayStartController.clear();
-                                                                  sundayEndController.clear();
-                                                                  mondayStartController.clear();
-                                                                  mondayEndController.clear();
-                                                                  tuesdayStartController.clear();
-                                                                  tuesdayEndController.clear();
-                                                                  wednesdayStartController.clear();
-                                                                  wednesdayEndController.clear();
-                                                                  thursdayStartController.clear();
-                                                                  thursdayEndController.clear();
-                                                                  fridayStartController.clear();
-                                                                  fridayEndController.clear();
-                                                                  saturdayStartController.clear();
-                                                                  saturdayEndController.clear();
-                                                                  Navigator.pop(
-                                                                      dialogContext);
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
                                       );
                                     },
-                                  );
-                                },
-                                body: BlocConsumer<SelectSectionCubit, SelectSectionState>(
-                                  listener: (contextSec, stateSec) {
-                                    if (stateSec is SelectSectionSuccess) {
-                                      SectionRatingCubit.get(context).fetchSectionRating(sectionId: stateSec.section.id);
-                                      SectionProgressCubit.get(context).fetchSectionProgress(sectionId: stateSec.section.id);
-                                      TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
-                                      StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
-                                      FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: 1);
-                                    }
-                                  },
-                                  builder: (context, stateSec) {
-                                    if (stateSec is SelectSectionSuccess) {
-                                      return BlocBuilder<SectionRatingCubit, SectionRatingState>(
-                                        builder: (contextR, stateR) {
-                                          return BlocBuilder<SectionProgressCubit, SectionProgressState>(
-                                            builder: (contextP, stateP) {
-                                              if(stateP is SectionProgressSuccess) {
-                                                return BlocConsumer<TrainersSectionCubit, TrainersSectionState>(
-                                                  listener: (contextTS, stateTS) {},
-                                                  builder: (contextTS, stateTS) {
-                                                    return BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
-                                                      builder: (contextSS, stateSS) {
-                                                        return Padding(
-                                                          padding: EdgeInsets.only(
-                                                              top: 238.0.h,
-                                                              left: 77.0.w,
-                                                              bottom: 27.0.h),
-                                                          child: SingleChildScrollView(
-                                                            physics: BouncingScrollPhysics(),
-                                                            child: Column(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Column(
+                                    body: BlocConsumer<SelectSectionCubit, SelectSectionState>(
+                                      listener: (contextSec, stateSec) {
+                                        if (stateSec is SelectSectionSuccess) {
+                                          SectionRatingCubit.get(context).fetchSectionRating(sectionId: stateSec.section.id);
+                                          SectionProgressCubit.get(context).fetchSectionProgress(sectionId: stateSec.section.id);
+                                          TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
+                                          StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
+                                          FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: 1);
+                                        }
+                                      },
+                                      builder: (context, stateSec) {
+                                        if (stateSec is SelectSectionSuccess) {
+                                          return BlocBuilder<SectionRatingCubit, SectionRatingState>(
+                                            builder: (contextR, stateR) {
+                                              return BlocBuilder<SectionProgressCubit, SectionProgressState>(
+                                                builder: (contextP, stateP) {
+                                                  if(stateP is SectionProgressSuccess) {
+                                                    return BlocConsumer<TrainersSectionCubit, TrainersSectionState>(
+                                                      listener: (contextTS, stateTS) {},
+                                                      builder: (contextTS, stateTS) {
+                                                        return BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                                                          builder: (contextSS, stateSS) {
+                                                            return Padding(
+                                                              padding: EdgeInsets.only(
+                                                                  top: 238.0.h,
+                                                                  left: 77.0.w,
+                                                                  bottom: 27.0.h),
+                                                              child: SingleChildScrollView(
+                                                                physics: BouncingScrollPhysics(),
+                                                                child: Column(
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
-                                                                    CustomCourseInformation(
-                                                                      image: stateDC.course.course.photo,
-                                                                      showIcons: true,
-                                                                      showSectionInformation: true,
-                                                                      ratingText: stateR is SectionRatingSuccess ? (stateR.sectionRating.averageRating == null ? '0.0' : stateR.sectionRating.averageRating!.replaceRange(2, 5, '')) : stateR is SectionRatingLoading ? '...' : '!',
-                                                                      ratingPercent: double.parse('${stateP.sectionProgress.progressPercentage}') / 100,
-                                                                      ratingPercentText: '${stateP.sectionProgress.progressPercentage}%',
-                                                                      circleStatusColor: AppColors.mintGreen,
-                                                                      courseStatusText: handleReceiveState(state: stateSec.section.state),
-                                                                      showEditStatusIcon: true,
-                                                                      startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
-                                                                      showCourseCalenderIcon: true,
-                                                                      endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
-                                                                      numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
-                                                                      bodyText: stateDC.course.course.description,
-                                                                      onTap: () {
-                                                                        showDialog(
-                                                                          context: context,
-                                                                          builder: (BuildContext dialogContext) {
-                                                                            return UpdateStateDialog(section: stateSec.section, updateCubit: context.read<UpdateSectionCubit>(),);
-                                                                          },
-                                                                        );
-                                                                      },
-                                                                      onTapDate: () {
-                                                                        context.go(
-                                                                            '${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.calendar}/${stateSec.section.id}');
-                                                                      },
-                                                                      onTapRating: () {
-                                                                        context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionRating}/${stateSec.section.id}');;
-                                                                      },
-                                                                      onTapFirstIcon: () {
-                                                                        showDialog(
-                                                                          context: context,
-                                                                          builder: (BuildContext dialogContext) {
-                                                                            return UpdateSectionDialog(section: stateSec.section, courseId: stateDC.course.course.id, updateCubit: context.read<UpdateSectionCubit>(),);
-                                                                          },
-                                                                        );
-                                                                      },
-                                                                      onTapSecondIcon: () {
-                                                                        showDialog(
-                                                                          context: context,
-                                                                          builder: (BuildContext dialogContext) {
-                                                                            return Align(
-                                                                              alignment: Alignment.topRight,
-                                                                              child: Material(
-                                                                                color: Colors.transparent,
-                                                                                child: Container(
-                                                                                  width: 638.w,
-                                                                                  height: 478.h,
-                                                                                  margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
-                                                                                  padding:  EdgeInsets.all(22.r),
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: AppColors.white,
-                                                                                    borderRadius: BorderRadius.circular(6.r),
-                                                                                  ),
-                                                                                  child: SingleChildScrollView(
-                                                                                    physics: BouncingScrollPhysics(),
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Padding(
-                                                                                          padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
-                                                                                          child: Row(
-                                                                                            children: [
-                                                                                              Icon(
-                                                                                                Icons.error_outline,
-                                                                                                color: AppColors.orange,
-                                                                                                size: 55.r,
-                                                                                              ),
-                                                                                              SizedBox(width: 10.w,),
-                                                                                              Text(
-                                                                                                AppLocalizations.of(context).translate('Warning'),
-                                                                                                style: Styles.h3Bold(color: AppColors.t3),
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
-                                                                                          child: Text(
-                                                                                            AppLocalizations.of(context).translate('Are you sure you want to delete this section?'),
-                                                                                            style: Styles.b2Normal(color: AppColors.t3),
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.ellipsis,
-                                                                                          ),
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
-                                                                                          child: Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                                            children: [
-                                                                                              TextIconButton(
-                                                                                                textButton: AppLocalizations.of(context).translate('Confirm'),
-                                                                                                bigText: true,
-                                                                                                textColor: AppColors.t3,
-                                                                                                icon: Icons.check_circle_outline,
-                                                                                                iconSize: 40.01.r,
-                                                                                                iconColor: AppColors.t2,
-                                                                                                iconLast: false,
-                                                                                                firstSpaceBetween: 3.w,
-                                                                                                buttonHeight: 53.h,
-                                                                                                borderWidth: 0.w,
-                                                                                                buttonColor: AppColors.white,
-                                                                                                borderColor: Colors.transparent,
-                                                                                                onPressed: (){
-                                                                                                  context.read<DeleteSectionCubit>().fetchDeleteSection(id: stateSec.section.id);
-                                                                                                  Navigator.pop(dialogContext);
-                                                                                                },
-                                                                                              ),
-                                                                                              SizedBox(width: 42.w,),
-                                                                                              TextIconButton(
-                                                                                                textButton: AppLocalizations.of(context).translate('       Cancel       '),
-                                                                                                textColor: AppColors.t3,
-                                                                                                iconLast: false,
-                                                                                                buttonHeight: 53.h,
-                                                                                                borderWidth: 0.w,
-                                                                                                borderRadius: 4.r,
-                                                                                                buttonColor: AppColors.w1,
-                                                                                                borderColor: AppColors.w1,
-                                                                                                onPressed: (){
-                                                                                                  Navigator.pop(dialogContext);
-                                                                                                },
-                                                                                              ),
-                                                                                            ],
-                                                                                          ),
-                                                                                        )
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
+                                                                    Column(
+                                                                      children: [
+                                                                        CustomCourseInformation(
+                                                                          image: stateDC.course.course.photo,
+                                                                          showIcons: true,
+                                                                          showSectionInformation: true,
+                                                                          ratingText: stateR is SectionRatingSuccess ? (stateR.sectionRating.averageRating == null ? '0.0' : stateR.sectionRating.averageRating!.replaceRange(2, 5, '')) : stateR is SectionRatingLoading ? '...' : '!',
+                                                                          ratingPercent: double.parse('${stateP.sectionProgress.progressPercentage}') / 100,
+                                                                          ratingPercentText: '${stateP.sectionProgress.progressPercentage}%',
+                                                                          circleStatusColor: AppColors.mintGreen,
+                                                                          courseStatusText: handleReceiveState(state: stateSec.section.state),
+                                                                          showEditStatusIcon: true,
+                                                                          startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
+                                                                          showCourseCalenderIcon: true,
+                                                                          endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
+                                                                          numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
+                                                                          bodyText: stateDC.course.course.description,
+                                                                          onTap: () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext dialogContext) {
+                                                                                return UpdateStateDialog(section: stateSec.section, updateCubit: context.read<UpdateStateSectionCubit>(),);
+                                                                              },
                                                                             );
                                                                           },
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                    SizedBox(height: 22.h),
-                                                                    Row(
-                                                                      mainAxisSize: MainAxisSize.max,
-                                                                      children: [
-                                                                        BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
-                                                                          builder: (contextSS, stateSS) {
-                                                                            if(stateSS is StudentsSectionSuccess) {
-                                                                              return Row(
-                                                                                children: [
-                                                                                  CustomOverloadingAvatar(
-                                                                                    labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                                                    tailText: AppLocalizations.of(context).translate('See more'),
-                                                                                    firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
-                                                                                    secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
-                                                                                    thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
-                                                                                    fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
-                                                                                    fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
-                                                                                    avatarCount: stateSS.students.students.data![0].students!.length,
-                                                                                    onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
-                                                                                    },
+                                                                          onTapDate: () {
+                                                                            context.go(
+                                                                                '${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.calendar}/${stateSec.section.id}');
+                                                                          },
+                                                                          onTapRating: () {
+                                                                            context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionRating}/${stateSec.section.id}');;
+                                                                          },
+                                                                          onTapFirstIcon: () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext dialogContext) {
+                                                                                return UpdateSectionDialog(section: stateSec.section, courseId: stateDC.course.course.id, updateCubit: context.read<UpdateSectionCubit>(),);
+                                                                              },
+                                                                            );
+                                                                          },
+                                                                          onTapSecondIcon: () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext dialogContext) {
+                                                                                return Align(
+                                                                                  alignment: Alignment.topRight,
+                                                                                  child: Material(
+                                                                                    color: Colors.transparent,
+                                                                                    child: Container(
+                                                                                      width: 638.w,
+                                                                                      height: 478.h,
+                                                                                      margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
+                                                                                      padding:  EdgeInsets.all(22.r),
+                                                                                      decoration: BoxDecoration(
+                                                                                        color: AppColors.white,
+                                                                                        borderRadius: BorderRadius.circular(6.r),
+                                                                                      ),
+                                                                                      child: SingleChildScrollView(
+                                                                                        physics: BouncingScrollPhysics(),
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                          children: [
+                                                                                            Padding(
+                                                                                              padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
+                                                                                              child: Row(
+                                                                                                children: [
+                                                                                                  Icon(
+                                                                                                    Icons.error_outline,
+                                                                                                    color: AppColors.orange,
+                                                                                                    size: 55.r,
+                                                                                                  ),
+                                                                                                  SizedBox(width: 10.w,),
+                                                                                                  Text(
+                                                                                                    AppLocalizations.of(context).translate('Warning'),
+                                                                                                    style: Styles.h3Bold(color: AppColors.t3),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
+                                                                                              child: Text(
+                                                                                                AppLocalizations.of(context).translate('Are you sure you want to delete this section?'),
+                                                                                                style: Styles.b2Normal(color: AppColors.t3),
+                                                                                                maxLines: 1,
+                                                                                                overflow: TextOverflow.ellipsis,
+                                                                                              ),
+                                                                                            ),
+                                                                                            Padding(
+                                                                                              padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
+                                                                                              child: Row(
+                                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                children: [
+                                                                                                  TextIconButton(
+                                                                                                    textButton: AppLocalizations.of(context).translate('Confirm'),
+                                                                                                    bigText: true,
+                                                                                                    textColor: AppColors.t3,
+                                                                                                    icon: Icons.check_circle_outline,
+                                                                                                    iconSize: 40.01.r,
+                                                                                                    iconColor: AppColors.t2,
+                                                                                                    iconLast: false,
+                                                                                                    firstSpaceBetween: 3.w,
+                                                                                                    buttonHeight: 53.h,
+                                                                                                    borderWidth: 0.w,
+                                                                                                    buttonColor: AppColors.white,
+                                                                                                    borderColor: Colors.transparent,
+                                                                                                    onPressed: (){
+                                                                                                      context.read<DeleteSectionCubit>().fetchDeleteSection(id: stateSec.section.id);
+                                                                                                      Navigator.pop(dialogContext);
+                                                                                                    },
+                                                                                                  ),
+                                                                                                  SizedBox(width: 42.w,),
+                                                                                                  TextIconButton(
+                                                                                                    textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                                                                    textColor: AppColors.t3,
+                                                                                                    iconLast: false,
+                                                                                                    buttonHeight: 53.h,
+                                                                                                    borderWidth: 0.w,
+                                                                                                    borderRadius: 4.r,
+                                                                                                    buttonColor: AppColors.w1,
+                                                                                                    borderColor: AppColors.w1,
+                                                                                                    onPressed: (){
+                                                                                                      Navigator.pop(dialogContext);
+                                                                                                    },
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
                                                                                   ),
-                                                                                  SizedBox(
-                                                                                    width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
-                                                                                ],
-                                                                              );
-                                                                            } else if(stateSS is StudentsSectionFailure) {
-                                                                              return Row(
-                                                                                children: [
-                                                                                  CustomOverloadingAvatar(
-                                                                                    labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                        SizedBox(height: 22.h),
+                                                                        Row(
+                                                                          mainAxisSize: MainAxisSize.max,
+                                                                          children: [
+                                                                            BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                                                                              builder: (contextSS, stateSS) {
+                                                                                if(stateSS is StudentsSectionSuccess) {
+                                                                                  return Row(
+                                                                                    children: [
+                                                                                      CustomOverloadingAvatar(
+                                                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                                                        tailText: AppLocalizations.of(context).translate('See more'),
+                                                                                        firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
+                                                                                        secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
+                                                                                        thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
+                                                                                        fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
+                                                                                        fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
+                                                                                        avatarCount: stateSS.students.students.data![0].students!.length,
+                                                                                        onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
+                                                                                        },
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
+                                                                                    ],
+                                                                                  );
+                                                                                } else if(stateSS is StudentsSectionFailure) {
+                                                                                  return Row(
+                                                                                    children: [
+                                                                                      CustomOverloadingAvatar(
+                                                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                                                        tailText: AppLocalizations.of(context).translate('See more'),
+                                                                                        firstImage: '',
+                                                                                        secondImage: '',
+                                                                                        thirdImage: '',
+                                                                                        fourthImage: '',
+                                                                                        fifthImage: '',
+                                                                                        avatarCount: 5,
+                                                                                        onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
+                                                                                        },
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                                                                    ],
+                                                                                  );
+                                                                                } else {
+                                                                                  return CustomCircularProgressIndicator();
+                                                                                }
+                                                                              }
+                                                                            ),
+                                                                            BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
+                                                                              builder: (contextTS, stateTS) {
+                                                                                if(stateTS is TrainersSectionSuccess) {
+                                                                                  return Expanded(
+                                                                                    child: CustomOverloadingAvatar(
+                                                                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                                                                      tailText: AppLocalizations.of(context).translate('See more'),
+                                                                                      firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                                                                      secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                                                                      thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                                                                      fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                                                                      fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                                                                      avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                                                                      onTap: () {
+                                                                                        context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
+                                                                                      },
+                                                                                    ),
+                                                                                  );
+                                                                                } else if(stateTS is TrainersSectionFailure) {
+                                                                                  return CustomOverloadingAvatar(
+                                                                                    labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
                                                                                     tailText: AppLocalizations.of(context).translate('See more'),
                                                                                     firstImage: '',
                                                                                     secondImage: '',
@@ -977,272 +1031,234 @@ class CourseDetailsViewBody extends StatelessWidget {
                                                                                     fourthImage: '',
                                                                                     fifthImage: '',
                                                                                     avatarCount: 5,
-                                                                                    onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
+                                                                                    onTap: () {
+                                                                                      //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
                                                                                     },
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
-                                                                                ],
-                                                                              );
-                                                                            } else {
-                                                                              return CustomCircularProgressIndicator();
-                                                                            }
-                                                                          }
-                                                                        ),
-                                                                        BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
-                                                                          builder: (contextTS, stateTS) {
-                                                                            if(stateTS is TrainersSectionSuccess) {
-                                                                              return Expanded(
-                                                                                child: CustomOverloadingAvatar(
-                                                                                  labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                                                                  tailText: AppLocalizations.of(context).translate('See more'),
-                                                                                  firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
-                                                                                  secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
-                                                                                  thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
-                                                                                  fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
-                                                                                  fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
-                                                                                  avatarCount: stateTS.trainers.trainers![0].trainers!.length,
-                                                                                  onTap: () {
-                                                                                    context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
-                                                                                  },
-                                                                                ),
-                                                                              );
-                                                                            } else if(stateTS is TrainersSectionFailure) {
-                                                                              return CustomOverloadingAvatar(
-                                                                                labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                                                                tailText: AppLocalizations.of(context).translate('See more'),
-                                                                                firstImage: '',
-                                                                                secondImage: '',
-                                                                                thirdImage: '',
-                                                                                fourthImage: '',
-                                                                                fifthImage: '',
-                                                                                avatarCount: 5,
-                                                                                onTap: () {
-                                                                                  //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${stateDC.course.course.departmentId}/${stateSec.section.id}');
-                                                                                },
-                                                                              );
-                                                                            } else {
-                                                                              return CustomCircularProgressIndicator();
-                                                                            }
-                                                                          }
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                        top: 40.h, right: 47.0.w,),
-                                                                      child: DefaultTabController(
-                                                                        length: 2,
-                                                                        child: Column(
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              height: 70.h,
-                                                                              child: TabBar(
-                                                                                labelColor: AppColors
-                                                                                    .blue,
-                                                                                unselectedLabelColor: AppColors
-                                                                                    .blue,
-                                                                                indicator: BoxDecoration(
-                                                                                  shape: BoxShape
-                                                                                      .circle,
-                                                                                  color: AppColors
-                                                                                      .darkBlue,
-                                                                                ),
-                                                                                indicatorPadding: EdgeInsets
-                                                                                    .only(
-                                                                                    top: 48.r,
-                                                                                    bottom: 12.r),
-                                                                                indicatorWeight: 20,
-                                                                                labelStyle: TextStyle(
-                                                                                    fontSize: 20.sp,
-                                                                                    fontWeight: FontWeight
-                                                                                        .bold),
-                                                                                unselectedLabelStyle: TextStyle(
-                                                                                    fontWeight: FontWeight
-                                                                                        .normal),
-                                                                                tabs: [
-                                                                                  Tab(
-                                                                                    text: AppLocalizations.of(context).translate('         File         '),),
-                                                                                  Tab(text: AppLocalizations.of(context).translate('Announcement')),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 570.23.h,
-                                                                              child: TabBarView(
-                                                                                children: [
-                                                                                  BlocBuilder<FilesCubit, FilesState>(
-                                                                                    builder: (contextF, stateF) {
-                                                                                      return BlocConsumer<GetFileCubit, GetFileState>(
-                                                                                        listener: (context, state) {
-                                                                                          if (state is GetFileLoading) {
-                                                                                            CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileLoading'),color: AppColors.darkLightPurple, textColor: AppColors.black);
-                                                                                          } else if (state is GetFileSuccess) {
-                                                                                            CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileSuccess'),);
-                                                                                          }
-                                                                                        },
-                                                                                        builder: (contextGF, stateGF) {
-                                                                                          if(stateF is FilesSuccess) {
-                                                                                            return Column(
-                                                                                              children: [
-                                                                                                stateF.files.files.data!.isNotEmpty ? GridView.builder(
-                                                                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
-                                                                                                  itemBuilder: (BuildContext context, int index) {
-                                                                                                    return Align(
-                                                                                                      child: FileItem(
-                                                                                                        fileName: stateF.files.files.data![index].fileName,
-                                                                                                        color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
-                                                                                                        onTap: () {
-                                                                                                          GetFileCubit.get(context).fetchFile(filePath: stateF.files.files.data![index].filePath);
-                                                                                                        },
-                                                                                                      ),
-                                                                                                    );
-                                                                                                  },
-                                                                                                  itemCount: stateF.files.files.data!.length,
-                                                                                                  shrinkWrap: true,
-                                                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                                                ) : CustomEmptyWidget(
-                                                                                                  firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
-                                                                                                  secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
-                                                                                                ),
-                                                                                                CustomNumberPagination(
-                                                                                                  numberPages: stateF.files.files.lastPage,
-                                                                                                  initialPage: stateF.files.files.currentPage,
-                                                                                                  onPageChange: (int index) {
-                                                                                                    FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: index+1);
-                                                                                                  },
-                                                                                                ),
-                                                                                              ],
-                                                                                            );
-                                                                                          } else if(stateF is FilesFailure) {
-                                                                                            return CustomErrorWidget(
-                                                                                                errorMessage: stateF.errorMessage);
-                                                                                          } else {
-                                                                                            return CustomCircularProgressIndicator();
-                                                                                          }
-                                                                                        }
-                                                                                      );
-                                                                                    }
-                                                                                  ),
-                                                                                  Container(),
-                                                                                  /*CustomOverLoadingCard(
-                                                                                    cardCount: count,
-                                                                                    onTapSeeMore: () {
-                                                                                      context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcementsA}/1');
-                                                                                    },
-                                                                                    widget: GridView
-                                                                                        .builder(
-                                                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                          crossAxisCount: crossAxisCount,
-                                                                                          crossAxisSpacing: 10
-                                                                                              .w,
-                                                                                          mainAxisExtent: 354.66
-                                                                                              .h),
-                                                                                      itemBuilder: (
-                                                                                          BuildContext context,
-                                                                                          int index) {
-                                                                                        return Align(
-                                                                                            child: CustomCard(
-                                                                                              text: 'Discount 30%',
-                                                                                              onTap: () {
-                                                                                                context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsA}/1${GoRouterPath.announcementADetails}/1');
-                                                                                                //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcements}/1');
-                                                                                              },
-                                                                                              onTapFirstIcon: () {},
-                                                                                              onTapSecondIcon: () {},
-                                                                                            ));
-                                                                                      },
-                                                                                      itemCount: count >
-                                                                                          4
-                                                                                          ? 4
-                                                                                          : count,
-                                                                                      shrinkWrap: true,
-                                                                                      physics: NeverScrollableScrollPhysics(),
-                                                                                    ),
-                                                                                  ),*/
-                                                                                ],
-                                                                              ),
+                                                                                  );
+                                                                                } else {
+                                                                                  return CustomCircularProgressIndicator();
+                                                                                }
+                                                                              }
                                                                             ),
                                                                           ],
                                                                         ),
-                                                                      ),
+                                                                        /*Padding(
+                                                                          padding: EdgeInsets.only(
+                                                                            top: 40.h, right: 47.0.w,),
+                                                                          child: DefaultTabController(
+                                                                            length: 2,
+                                                                            child: Column(
+                                                                              children: [
+                                                                                SizedBox(
+                                                                                  height: 70.h,
+                                                                                  child: TabBar(
+                                                                                    labelColor: AppColors
+                                                                                        .blue,
+                                                                                    unselectedLabelColor: AppColors
+                                                                                        .blue,
+                                                                                    indicator: BoxDecoration(
+                                                                                      shape: BoxShape
+                                                                                          .circle,
+                                                                                      color: AppColors
+                                                                                          .darkBlue,
+                                                                                    ),
+                                                                                    indicatorPadding: EdgeInsets
+                                                                                        .only(
+                                                                                        top: 48.r,
+                                                                                        bottom: 12.r),
+                                                                                    indicatorWeight: 20,
+                                                                                    labelStyle: TextStyle(
+                                                                                        fontSize: 20.sp,
+                                                                                        fontWeight: FontWeight
+                                                                                            .bold),
+                                                                                    unselectedLabelStyle: TextStyle(
+                                                                                        fontWeight: FontWeight
+                                                                                            .normal),
+                                                                                    tabs: [
+                                                                                      Tab(
+                                                                                        text: AppLocalizations.of(context).translate('         File         '),),
+                                                                                      Tab(text: AppLocalizations.of(context).translate('Announcement')),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 570.23.h,
+                                                                                  child: TabBarView(
+                                                                                    children: [
+                                                                                      BlocBuilder<FilesCubit, FilesState>(
+                                                                                        builder: (contextF, stateF) {
+                                                                                          return BlocConsumer<GetFileCubit, GetFileState>(
+                                                                                            listener: (context, state) {
+                                                                                              if (state is GetFileLoading) {
+                                                                                                CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileLoading'),color: AppColors.darkLightPurple, textColor: AppColors.black);
+                                                                                              } else if (state is GetFileSuccess) {
+                                                                                                CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileSuccess'),);
+                                                                                              }
+                                                                                            },
+                                                                                            builder: (contextGF, stateGF) {
+                                                                                              if(stateF is FilesSuccess) {
+                                                                                                return Column(
+                                                                                                  children: [
+                                                                                                    stateF.files.files.data!.isNotEmpty ? GridView.builder(
+                                                                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
+                                                                                                      itemBuilder: (BuildContext context, int index) {
+                                                                                                        return Align(
+                                                                                                          child: FileItem(
+                                                                                                            fileName: stateF.files.files.data![index].fileName,
+                                                                                                            color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
+                                                                                                            onTap: () {
+                                                                                                              GetFileCubit.get(context).fetchFile(filePath: stateF.files.files.data![index].filePath);
+                                                                                                            },
+                                                                                                          ),
+                                                                                                        );
+                                                                                                      },
+                                                                                                      itemCount: stateF.files.files.data!.length,
+                                                                                                      shrinkWrap: true,
+                                                                                                      physics: NeverScrollableScrollPhysics(),
+                                                                                                    ) : CustomEmptyWidget(
+                                                                                                      firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
+                                                                                                      secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
+                                                                                                    ),
+                                                                                                    CustomNumberPagination(
+                                                                                                      numberPages: stateF.files.files.lastPage,
+                                                                                                      initialPage: stateF.files.files.currentPage,
+                                                                                                      onPageChange: (int index) {
+                                                                                                        FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: index+1);
+                                                                                                      },
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                );
+                                                                                              } else if(stateF is FilesFailure) {
+                                                                                                return CustomErrorWidget(
+                                                                                                    errorMessage: stateF.errorMessage);
+                                                                                              } else {
+                                                                                                return CustomCircularProgressIndicator();
+                                                                                              }
+                                                                                            }
+                                                                                          );
+                                                                                        }
+                                                                                      ),
+                                                                                      Container(),
+                                                                                      *//*CustomOverLoadingCard(
+                                                                                        cardCount: count,
+                                                                                        onTapSeeMore: () {
+                                                                                          context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcementsA}/1');
+                                                                                        },
+                                                                                        widget: GridView
+                                                                                            .builder(
+                                                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                              crossAxisCount: crossAxisCount,
+                                                                                              crossAxisSpacing: 10
+                                                                                                  .w,
+                                                                                              mainAxisExtent: 354.66
+                                                                                                  .h),
+                                                                                          itemBuilder: (
+                                                                                              BuildContext context,
+                                                                                              int index) {
+                                                                                            return Align(
+                                                                                                child: CustomCard(
+                                                                                                  text: 'Discount 30%',
+                                                                                                  onTap: () {
+                                                                                                    context.go('${GoRouterPath.courses}/1${GoRouterPath.courseDetails}/1${GoRouterPath.announcementsA}/1${GoRouterPath.announcementADetails}/1');
+                                                                                                    //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.announcements}/1');
+                                                                                                  },
+                                                                                                  onTapFirstIcon: () {},
+                                                                                                  onTapSecondIcon: () {},
+                                                                                                ));
+                                                                                          },
+                                                                                          itemCount: count >
+                                                                                              4
+                                                                                              ? 4
+                                                                                              : count,
+                                                                                          shrinkWrap: true,
+                                                                                          physics: NeverScrollableScrollPhysics(),
+                                                                                        ),
+                                                                                      ),*//*
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),*/
+                                                                      ],
                                                                     ),
                                                                   ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
+                                                              ),
+                                                            );
+                                                          }
                                                         );
                                                       }
                                                     );
+                                                  } else if(stateP is SectionProgressFailure) {
+                                                    return CustomErrorWidget(
+                                                        errorMessage: stateP.errorMessage);
+                                                  } else {
+                                                    return CustomCircularProgressIndicator();
                                                   }
-                                                );
-                                              } else if(stateP is SectionProgressFailure) {
-                                                return CustomErrorWidget(
-                                                    errorMessage: stateP.errorMessage);
-                                              } else {
-                                                return CustomCircularProgressIndicator();
-                                              }
+                                                }
+                                              );
                                             }
                                           );
-                                        }
-                                      );
-                                    } else {
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 238.0.h,
-                                            left: 77.0.w,
-                                            bottom: 27.0.h),
-                                        child: SingleChildScrollView(
-                                          physics: BouncingScrollPhysics(),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: [
-                                              Column(
+                                        } else {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 238.0.h,
+                                                left: 77.0.w,
+                                                bottom: 27.0.h),
+                                            child: SingleChildScrollView(
+                                              physics: BouncingScrollPhysics(),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
                                                 children: [
-                                                  CustomCourseInformation(
-                                                    image: stateDC.course.course.photo,
-                                                    bodyText: stateDC.course.course.description,
-                                                    onTap: () {},
-                                                    onTapDate: () {},
-                                                    onTapFirstIcon: (){},
-                                                    onTapSecondIcon: (){},
-                                                  ),
-                                                  //SizedBox(height: 22.h),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(right: 87.w),
-                                                    child: CustomEmptyWidget(
-                                                      firstText: AppLocalizations.of(context).translate('No more at this time'),
-                                                      secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
-                                                    ),
+                                                  Column(
+                                                    children: [
+                                                      CustomCourseInformation(
+                                                        image: stateDC.course.course.photo,
+                                                        bodyText: stateDC.course.course.description,
+                                                        onTap: () {},
+                                                        onTapDate: () {},
+                                                        onTapFirstIcon: (){},
+                                                        onTapSecondIcon: (){},
+                                                      ),
+                                                      //SizedBox(height: 22.h),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(right: 87.w),
+                                                        child: CustomEmptyWidget(
+                                                          firstText: AppLocalizations.of(context).translate('No more at this time'),
+                                                          secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                ),
-                              ),
-                            );
-                          } else if (state is SectionsFailure) {
-                            return CustomErrorWidget(
-                                errorMessage: state.errorMessage);
-                          } else {
-                            return CustomCircularProgressIndicator();
-                          }
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    ),
+                                  ),
+                                );
+                              } else if (state is SectionsFailure) {
+                                return CustomErrorWidget(
+                                    errorMessage: state.errorMessage);
+                              } else {
+                                return CustomCircularProgressIndicator();
+                              }
+                            }
+                          );
+                        } else if(stateDC is DetailsCourseFailure) {
+                          return CustomErrorWidget(
+                              errorMessage: stateDC.errorMessage);
+                        } else {
+                          return CustomCircularProgressIndicator();
                         }
-                      );
-                    } else if(stateDC is DetailsCourseFailure) {
-                      return CustomErrorWidget(
-                          errorMessage: stateDC.errorMessage);
-                    } else {
-                      return CustomCircularProgressIndicator();
-                    }
+                      }
+                    );
                   }
                 );
               }
@@ -1977,7 +1993,7 @@ class UpdateStateDialog extends StatefulWidget {
   const UpdateStateDialog({super.key, required this.section, required this.updateCubit});
 
   final DatumSection section;
-  final UpdateSectionCubit updateCubit;
+  final UpdateStateSectionCubit updateCubit;
 
   @override
   State<UpdateStateDialog> createState() => _UpdateStateDialogState();
@@ -2149,7 +2165,7 @@ class _UpdateStateDialogState extends State<UpdateStateDialog> {
                                 log(selected!);
                                 statusController.text = selected;
                                 Navigator.pop(context);
-                                widget.updateCubit.fetchUpdateSection(
+                                widget.updateCubit.fetchUpdateStateSection(
                                   courseId: widget.section.id,
                                   state: handleSendState(state: statusController.text),
                                 );

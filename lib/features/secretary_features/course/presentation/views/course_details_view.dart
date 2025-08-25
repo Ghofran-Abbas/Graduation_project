@@ -18,6 +18,7 @@ import '../manager/section_rating_cubit/section_rating_cubit.dart';
 import '../manager/students_section_cubit/students_section_cubit.dart';
 import '../manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../manager/update_section_cubit/update_section_cubit.dart';
+import '../manager/update_state_section_cubit/update_state_section_cubit.dart';
 import 'widgets/course_details_view_body.dart';
 
 class CourseDetailsView extends StatelessWidget {
@@ -109,6 +110,13 @@ class CourseDetailsView extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return SectionProgressCubit(
+              getIt.get<CourseRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return UpdateStateSectionCubit(
               getIt.get<CourseRepoImpl>(),
             );
           },

@@ -43,109 +43,112 @@ class LoginViewBody extends StatelessWidget {
         LoginCubit cubit = BlocProvider.of(context);
         return Form(
           key: _formKey,
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.topStart,
-                  child: Container(
-                    width: 300.w,
-                    height: 260.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(130.r)),
-                      color: AppColors.purple,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 40.h,),
-                Row(
-                  children: [
-                    Container(
-                      width: 700.w,
-                      height: 400.h,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: Container(
+                      width: 300.w,
+                      height: 260.h,
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Assets.login),
-                        ),
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(130.r)),
+                        color: AppColors.purple,
                       ),
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          CustomLabelTextFormField(
-                            labelText: AppLocalizations.of(context).translate('Email address'),
-                            showLabelText: true,
-                            controller: emailController,
-                            topPadding: 20.h,
-                            bottomPadding: 0.h,
-                            leftPadding: 175.w,
-                            rightPadding: 127.w,
-                            validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                  ),
+                  SizedBox(height: 40.h,),
+                  Row(
+                    children: [
+                      Container(
+                        width: 700.w,
+                        height: 400.h,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(Assets.login),
                           ),
-                          CustomLabelTextFormField(
-                            labelText: AppLocalizations.of(context).translate('Password'),
-                            showLabelText: true,
-                            controller: passwordController,
-                            topPadding: 42.h,
-                            bottomPadding: 0.h,
-                            leftPadding: 175.w,
-                            rightPadding: 127.w,
-                            validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.centerEnd,
-                            child: GestureDetector(
-                              onTap: (){context.go(GoRouterPath.passwordReset);},
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 127.w),
-                                child: Text(
-                                  AppLocalizations.of(context).translate('Forget password?'),
-                                  style: Styles.l1Normal(color: AppColors.purple),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            CustomLabelTextFormField(
+                              labelText: AppLocalizations.of(context).translate('Email address'),
+                              showLabelText: true,
+                              controller: emailController,
+                              topPadding: 20.h,
+                              bottomPadding: 0.h,
+                              leftPadding: 175.w,
+                              rightPadding: 127.w,
+                              validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                            ),
+                            CustomLabelTextFormField(
+                              labelText: AppLocalizations.of(context).translate('Password'),
+                              showLabelText: true,
+                              controller: passwordController,
+                              topPadding: 42.h,
+                              bottomPadding: 0.h,
+                              leftPadding: 175.w,
+                              rightPadding: 127.w,
+                              validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                            ),
+                            Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: GestureDetector(
+                                onTap: (){context.go(GoRouterPath.passwordReset);},
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 127.w),
+                                  child: Text(
+                                    AppLocalizations.of(context).translate('Forget password?'),
+                                    style: Styles.l1Normal(color: AppColors.purple),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 100.h,),
-                          TextIconButton(
-                            textButton: AppLocalizations.of(context).translate('Log in'),
-                            bigText: true,
-                            textColor: AppColors.white,
-                            showButtonIcon: false,
-                            iconLast: false,
-                            firstSpaceBetween: 3.w,
-                            buttonHeight: 53.h,
-                            borderWidth: 0.w,
-                            buttonColor: AppColors.purple,
-                            borderColor: Colors.transparent,
-                            onPressed: (){
-                              if(_formKey.currentState!.validate()) {
-                                cubit.fetchCreateTrainer(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  fcm_token: 'fcmToken',
-                                );
-                              }
-                            },
-                          ),
-                        ],
+                            SizedBox(height: 100.h,),
+                            TextIconButton(
+                              textButton: AppLocalizations.of(context).translate('Log in'),
+                              bigText: true,
+                              textColor: AppColors.white,
+                              showButtonIcon: false,
+                              iconLast: false,
+                              firstSpaceBetween: 3.w,
+                              buttonHeight: 53.h,
+                              borderWidth: 0.w,
+                              buttonColor: AppColors.purple,
+                              borderColor: Colors.transparent,
+                              onPressed: (){
+                                if(_formKey.currentState!.validate()) {
+                                  cubit.fetchCreateTrainer(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    fcm_token: 'fcmToken',
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 40.h,),
+                  Align(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    child: Container(
+                      width: 300.w,
+                      height: 260.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(130.r)),
+                        color: AppColors.purple,
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 40.h,),
-                Align(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  child: Container(
-                    width: 300.w,
-                    height: 260.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(130.r)),
-                      color: AppColors.purple,
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

@@ -28,7 +28,7 @@ class TrainerArchiveCourseViewBody extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 56.0.h,),
       child: CustomScreenBody(
-        title: 'Leslie\'s courses',
+        title: AppLocalizations.of(context).translate('Courses'),
         onPressedFirst: () {},
         onPressedSecond: () {},
         onTapSearch: () {

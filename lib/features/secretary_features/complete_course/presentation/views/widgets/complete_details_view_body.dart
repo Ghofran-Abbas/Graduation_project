@@ -21,6 +21,9 @@ import '../../../../../../core/widgets/secretary/custom_overloading_avatar.dart'
 import '../../../../../../core/widgets/secretary/custom_screen_body.dart';
 import '../../../../../../core/widgets/secretary/grid_view_cards.dart';
 import '../../../../../../core/widgets/secretary/grid_view_files.dart';
+import '../../../../../../core/widgets/text_icon_button.dart';
+import '../../../../course/presentation/manager/delete_section_cubit/delete_section_cubit.dart';
+import '../../../../course/presentation/manager/delete_section_cubit/delete_section_state.dart';
 import '../../../../course/presentation/manager/details_course_cubit/details_course_cubit.dart';
 import '../../../../course/presentation/manager/details_course_cubit/details_course_state.dart';
 import '../../../../course/presentation/manager/files_cubit/files_cubit.dart';
@@ -52,407 +55,519 @@ class CompleteDetailsViewBody extends StatelessWidget {
     int crossAxisCount = ((screenWidth - 210) / 250).floor();
     crossAxisCount = crossAxisCount < 2 ? 2 : crossAxisCount;
     int count = 10;
-    return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
-      listener: (contextDC, stateDC) {},
-      builder: (contextDC, stateDC)  {
-        if(stateDC is DetailsCourseSuccess) {
-          return BlocConsumer<CompleteCubit, CompleteState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              if (state is CompleteSuccess) {
-                final List<DatumComplete> sections = state.createResult.data!;
-                final current = state.currentPage;
-                final last = state.lastPage;
-                return Padding(
-                  padding: EdgeInsets.only(top: 56.0.h,),
-                  child: CustomScreenBody(
-                    title: stateDC.course.course.name,
-                    textFirstButton: 'Section 2',
-                    showFirstButton: true,
-                    widget: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.chevron_left, color: current > 1
-                              ? AppColors.purple
-                              : AppColors.t0
-                          ),
-                          onPressed: current > 1
-                              ? () => context.read<CompleteCubit>()
-                              .fetchComplete(courseId: courseId, page: current - 1)
-                              : null,
-                        ),
-                        SizedBox(
-                          width: 200.w,
-                          child: BlocBuilder<SelectCompleteCubit, SelectCompleteState>(
-                            builder: (ctx, selectState) {
-                              DatumComplete? selected;
-                              if (selectState is SelectCompleteSuccess) {
-                                selected = selectState.section;
-                              }
-                              return DropdownMenu<DatumComplete>(
-                                enableSearch: false,
-                                requestFocusOnTap: false,
-                                width: 200.w,
-                                hintText: AppLocalizations.of(context)
-                                    .translate('No section'),
-                                initialSelection: selected,
-                                inputDecorationTheme: InputDecorationTheme(
-                                  constraints: BoxConstraints(maxHeight: 53.h),
-                                  hintStyle: Styles.l1Normal(color: AppColors.t0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: AppColors.purple, width: 1.23),
-                                    borderRadius: BorderRadius.circular(24.67.r),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: AppColors.purple, width: 1.23),
-                                    borderRadius: BorderRadius.circular(24.67.r),
-                                  ),
-                                ),
-                                alignmentOffset: Offset(4, 2),
-                                menuStyle: MenuStyle(
-                                  backgroundColor: WidgetStateColor.resolveWith((_) => AppColors.white),
-                                  elevation: WidgetStateProperty.resolveWith((_) => 0),
-                                  side: WidgetStateBorderSide.resolveWith((_) =>
-                                      BorderSide(width: 1.23, color: AppColors.purple)),
-                                ),
-                                dropdownMenuEntries: sections.map((sec) {
-                                  return DropdownMenuEntry<DatumComplete>(
-                                    value: sec,
-                                    label: sec.name,
-                                  );
-                                }).toList(),
-                                onSelected: (DatumComplete? sec) {
-                                  if (sec != null) {
-                                    ctx.read<SelectCompleteCubit>().selectSection(section: sec);
-                                    log('Selected ID: ${sec.id}');
+    return BlocConsumer<DeleteSectionCubit, DeleteSectionState>(
+        listener: (contextD, stateD) {
+          if (stateD is DeleteSectionFailure) {
+            CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionFailure'),);
+          } else if (stateD is DeleteSectionSuccess) {
+            CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionSuccess'),);
+            context.read<SelectCompleteCubit>().clearSelection();
+            context.read<CompleteCubit>().fetchComplete(courseId: courseId, page: 1);
+            context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
+          }
+        },
+        builder: (contextD, stateD) {
+        return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
+          listener: (contextDC, stateDC) {},
+          builder: (contextDC, stateDC)  {
+            if(stateDC is DetailsCourseSuccess) {
+              return BlocConsumer<CompleteCubit, CompleteState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is CompleteSuccess) {
+                    final List<DatumComplete> sections = state.createResult.data!;
+                    final current = state.currentPage;
+                    final last = state.lastPage;
+                    return Padding(
+                      padding: EdgeInsets.only(top: 56.0.h,),
+                      child: CustomScreenBody(
+                        title: stateDC.course.course.name,
+                        textFirstButton: 'Section 2',
+                        showFirstButton: true,
+                        widget: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.chevron_left, color: current > 1
+                                  ? AppColors.purple
+                                  : AppColors.t0
+                              ),
+                              onPressed: current > 1
+                                  ? () => context.read<CompleteCubit>()
+                                  .fetchComplete(courseId: courseId, page: current - 1)
+                                  : null,
+                            ),
+                            SizedBox(
+                              width: 200.w,
+                              child: BlocBuilder<SelectCompleteCubit, SelectCompleteState>(
+                                builder: (ctx, selectState) {
+                                  DatumComplete? selected;
+                                  if (selectState is SelectCompleteSuccess) {
+                                    selected = selectState.section;
                                   }
+                                  return DropdownMenu<DatumComplete>(
+                                    enableSearch: false,
+                                    requestFocusOnTap: false,
+                                    width: 200.w,
+                                    hintText: AppLocalizations.of(context)
+                                        .translate('No section'),
+                                    initialSelection: selected,
+                                    inputDecorationTheme: InputDecorationTheme(
+                                      constraints: BoxConstraints(maxHeight: 53.h),
+                                      hintStyle: Styles.l1Normal(color: AppColors.t0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: AppColors.purple, width: 1.23),
+                                        borderRadius: BorderRadius.circular(24.67.r),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: AppColors.purple, width: 1.23),
+                                        borderRadius: BorderRadius.circular(24.67.r),
+                                      ),
+                                    ),
+                                    alignmentOffset: Offset(4, 2),
+                                    menuStyle: MenuStyle(
+                                      backgroundColor: WidgetStateColor.resolveWith((_) => AppColors.white),
+                                      elevation: WidgetStateProperty.resolveWith((_) => 0),
+                                      side: WidgetStateBorderSide.resolveWith((_) =>
+                                          BorderSide(width: 1.23, color: AppColors.purple)),
+                                    ),
+                                    dropdownMenuEntries: sections.map((sec) {
+                                      return DropdownMenuEntry<DatumComplete>(
+                                        value: sec,
+                                        label: sec.name,
+                                      );
+                                    }).toList(),
+                                    onSelected: (DatumComplete? sec) {
+                                      if (sec != null) {
+                                        ctx.read<SelectCompleteCubit>().selectSection(section: sec);
+                                        log('Selected ID: ${sec.id}');
+                                      }
+                                    },
+                                  );
                                 },
-                              );
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.chevron_right, color: current < last
+                                  ? AppColors.purple
+                                  : AppColors.t0),
+                              onPressed: current < last
+                                  ? () => context.read<CompleteCubit>()
+                                  .fetchComplete(courseId: courseId, page: current + 1)
+                                  : null,
+                            ),
+                          ],
+                        ),
+                        onPressedFirst: (){},
+                        onPressedSecond: (){},
+                        body: BlocConsumer<SelectCompleteCubit, SelectCompleteState>(
+                            listener: (contextSec, stateSec) {
+                              if (stateSec is SelectCompleteSuccess) {
+                                SectionRatingCubit.get(context).fetchSectionRating(sectionId: stateSec.section.id);
+                                SectionProgressCubit.get(context).fetchSectionProgress(sectionId: stateSec.section.id);
+                                TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
+                                StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
+                                FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: 1);
+                              }
                             },
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.chevron_right, color: current < last
-                              ? AppColors.purple
-                              : AppColors.t0),
-                          onPressed: current < last
-                              ? () => context.read<CompleteCubit>()
-                              .fetchComplete(courseId: courseId, page: current + 1)
-                              : null,
-                        ),
-                      ],
-                    ),
-                    onPressedFirst: (){},
-                    onPressedSecond: (){},
-                    body: BlocConsumer<SelectCompleteCubit, SelectCompleteState>(
-                        listener: (contextSec, stateSec) {
-                          if (stateSec is SelectCompleteSuccess) {
-                            SectionRatingCubit.get(context).fetchSectionRating(sectionId: stateSec.section.id);
-                            SectionProgressCubit.get(context).fetchSectionProgress(sectionId: stateSec.section.id);
-                            TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
-                            StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
-                            FilesCubit.get(context).fetchFiles(sectionId: stateSec.section.id, page: 1);
-                          }
-                        },
-                        builder: (context, stateSec) {
-                          if (stateSec is SelectCompleteSuccess) {
-                            return Padding(
-                              padding: EdgeInsets.only(top: 238.0.h, left: 77.0.w, bottom: 27.0.h),
-                              child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
+                            builder: (context, stateSec) {
+                              if (stateSec is SelectCompleteSuccess) {
+                                return Padding(
+                                  padding: EdgeInsets.only(top: 238.0.h, left: 77.0.w, bottom: 27.0.h),
+                                  child: SingleChildScrollView(
+                                    physics: BouncingScrollPhysics(),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        BlocBuilder<SectionRatingCubit, SectionRatingState>(
-                                            builder: (contextR, stateR) {
-                                              return BlocBuilder<SectionProgressCubit, SectionProgressState>(
-                                                builder: (contextP, stateP) {
-                                                  if(stateP is SectionProgressSuccess) {
-                                                    return CustomCourseInformation(
-                                                      image: stateDC.course.course.photo,
-                                                      showSectionInformation: true,
-                                                      ratingText: stateR is SectionRatingSuccess ? (stateR.sectionRating.averageRating == null ? '0.0' : stateR.sectionRating.averageRating!.replaceRange(2, 5, '')) : stateR is SectionRatingLoading ? '...' : '!',
-                                                      ratingPercent: double.parse('${stateP.sectionProgress.progressPercentage}') / 100,
-                                                      ratingPercentText: '${stateP.sectionProgress.progressPercentage}%',
-                                                      circleStatusColor: AppColors.mintGreen,
-                                                      courseStatusText: handleReceiveState(state: stateSec.section.state),
-                                                      startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
-                                                      showCourseCalenderIcon: true,
-                                                      endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
-                                                      numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
-                                                      bodyText: stateDC.course.course.description,
-                                                      onTap: (){},
-                                                      onTapDate: (){
-                                                        context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeCalendar}/${stateSec.section.id}');
-                                                      },
-                                                      onTapRating: () {
-                                                        context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeRating}/${stateSec.section.id}');
-                                                      },
-                                                      onTapFirstIcon: (){},
-                                                      onTapSecondIcon: (){},
-                                                    );
-                                                  }else if(stateP is SectionProgressFailure) {
-                                                    return CustomErrorWidget(
-                                                        errorMessage: stateP.errorMessage);
-                                                  } else {
-                                                    return CustomCircularProgressIndicator();
-                                                  }
-                                                }
-                                              );
-                                            }
-                                        ),
-                                        SizedBox(height: 22.h),
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
+                                        Column(
                                           children: [
-                                            BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
-                                                builder: (contextSS, stateSS) {
-                                                  if(stateSS is StudentsSectionSuccess) {
-                                                    return Row(
-                                                      children: [
-                                                        CustomOverloadingAvatar(
-                                                          labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                          tailText: AppLocalizations.of(context).translate('See more'),
-                                                          firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
-                                                          secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
-                                                          thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
-                                                          fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
-                                                          fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
-                                                          avatarCount: stateSS.students.students.data![0].students!.length,
-                                                          onTap: () {context.go('${GoRouterPath.completeDetails}/${stateSS.students.students.data![0].id}${GoRouterPath.completeStudents}/${stateSS.students.students.data![0].id}');
-                                                            //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                            BlocBuilder<SectionRatingCubit, SectionRatingState>(
+                                                builder: (contextR, stateR) {
+                                                  return BlocBuilder<SectionProgressCubit, SectionProgressState>(
+                                                    builder: (contextP, stateP) {
+                                                      if(stateP is SectionProgressSuccess) {
+                                                        return CustomCourseInformation(
+                                                          image: stateDC.course.course.photo,
+                                                          showIcons: true,
+                                                          showSectionInformation: true,
+                                                          ratingText: stateR is SectionRatingSuccess ? (stateR.sectionRating.averageRating == null ? '0.0' : stateR.sectionRating.averageRating!.replaceRange(2, 5, '')) : stateR is SectionRatingLoading ? '...' : '!',
+                                                          ratingPercent: double.parse('${stateP.sectionProgress.progressPercentage}') / 100,
+                                                          ratingPercentText: '${stateP.sectionProgress.progressPercentage}%',
+                                                          circleStatusColor: AppColors.mintGreen,
+                                                          courseStatusText: handleReceiveState(state: stateSec.section.state),
+                                                          hideFirstIcon: true,
+                                                          startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
+                                                          showCourseCalenderIcon: true,
+                                                          endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
+                                                          numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
+                                                          bodyText: stateDC.course.course.description,
+                                                          onTap: (){},
+                                                          onTapDate: (){
+                                                            context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeCalendar}/${stateSec.section.id}');
                                                           },
-                                                        ),
-                                                        SizedBox(
-                                                          width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
-                                                      ],
-                                                    );
-                                                  } else if(stateSS is StudentsSectionFailure) {
-                                                    return Row(
-                                                      children: [
-                                                        CustomOverloadingAvatar(
-                                                          labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                          tailText: AppLocalizations.of(context).translate('See more'),
-                                                          firstImage: '',
-                                                          secondImage: '',
-                                                          thirdImage: '',
-                                                          fourthImage: '',
-                                                          fifthImage: '',
-                                                          avatarCount: 5,
-                                                          onTap: () {//context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
-                                                            //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                          onTapRating: () {
+                                                            context.go('${GoRouterPath.completeDetails}/$courseId${GoRouterPath.completeRating}/${stateSec.section.id}');
                                                           },
-                                                        ),
-                                                        SizedBox(
-                                                          width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
-                                                      ],
-                                                    );
-                                                  } else {
-                                                    return CustomCircularProgressIndicator();
-                                                  }
-                                                }
-                                            ),
-                                            BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
-                                                builder: (contextTS, stateTS) {
-                                                  if(stateTS is TrainersSectionSuccess) {
-                                                    return Expanded(
-                                                      child: CustomOverloadingAvatar(
-                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                                        tailText: AppLocalizations.of(context).translate('See more'),
-                                                        firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
-                                                        secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
-                                                        thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
-                                                        fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
-                                                        fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
-                                                        avatarCount: stateTS.trainers.trainers![0].trainers!.length,
-                                                        onTap: () {
-                                                          context.go('${GoRouterPath.completeDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.completeTrainers}/${stateTS.trainers.trainers![0].id}');
-                                                          //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
-                                                        },
-                                                      ),
-                                                    );
-                                                  } else if(stateTS is TrainersSectionFailure) {
-                                                    return Row(
-                                                      children: [
-                                                        CustomOverloadingAvatar(
-                                                          labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                          tailText: AppLocalizations.of(context).translate('See more'),
-                                                          firstImage: '',
-                                                          secondImage: '',
-                                                          thirdImage: '',
-                                                          fourthImage: '',
-                                                          fifthImage: '',
-                                                          avatarCount: 5,
-                                                          onTap: () {context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/1');
-                                                            //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
-                                                          },
-                                                        ),
-                                                        SizedBox(
-                                                          width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
-                                                      ],
-                                                    );
-                                                  } else {
-                                                    return CustomCircularProgressIndicator();
-                                                  }
-                                                }
-                                            ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 40.h, right: 47.0.w,),
-                                          child: DefaultTabController(
-                                            length: 2,
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: 70.h,
-                                                  child: TabBar(
-                                                    labelColor: AppColors.blue,
-                                                    unselectedLabelColor: AppColors.blue,
-                                                    indicator: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: AppColors.darkBlue,
-                                                    ),
-                                                    indicatorPadding: EdgeInsets.only(top: 48.r, bottom: 12.r),
-                                                    indicatorWeight: 20,
-                                                    labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                                                    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-                                                    tabs: [
-                                                      Tab(text: AppLocalizations.of(context).translate('         File         '),),
-                                                      Tab(text: AppLocalizations.of(context).translate('Announcement')),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 570.23.h,
-                                                  child: TabBarView(
-                                                    children: [
-                                                      BlocBuilder<FilesCubit, FilesState>(
-                                                          builder: (contextF, stateF) {
-                                                            return BlocConsumer<GetFileCubit, GetFileState>(
-                                                                listener: (context, state) {
-                                                                  if (state is GetFileLoading) {
-                                                                    CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileLoading'),color: AppColors.darkLightPurple, textColor: AppColors.black);
-                                                                  } else if (state is GetFileSuccess) {
-                                                                    CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileSuccess'),);
-                                                                  }
-                                                                },
-                                                                builder: (contextGF, stateGF) {
-                                                                  if(stateF is FilesSuccess) {
-                                                                    return Column(
-                                                                      children: [
-                                                                        stateF.files.files.data!.isNotEmpty ? GridView.builder(
-                                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
-                                                                          itemBuilder: (BuildContext context, int index) {
-                                                                            return Align(
-                                                                              child: FileItem(
-                                                                                fileName: stateF.files.files.data![index].fileName,
-                                                                                color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
-                                                                                onTap: () {
-                                                                                  GetFileCubit.get(context).fetchFile(filePath: stateF.files.files.data![index].filePath);
-                                                                                },
+                                                          onTapFirstIcon: (){},
+                                                          onTapSecondIcon: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext dialogContext) {
+                                                                return Align(
+                                                                  alignment: Alignment.topRight,
+                                                                  child: Material(
+                                                                    color: Colors.transparent,
+                                                                    child: Container(
+                                                                      width: 638.w,
+                                                                      height: 478.h,
+                                                                      margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
+                                                                      padding:  EdgeInsets.all(22.r),
+                                                                      decoration: BoxDecoration(
+                                                                        color: AppColors.white,
+                                                                        borderRadius: BorderRadius.circular(6.r),
+                                                                      ),
+                                                                      child: SingleChildScrollView(
+                                                                        physics: BouncingScrollPhysics(),
+                                                                        child: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.error_outline,
+                                                                                    color: AppColors.orange,
+                                                                                    size: 55.r,
+                                                                                  ),
+                                                                                  SizedBox(width: 10.w,),
+                                                                                  Text(
+                                                                                    AppLocalizations.of(context).translate('Warning'),
+                                                                                    style: Styles.h3Bold(color: AppColors.t3),
+                                                                                  ),
+                                                                                ],
                                                                               ),
-                                                                            );
-                                                                          },
-                                                                          itemCount: stateF.files.files.data!.length,
-                                                                          shrinkWrap: true,
-                                                                          physics: NeverScrollableScrollPhysics(),
-                                                                        ) : CustomEmptyWidget(
-                                                                          firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
-                                                                          secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
+                                                                              child: Text(
+                                                                                AppLocalizations.of(context).translate('Are you sure you want to delete this section?'),
+                                                                                style: Styles.b2Normal(color: AppColors.t3),
+                                                                                maxLines: 1,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                children: [
+                                                                                  TextIconButton(
+                                                                                    textButton: AppLocalizations.of(context).translate('Confirm'),
+                                                                                    bigText: true,
+                                                                                    textColor: AppColors.t3,
+                                                                                    icon: Icons.check_circle_outline,
+                                                                                    iconSize: 40.01.r,
+                                                                                    iconColor: AppColors.t2,
+                                                                                    iconLast: false,
+                                                                                    firstSpaceBetween: 3.w,
+                                                                                    buttonHeight: 53.h,
+                                                                                    borderWidth: 0.w,
+                                                                                    buttonColor: AppColors.white,
+                                                                                    borderColor: Colors.transparent,
+                                                                                    onPressed: (){
+                                                                                      context.read<DeleteSectionCubit>().fetchDeleteSection(id: stateSec.section.id);
+                                                                                      Navigator.pop(dialogContext);
+                                                                                    },
+                                                                                  ),
+                                                                                  SizedBox(width: 42.w,),
+                                                                                  TextIconButton(
+                                                                                    textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                                                    textColor: AppColors.t3,
+                                                                                    iconLast: false,
+                                                                                    buttonHeight: 53.h,
+                                                                                    borderWidth: 0.w,
+                                                                                    borderRadius: 4.r,
+                                                                                    buttonColor: AppColors.w1,
+                                                                                    borderColor: AppColors.w1,
+                                                                                    onPressed: (){
+                                                                                      Navigator.pop(dialogContext);
+                                                                                    },
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                          ],
                                                                         ),
-                                                                        CustomNumberPagination(
-                                                                          numberPages: stateF.files.files.lastPage,
-                                                                          initialPage: stateF.files.files.currentPage,
-                                                                          onPageChange: (int index) {
-                                                                            FilesCubit.get(context).fetchFiles(sectionId: courseId, page: index+1);
-                                                                          },
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  } else if(stateF is FilesFailure) {
-                                                                    return CustomErrorWidget(
-                                                                        errorMessage: stateF.errorMessage);
-                                                                  } else {
-                                                                    return CustomCircularProgressIndicator();
-                                                                  }
-                                                                }
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
                                                             );
-                                                          }
-                                                      ),
-                                                      Container(),
-                                                    ],
-                                                  ),
+                                                          },
+                                                        );
+                                                      }else if(stateP is SectionProgressFailure) {
+                                                        return CustomErrorWidget(
+                                                            errorMessage: stateP.errorMessage);
+                                                      } else {
+                                                        return CustomCircularProgressIndicator();
+                                                      }
+                                                    }
+                                                  );
+                                                }
+                                            ),
+                                            SizedBox(height: 22.h),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                                                    builder: (contextSS, stateSS) {
+                                                      if(stateSS is StudentsSectionSuccess) {
+                                                        return Row(
+                                                          children: [
+                                                            CustomOverloadingAvatar(
+                                                              labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                              tailText: AppLocalizations.of(context).translate('See more'),
+                                                              firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
+                                                              secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
+                                                              thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
+                                                              fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
+                                                              fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
+                                                              avatarCount: stateSS.students.students.data![0].students!.length,
+                                                              onTap: () {context.go('${GoRouterPath.completeDetails}/${stateSS.students.students.data![0].id}${GoRouterPath.completeStudents}/${stateSS.students.students.data![0].id}');
+                                                                //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
+                                                          ],
+                                                        );
+                                                      } else if(stateSS is StudentsSectionFailure) {
+                                                        return Row(
+                                                          children: [
+                                                            CustomOverloadingAvatar(
+                                                              labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                              tailText: AppLocalizations.of(context).translate('See more'),
+                                                              firstImage: '',
+                                                              secondImage: '',
+                                                              thirdImage: '',
+                                                              fourthImage: '',
+                                                              fifthImage: '',
+                                                              avatarCount: 5,
+                                                              onTap: () {//context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeStudents}/1');
+                                                                //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                                          ],
+                                                        );
+                                                      } else {
+                                                        return CustomCircularProgressIndicator();
+                                                      }
+                                                    }
+                                                ),
+                                                BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
+                                                    builder: (contextTS, stateTS) {
+                                                      if(stateTS is TrainersSectionSuccess) {
+                                                        return Expanded(
+                                                          child: CustomOverloadingAvatar(
+                                                            labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                                            tailText: AppLocalizations.of(context).translate('See more'),
+                                                            firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                                            secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                                            thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                                            fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                                            fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                                            avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                                            onTap: () {
+                                                              context.go('${GoRouterPath.completeDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.completeTrainers}/${stateTS.trainers.trainers![0].id}');
+                                                              //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                                            },
+                                                          ),
+                                                        );
+                                                      } else if(stateTS is TrainersSectionFailure) {
+                                                        return Row(
+                                                          children: [
+                                                            CustomOverloadingAvatar(
+                                                              labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                              tailText: AppLocalizations.of(context).translate('See more'),
+                                                              firstImage: '',
+                                                              secondImage: '',
+                                                              thirdImage: '',
+                                                              fourthImage: '',
+                                                              fifthImage: '',
+                                                              avatarCount: 5,
+                                                              onTap: () {context.go('${GoRouterPath.completeDetails}/1${GoRouterPath.completeTrainers}/1');
+                                                                //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                                          ],
+                                                        );
+                                                      } else {
+                                                        return CustomCircularProgressIndicator();
+                                                      }
+                                                    }
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                            /*Padding(
+                                              padding: EdgeInsets.only(top: 40.h, right: 47.0.w,),
+                                              child: DefaultTabController(
+                                                length: 2,
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 70.h,
+                                                      child: TabBar(
+                                                        labelColor: AppColors.blue,
+                                                        unselectedLabelColor: AppColors.blue,
+                                                        indicator: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: AppColors.darkBlue,
+                                                        ),
+                                                        indicatorPadding: EdgeInsets.only(top: 48.r, bottom: 12.r),
+                                                        indicatorWeight: 20,
+                                                        labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                                                        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+                                                        tabs: [
+                                                          Tab(text: AppLocalizations.of(context).translate('         File         '),),
+                                                          Tab(text: AppLocalizations.of(context).translate('Announcement')),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 570.23.h,
+                                                      child: TabBarView(
+                                                        children: [
+                                                          BlocBuilder<FilesCubit, FilesState>(
+                                                              builder: (contextF, stateF) {
+                                                                return BlocConsumer<GetFileCubit, GetFileState>(
+                                                                    listener: (context, state) {
+                                                                      if (state is GetFileLoading) {
+                                                                        CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileLoading'),color: AppColors.darkLightPurple, textColor: AppColors.black);
+                                                                      } else if (state is GetFileSuccess) {
+                                                                        CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('GetFileSuccess'),);
+                                                                      }
+                                                                    },
+                                                                    builder: (contextGF, stateGF) {
+                                                                      if(stateF is FilesSuccess) {
+                                                                        return Column(
+                                                                          children: [
+                                                                            stateF.files.files.data!.isNotEmpty ? GridView.builder(
+                                                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10.w, mainAxisExtent: 100.h),
+                                                                              itemBuilder: (BuildContext context, int index) {
+                                                                                return Align(
+                                                                                  child: FileItem(
+                                                                                    fileName: stateF.files.files.data![index].fileName,
+                                                                                    color: index%2 != 0 ? AppColors.white : AppColors.darkHighlightPurple,
+                                                                                    onTap: () {
+                                                                                      GetFileCubit.get(context).fetchFile(filePath: stateF.files.files.data![index].filePath);
+                                                                                    },
+                                                                                  ),
+                                                                                );
+                                                                              },
+                                                                              itemCount: stateF.files.files.data!.length,
+                                                                              shrinkWrap: true,
+                                                                              physics: NeverScrollableScrollPhysics(),
+                                                                            ) : CustomEmptyWidget(
+                                                                              firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
+                                                                              secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
+                                                                            ),
+                                                                            CustomNumberPagination(
+                                                                              numberPages: stateF.files.files.lastPage,
+                                                                              initialPage: stateF.files.files.currentPage,
+                                                                              onPageChange: (int index) {
+                                                                                FilesCubit.get(context).fetchFiles(sectionId: courseId, page: index+1);
+                                                                              },
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      } else if(stateF is FilesFailure) {
+                                                                        return CustomErrorWidget(
+                                                                            errorMessage: stateF.errorMessage);
+                                                                      } else {
+                                                                        return CustomCircularProgressIndicator();
+                                                                      }
+                                                                    }
+                                                                );
+                                                              }
+                                                          ),
+                                                          Container(),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),*/
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  top: 238.0.h,
-                                  left: 77.0.w,
-                                  bottom: 27.0.h),
-                              child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment
-                                      .start,
-                                  children: [
-                                    Column(
+                                  ),
+                                );
+                              } else {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 238.0.h,
+                                      left: 77.0.w,
+                                      bottom: 27.0.h),
+                                  child: SingleChildScrollView(
+                                    physics: BouncingScrollPhysics(),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: [
-                                        CustomCourseInformation(
-                                          image: stateDC.course.course.photo,
-                                          bodyText: stateDC.course.course.description,
-                                          onTap: () {},
-                                          onTapDate: () {},
-                                          onTapFirstIcon: (){},
-                                          onTapSecondIcon: (){},
-                                        ),
-                                        //SizedBox(height: 22.h),
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 87.w),
-                                          child: CustomEmptyWidget(
-                                            firstText: AppLocalizations.of(context).translate('No more at this time'),
-                                            secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
-                                          ),
+                                        Column(
+                                          children: [
+                                            CustomCourseInformation(
+                                              image: stateDC.course.course.photo,
+                                              bodyText: stateDC.course.course.description,
+                                              onTap: () {},
+                                              onTapDate: () {},
+                                              onTapFirstIcon: (){},
+                                              onTapSecondIcon: (){},
+                                            ),
+                                            //SizedBox(height: 22.h),
+                                            Padding(
+                                              padding: EdgeInsets.only(right: 87.w),
+                                              child: CustomEmptyWidget(
+                                                firstText: AppLocalizations.of(context).translate('No more at this time'),
+                                                secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                    ),
-                  ),
-                );
-              } else if (state is CompleteFailure) {
-                return CustomErrorWidget(
-                    errorMessage: state.errorMessage);
-              } else {
-                return CustomCircularProgressIndicator();
-              }
+                                  ),
+                                );
+                              }
+                            }
+                        ),
+                      ),
+                    );
+                  } else if (state is CompleteFailure) {
+                    return CustomErrorWidget(
+                        errorMessage: state.errorMessage);
+                  } else {
+                    return CustomCircularProgressIndicator();
+                  }
+                }
+              );
+            } else if(stateDC is DetailsCourseFailure) {
+              return CustomErrorWidget(
+                  errorMessage: stateDC.errorMessage);
+            } else {
+              return CustomCircularProgressIndicator();
             }
-          );
-        } else if(stateDC is DetailsCourseFailure) {
-          return CustomErrorWidget(
-              errorMessage: stateDC.errorMessage);
-        } else {
-          return CustomCircularProgressIndicator();
-        }
+          }
+        );
       }
     );
   }

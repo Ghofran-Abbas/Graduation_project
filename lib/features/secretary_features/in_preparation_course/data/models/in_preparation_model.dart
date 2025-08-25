@@ -73,6 +73,7 @@ class DatumInPreparation {
   final int courseId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int totalSessions;
   final List<dynamic> weekDays;
   final List<Trainer>? trainers;
 
@@ -87,6 +88,7 @@ class DatumInPreparation {
     required this.courseId,
     required this.createdAt,
     required this.updatedAt,
+    required this.totalSessions,
     required this.weekDays,
     required this.trainers,
   });
@@ -102,6 +104,7 @@ class DatumInPreparation {
     courseId: json["courseId"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    totalSessions: json["total_sessions"],
     weekDays: List<dynamic>.from(json["week_days"].map((x) => x)),
     trainers: List<Trainer>.from(json["trainers"].map((x) => Trainer.fromJson(x))),
   );
@@ -117,6 +120,7 @@ class DatumInPreparation {
     "courseId": courseId,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "total_sessions": totalSessions,
     "week_days": List<dynamic>.from(weekDays.map((x) => x)),
     "trainers": List<dynamic>.from(trainers!.map((x) => x)),
   };

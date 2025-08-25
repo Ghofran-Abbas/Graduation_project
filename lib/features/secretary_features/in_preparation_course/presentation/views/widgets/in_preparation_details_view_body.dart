@@ -39,6 +39,8 @@ import '../../../../course/presentation/manager/trainers_section_cubit/trainers_
 import '../../../../course/presentation/manager/trainers_section_cubit/trainers_section_state.dart';
 import '../../../../course/presentation/manager/update_section_cubit/update_section_cubit.dart';
 import '../../../../course/presentation/manager/update_section_cubit/update_section_state.dart';
+import '../../../../course/presentation/manager/update_state_section_cubit/update_state_section_cubit.dart';
+import '../../../../course/presentation/manager/update_state_section_cubit/update_state_section_state.dart';
 import '../../../../course/presentation/views/widgets/course_details_view_body.dart';
 import '../../../data/models/in_preparation_model.dart';
 import '../../manager/in_preparation_cubit/in_preparation_cubit.dart';
@@ -86,529 +88,543 @@ class DetailsInPreparationViewBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return BlocConsumer<DeleteSectionCubit, DeleteSectionState>(
-          listener: (context, state) {
-            if (state is DeleteSectionFailure) {
-              CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionFailure'),);
-            } else if (state is DeleteSectionSuccess) {
-              CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionSuccess'),);
-              context.read<SelectInPreparationCubit>().clearSelection();
-              context.read<InPreparationCubit>().fetchInPreparation(courseId: courseId, page: 1);
-              context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
-            }
-          },
-          builder: (context, state) {
-            return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
-              listener: (contextDC, stateDC) {},
-              builder: (contextDC, stateDC)  {
-                if(stateDC is DetailsCourseSuccess) {
-                  return BlocConsumer<InPreparationCubit, InPreparationState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      if (state is InPreparationSuccess) {
-                        final List<DatumInPreparation> sections = state.createResult.data!;
-                        final current = state.currentPage;
-                        final last = state.lastPage;
-                        return Padding(
-                          padding: EdgeInsets.only(top: 56.0.h,),
-                          child: CustomScreenBody(
-                            title: stateDC.course.course.name,
-                            textFirstButton: 'Section 2',
-                            showFirstButton: true,
-                            widget: Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.chevron_left, color: current > 1
-                                      ? AppColors.purple
-                                      : AppColors.t0
-                                  ),
-                                  onPressed: current > 1
-                                      ? () => context.read<InPreparationCubit>()
-                                      .fetchInPreparation(courseId: courseId, page: current - 1)
-                                      : null,
-                                ),
-                                SizedBox(
-                                  width: 200.w,
-                                  child: BlocBuilder<SelectInPreparationCubit, SelectInPreparationState>(
-                                    builder: (context, selectState) {
-                                      DatumInPreparation? selected;
-                                      if (selectState is SelectInPreparationSuccess) {
-                                        selected = selectState.section;
-                                      }
-                                      return Padding(
-                                        padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
-                                        child: DropdownMenu<DatumInPreparation>(
-                                          enableSearch: false,
-                                          requestFocusOnTap: false,
-                                          width: 200.w,
-                                          hintText: AppLocalizations.of(context).translate('No section'),
-                                          initialSelection: selected,
-                                          inputDecorationTheme: InputDecorationTheme(
-                                            constraints: BoxConstraints(
-                                                maxHeight: 53.h),
-                                            hintStyle: Styles.l1Normal(
-                                                color: AppColors.t0),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: AppColors.purple,
-                                                width: 1.23,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                  24.67.r),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: AppColors.purple,
-                                                width: 1.23,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                  24.67.r),
-                                            ),
-                                          ),
-                                          alignmentOffset: Offset(4, 2),
-                                          menuStyle: MenuStyle(
-                                            backgroundColor: WidgetStateColor
-                                                .resolveWith(
-                                                  (states) {
-                                                return AppColors.white;
-                                              },
-                                            ),
-                                            elevation: WidgetStateProperty.resolveWith(
-                                                  (states) {
-                                                return 0;
-                                              },
-                                            ),
-                                            side: WidgetStateBorderSide.resolveWith(
-                                                  (states) {
-                                                return BorderSide(
-                                                  width: 1.23,
-                                                  color: AppColors.purple,
-
-                                                );
-                                              },
-                                            ),
-
-                                          ),
-                                          dropdownMenuEntries: sections.map((section) {
-                                            return DropdownMenuEntry<DatumInPreparation>(
-                                              value: section,
-                                              label: section.name,
-                                            );
-                                          }).toList(),
-                                          onSelected: (DatumInPreparation? selectedSection) {
-                                            if (selectedSection != null) {
-                                              BlocProvider.of<SelectInPreparationCubit>(context).selectSection(section: selectedSection);
-                                              log('Selected ID: ${selectedSection.id}');
-                                            }
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.chevron_right, color: current < last
-                                      ? AppColors.purple
-                                      : AppColors.t0),
-                                  onPressed: current < last
-                                      ? () => context.read<InPreparationCubit>()
-                                      .fetchInPreparation(courseId: courseId, page: current + 1)
-                                      : null,
-                                ),
-                              ],
-                            ),
-                            showButtonIcon: true,
-                            onPressedFirst: (){},
-                            onPressedSecond: (){},
-                            body: BlocConsumer<SelectInPreparationCubit, SelectInPreparationState>(
-                              listener: (contextSec, stateSec) {
-                                if (stateSec is SelectInPreparationSuccess) {
-                                  TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
-                                  StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
-                                }
-                              },
-                              builder: (context, stateSec) {
-                                if (stateSec is SelectInPreparationSuccess) {
-                                  return BlocConsumer<TrainersSectionCubit, TrainersSectionState>(
-                                    listener: (contextTS, stateTS) {},
-                                    builder: (contextTS, stateTS) {
-                                      return BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
-                                          builder: (contextSS, stateSS) {
+        return BlocConsumer<UpdateStateSectionCubit, UpdateStateSectionState>(
+            listener: (contextUS, stateUS) {
+              if (stateUS is UpdateStateSectionFailure) {
+                CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateSectionFailure'),);
+              } else if (stateUS is UpdateStateSectionSuccess) {
+                CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('UpdateSectionSuccess'),);
+                context.read<SelectInPreparationCubit>().clearSelection();
+                context.read<InPreparationCubit>().fetchInPreparation(courseId: courseId, page: 1);
+                context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
+              }
+            },
+            builder: (contextUS, stateUS) {
+            return BlocConsumer<DeleteSectionCubit, DeleteSectionState>(
+              listener: (context, state) {
+                if (state is DeleteSectionFailure) {
+                  CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionFailure'),);
+                } else if (state is DeleteSectionSuccess) {
+                  CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('DeleteSectionSuccess'),);
+                  context.read<SelectInPreparationCubit>().clearSelection();
+                  context.read<InPreparationCubit>().fetchInPreparation(courseId: courseId, page: 1);
+                  context.read<DetailsCourseCubit>().fetchDetailsCourse(id: courseId);
+                }
+              },
+              builder: (context, state) {
+                return BlocConsumer<DetailsCourseCubit, DetailsCourseState>(
+                  listener: (contextDC, stateDC) {},
+                  builder: (contextDC, stateDC)  {
+                    if(stateDC is DetailsCourseSuccess) {
+                      return BlocConsumer<InPreparationCubit, InPreparationState>(
+                        listener: (context, state) {},
+                        builder: (context, state) {
+                          if (state is InPreparationSuccess) {
+                            final List<DatumInPreparation> sections = state.createResult.data!;
+                            final current = state.currentPage;
+                            final last = state.lastPage;
+                            return Padding(
+                              padding: EdgeInsets.only(top: 56.0.h,),
+                              child: CustomScreenBody(
+                                title: stateDC.course.course.name,
+                                textFirstButton: 'Section 2',
+                                showFirstButton: true,
+                                widget: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.chevron_left, color: current > 1
+                                          ? AppColors.purple
+                                          : AppColors.t0
+                                      ),
+                                      onPressed: current > 1
+                                          ? () => context.read<InPreparationCubit>()
+                                          .fetchInPreparation(courseId: courseId, page: current - 1)
+                                          : null,
+                                    ),
+                                    SizedBox(
+                                      width: 200.w,
+                                      child: BlocBuilder<SelectInPreparationCubit, SelectInPreparationState>(
+                                        builder: (context, selectState) {
+                                          DatumInPreparation? selected;
+                                          if (selectState is SelectInPreparationSuccess) {
+                                            selected = selectState.section;
+                                          }
                                           return Padding(
-                                            padding: EdgeInsets.only(top: 238.0.h, left: 77.0.w, bottom: 27.0.h),
-                                            child: SingleChildScrollView(
-                                              physics: BouncingScrollPhysics(),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
+                                            padding: EdgeInsets.only(top: 0.h, bottom: 0.h),
+                                            child: DropdownMenu<DatumInPreparation>(
+                                              enableSearch: false,
+                                              requestFocusOnTap: false,
+                                              width: 200.w,
+                                              hintText: AppLocalizations.of(context).translate('No section'),
+                                              initialSelection: selected,
+                                              inputDecorationTheme: InputDecorationTheme(
+                                                constraints: BoxConstraints(
+                                                    maxHeight: 53.h),
+                                                hintStyle: Styles.l1Normal(
+                                                    color: AppColors.t0),
+                                                enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: AppColors.purple,
+                                                    width: 1.23,
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(
+                                                      24.67.r),
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: AppColors.purple,
+                                                    width: 1.23,
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(
+                                                      24.67.r),
+                                                ),
+                                              ),
+                                              alignmentOffset: Offset(4, 2),
+                                              menuStyle: MenuStyle(
+                                                backgroundColor: WidgetStateColor
+                                                    .resolveWith(
+                                                      (states) {
+                                                    return AppColors.white;
+                                                  },
+                                                ),
+                                                elevation: WidgetStateProperty.resolveWith(
+                                                      (states) {
+                                                    return 0;
+                                                  },
+                                                ),
+                                                side: WidgetStateBorderSide.resolveWith(
+                                                      (states) {
+                                                    return BorderSide(
+                                                      width: 1.23,
+                                                      color: AppColors.purple,
+
+                                                    );
+                                                  },
+                                                ),
+
+                                              ),
+                                              dropdownMenuEntries: sections.map((section) {
+                                                return DropdownMenuEntry<DatumInPreparation>(
+                                                  value: section,
+                                                  label: section.name,
+                                                );
+                                              }).toList(),
+                                              onSelected: (DatumInPreparation? selectedSection) {
+                                                if (selectedSection != null) {
+                                                  BlocProvider.of<SelectInPreparationCubit>(context).selectSection(section: selectedSection);
+                                                  log('Selected ID: ${selectedSection.id}');
+                                                }
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.chevron_right, color: current < last
+                                          ? AppColors.purple
+                                          : AppColors.t0),
+                                      onPressed: current < last
+                                          ? () => context.read<InPreparationCubit>()
+                                          .fetchInPreparation(courseId: courseId, page: current + 1)
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+                                showButtonIcon: true,
+                                onPressedFirst: (){},
+                                onPressedSecond: (){},
+                                body: BlocConsumer<SelectInPreparationCubit, SelectInPreparationState>(
+                                  listener: (contextSec, stateSec) {
+                                    if (stateSec is SelectInPreparationSuccess) {
+                                      TrainersSectionCubit.get(context).fetchTrainersSection(id: stateSec.section.id, page: 1);
+                                      StudentsSectionCubit.get(context).fetchStudentsSection(id: stateSec.section.id, page: 1);
+                                    }
+                                  },
+                                  builder: (context, stateSec) {
+                                    if (stateSec is SelectInPreparationSuccess) {
+                                      return BlocConsumer<TrainersSectionCubit, TrainersSectionState>(
+                                        listener: (contextTS, stateTS) {},
+                                        builder: (contextTS, stateTS) {
+                                          return BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                                              builder: (contextSS, stateSS) {
+                                              return Padding(
+                                                padding: EdgeInsets.only(top: 238.0.h, left: 77.0.w, bottom: 27.0.h),
+                                                child: SingleChildScrollView(
+                                                  physics: BouncingScrollPhysics(),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      CustomCourseInformation(
-                                                        image: stateDC.course.course.photo,
-                                                        showIcons: true,
-                                                        showSectionInformation: true,
-                                                        ratingText: '0.0',
-                                                        ratingPercent: 0,
-                                                        ratingPercentText: '0%',
-                                                        circleStatusColor: AppColors.mintGreen,
-                                                        courseStatusText: handleReceiveState(state: stateSec.section.state),
-                                                        showEditStatusIcon: true,
-                                                        startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
-                                                        showCourseCalenderIcon: true,
-                                                        endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
-                                                        numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
-                                                        bodyText: stateDC.course.course.description,
-                                                        onTap: (){
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext dialogContext) {
-                                                              return UpdateStateDialog(section: stateSec.section, updateCubit: context.read<UpdateSectionCubit>(),);
-                                                            },
-                                                          );
-                                                        },
-                                                        onTapDate: (){
-                                                          context.go('${GoRouterPath.inPreparationDetails}/$courseId${GoRouterPath.inPreparationCalendar}/${stateSec.section.id}');
-                                                        },
-                                                        onTapFirstIcon: (){
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext dialogContext) {
-                                                              return UpdateSectionDialog(section: stateSec.section, courseId: stateDC.course.course.id, updateCubit: context.read<UpdateSectionCubit>(),);
-                                                            },
-                                                          );
-                                                        },
-                                                        onTapSecondIcon: (){
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext dialogContext) {
-                                                              return Align(
-                                                                alignment: Alignment.topRight,
-                                                                child: Material(
-                                                                  color: Colors.transparent,
-                                                                  child: Container(
-                                                                    width: 638.w,
-                                                                    height: 478.h,
-                                                                    margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
-                                                                    padding:  EdgeInsets.all(22.r),
-                                                                    decoration: BoxDecoration(
-                                                                      color: AppColors.white,
-                                                                      borderRadius: BorderRadius.circular(6.r),
-                                                                    ),
-                                                                    child: SingleChildScrollView(
-                                                                      physics: BouncingScrollPhysics(),
-                                                                      child: Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
-                                                                            child: Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.error_outline,
-                                                                                  color: AppColors.orange,
-                                                                                  size: 55.r,
-                                                                                ),
-                                                                                SizedBox(width: 10.w,),
-                                                                                Text(
-                                                                                  AppLocalizations.of(context).translate('Warning'),
-                                                                                  style: Styles.h3Bold(color: AppColors.t3),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
-                                                                            child: Text(
-                                                                              AppLocalizations.of(context).translate('Are you sure you want to delete this section?'),
-                                                                              style: Styles.b2Normal(color: AppColors.t3),
-                                                                              maxLines: 1,
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                            ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
-                                                                            child: Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                                              children: [
-                                                                                TextIconButton(
-                                                                                  textButton: AppLocalizations.of(context).translate('Confirm'),
-                                                                                  bigText: true,
-                                                                                  textColor: AppColors.t3,
-                                                                                  icon: Icons.check_circle_outline,
-                                                                                  iconSize: 40.01.r,
-                                                                                  iconColor: AppColors.t2,
-                                                                                  iconLast: false,
-                                                                                  firstSpaceBetween: 3.w,
-                                                                                  buttonHeight: 53.h,
-                                                                                  borderWidth: 0.w,
-                                                                                  buttonColor: AppColors.white,
-                                                                                  borderColor: Colors.transparent,
-                                                                                  onPressed: (){
-                                                                                    context.read<DeleteSectionCubit>().fetchDeleteSection(id: stateSec.section.id);
-                                                                                    Navigator.pop(dialogContext);
-                                                                                  },
-                                                                                ),
-                                                                                SizedBox(width: 42.w,),
-                                                                                TextIconButton(
-                                                                                  textButton: AppLocalizations.of(context).translate('       Cancel       '),
-                                                                                  textColor: AppColors.t3,
-                                                                                  iconLast: false,
-                                                                                  buttonHeight: 53.h,
-                                                                                  borderWidth: 0.w,
-                                                                                  borderRadius: 4.r,
-                                                                                  buttonColor: AppColors.w1,
-                                                                                  borderColor: AppColors.w1,
-                                                                                  onPressed: (){
-                                                                                    Navigator.pop(dialogContext);
-                                                                                  },
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
+                                                      Column(
+                                                        children: [
+                                                          CustomCourseInformation(
+                                                            image: stateDC.course.course.photo,
+                                                            showIcons: true,
+                                                            showSectionInformation: true,
+                                                            ratingText: '0.0',
+                                                            ratingPercent: 0,
+                                                            ratingPercentText: '0%',
+                                                            circleStatusColor: AppColors.mintGreen,
+                                                            courseStatusText: handleReceiveState(state: stateSec.section.state),
+                                                            showEditStatusIcon: true,
+                                                            startDateText: stateSec.section.startDate.toString().replaceRange(10, 23, ''),
+                                                            showCourseCalenderIcon: true,
+                                                            endDateText: stateSec.section.endDate.toString().replaceRange(10, 23, ''),
+                                                            numberSeatsText: '${stateSec.section.seatsOfNumber} ${AppLocalizations.of(context).translate('Seats')}',
+                                                            bodyText: stateDC.course.course.description,
+                                                            onTap: (){
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext dialogContext) {
+                                                                  return UpdateStateDialog(section: stateSec.section, updateCubit: context.read<UpdateStateSectionCubit>(),);
+                                                                },
                                                               );
                                                             },
-                                                          );
-                                                        },
-                                                      ),
-                                                      SizedBox(height: 22.h),
-                                                      Row(
-                                                        mainAxisSize: MainAxisSize.max,
-                                                        children: [
-                                                          BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
-                                                              builder: (contextSS, stateSS) {
-                                                                if(stateSS is StudentsSectionSuccess) {
-                                                                  return Row(
-                                                                    children: [
-                                                                      CustomOverloadingAvatar(
-                                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                                        tailText: AppLocalizations.of(context).translate('See more'),
-                                                                        firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
-                                                                        secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
-                                                                        thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
-                                                                        fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
-                                                                        fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
-                                                                        avatarCount: stateSS.students.students.data![0].students!.length,
-                                                                        onTap: () {context.go('${GoRouterPath.inPreparationDetails}/${stateSS.students.students.data![0].id}${GoRouterPath.inPreparationStudents}/${stateSS.students.students.data![0].id}');
-                                                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
-                                                                        },
+                                                            onTapDate: (){
+                                                              context.go('${GoRouterPath.inPreparationDetails}/$courseId${GoRouterPath.inPreparationCalendar}/${stateSec.section.id}');
+                                                            },
+                                                            onTapFirstIcon: (){
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext dialogContext) {
+                                                                  return UpdateSectionDialog(section: stateSec.section, courseId: stateDC.course.course.id, updateCubit: context.read<UpdateSectionCubit>(),);
+                                                                },
+                                                              );
+                                                            },
+                                                            onTapSecondIcon: (){
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext dialogContext) {
+                                                                  return Align(
+                                                                    alignment: Alignment.topRight,
+                                                                    child: Material(
+                                                                      color: Colors.transparent,
+                                                                      child: Container(
+                                                                        width: 638.w,
+                                                                        height: 478.h,
+                                                                        margin: EdgeInsets.symmetric(horizontal: 280.w, vertical: 255.h),
+                                                                        padding:  EdgeInsets.all(22.r),
+                                                                        decoration: BoxDecoration(
+                                                                          color: AppColors.white,
+                                                                          borderRadius: BorderRadius.circular(6.r),
+                                                                        ),
+                                                                        child: SingleChildScrollView(
+                                                                          physics: BouncingScrollPhysics(),
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 65.h, left: 30.w, right: 155.w),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    Icon(
+                                                                                      Icons.error_outline,
+                                                                                      color: AppColors.orange,
+                                                                                      size: 55.r,
+                                                                                    ),
+                                                                                    SizedBox(width: 10.w,),
+                                                                                    Text(
+                                                                                      AppLocalizations.of(context).translate('Warning'),
+                                                                                      style: Styles.h3Bold(color: AppColors.t3),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 75.h, left: 65.w, right: 155.w),
+                                                                                child: Text(
+                                                                                  AppLocalizations.of(context).translate('Are you sure you want to delete this section?'),
+                                                                                  style: Styles.b2Normal(color: AppColors.t3),
+                                                                                  maxLines: 1,
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 90.h, bottom: 65.h, left: 47.w, right: 155.w),
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    TextIconButton(
+                                                                                      textButton: AppLocalizations.of(context).translate('Confirm'),
+                                                                                      bigText: true,
+                                                                                      textColor: AppColors.t3,
+                                                                                      icon: Icons.check_circle_outline,
+                                                                                      iconSize: 40.01.r,
+                                                                                      iconColor: AppColors.t2,
+                                                                                      iconLast: false,
+                                                                                      firstSpaceBetween: 3.w,
+                                                                                      buttonHeight: 53.h,
+                                                                                      borderWidth: 0.w,
+                                                                                      buttonColor: AppColors.white,
+                                                                                      borderColor: Colors.transparent,
+                                                                                      onPressed: (){
+                                                                                        context.read<DeleteSectionCubit>().fetchDeleteSection(id: stateSec.section.id);
+                                                                                        Navigator.pop(dialogContext);
+                                                                                      },
+                                                                                    ),
+                                                                                    SizedBox(width: 42.w,),
+                                                                                    TextIconButton(
+                                                                                      textButton: AppLocalizations.of(context).translate('       Cancel       '),
+                                                                                      textColor: AppColors.t3,
+                                                                                      iconLast: false,
+                                                                                      buttonHeight: 53.h,
+                                                                                      borderWidth: 0.w,
+                                                                                      borderRadius: 4.r,
+                                                                                      buttonColor: AppColors.w1,
+                                                                                      borderColor: AppColors.w1,
+                                                                                      onPressed: (){
+                                                                                        Navigator.pop(dialogContext);
+                                                                                      },
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                      SizedBox(
-                                                                        width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
-                                                                    ],
-                                                                  );
-                                                                } else if(stateSS is StudentsSectionFailure) {
-                                                                  return Row(
-                                                                    children: [
-                                                                      CustomOverloadingAvatar(
-                                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
-                                                                        tailText: AppLocalizations.of(context).translate('See more'),
-                                                                        firstImage: '',
-                                                                        secondImage: '',
-                                                                        thirdImage: '',
-                                                                        fourthImage: '',
-                                                                        fifthImage: '',
-                                                                        avatarCount: 5,
-                                                                        onTap: () {//context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationTrainers}/1');
-                                                                        //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
-                                                                        },
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
-                                                                    ],
-                                                                  );
-                                                                } else {
-                                                                  return CustomCircularProgressIndicator();
-                                                                }
-                                                              }
-                                                          ),
-                                                          BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
-                                                              builder: (contextTS, stateTS) {
-                                                                if(stateTS is TrainersSectionSuccess) {
-                                                                  return Expanded(
-                                                                    child: CustomOverloadingAvatar(
-                                                                      labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                                                      tailText: AppLocalizations.of(context).translate('See more'),
-                                                                      firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
-                                                                      secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
-                                                                      thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
-                                                                      fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
-                                                                      fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
-                                                                      avatarCount: stateTS.trainers.trainers![0].trainers!.length,
-                                                                      onTap: () {
-                                                                        context.go('${GoRouterPath.inPreparationDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.inPreparationTrainers}/${stateTS.trainers.trainers![0].id}');
-                                                                        //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
-                                                                      },
                                                                     ),
                                                                   );
-                                                                } else if(stateTS is TrainersSectionFailure) {
-                                                                  return Row(
-                                                                    children: [
-                                                                      CustomOverloadingAvatar(
-                                                                        labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
-                                                                        tailText: AppLocalizations.of(context).translate('See more'),
-                                                                        firstImage: '',
-                                                                        secondImage: '',
-                                                                        thirdImage: '',
-                                                                        fourthImage: '',
-                                                                        fifthImage: '',
-                                                                        avatarCount: 5,
-                                                                        onTap: () {//context.go('${GoRouterPath.inPreparationDetails}/2${GoRouterPath.inPreparationTrainers}/1');
-                                                                          //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
-                                                                        },
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
-                                                                    ],
-                                                                  );
-                                                                } else {
-                                                                  return CustomCircularProgressIndicator();
-                                                                }
-                                                              }
+                                                                },
+                                                              );
+                                                            },
                                                           ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.only(top: 40.h, right: 47.0.w,),
-                                                        child: DefaultTabController(
-                                                          length: 2,
-                                                          child: Column(
+                                                          SizedBox(height: 22.h),
+                                                          Row(
+                                                            mainAxisSize: MainAxisSize.max,
                                                             children: [
-                                                              SizedBox(
-                                                                height: 70.h,
-                                                                child: TabBar(
-                                                                  labelColor: AppColors.blue,
-                                                                  unselectedLabelColor: AppColors.blue,
-                                                                  indicator: BoxDecoration(
-                                                                    shape: BoxShape.circle,
-                                                                    color: AppColors.darkBlue,
-                                                                  ),
-                                                                  indicatorPadding: EdgeInsets.only(top: 48.r, bottom: 12.r),
-                                                                  indicatorWeight: 20,
-                                                                  labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                                                                  unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-                                                                  tabs: [
-                                                                    Tab(text: AppLocalizations.of(context).translate('         File         '),),
-                                                                    Tab(text: AppLocalizations.of(context).translate('Announcement')),
-                                                                  ],
-                                                                ),
+                                                              BlocBuilder<StudentsSectionCubit, StudentsSectionState>(
+                                                                  builder: (contextSS, stateSS) {
+                                                                    if(stateSS is StudentsSectionSuccess) {
+                                                                      return Row(
+                                                                        children: [
+                                                                          CustomOverloadingAvatar(
+                                                                            labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateSS.students.students.data![0].students!.length} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                                            tailText: AppLocalizations.of(context).translate('See more'),
+                                                                            firstImage: stateSS.students.students.data![0].students!.isNotEmpty ? stateSS.students.students.data![0].students![0].photo : '',
+                                                                            secondImage: stateSS.students.students.data![0].students!.length >= 2 ? stateSS.students.students.data![0].students![1].photo : '',
+                                                                            thirdImage: stateSS.students.students.data![0].students!.length >= 3 ? stateSS.students.students.data![0].students![2].photo : '',
+                                                                            fourthImage: stateSS.students.students.data![0].students!.length >= 4 ? stateSS.students.students.data![0].students![3].photo : '',
+                                                                            fifthImage: stateSS.students.students.data![0].students!.length >= 5 ? stateSS.students.students.data![0].students![4].photo : '',
+                                                                            avatarCount: stateSS.students.students.data![0].students!.length,
+                                                                            onTap: () {context.go('${GoRouterPath.inPreparationDetails}/${stateSS.students.students.data![0].id}${GoRouterPath.inPreparationStudents}/${stateSS.students.students.data![0].id}');
+                                                                            //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                                            },
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: calculateWidthBetweenAvatars(avatarCount: stateSS.students.students.data![0].students!.length) /*270.w*/,),
+                                                                        ],
+                                                                      );
+                                                                    } else if(stateSS is StudentsSectionFailure) {
+                                                                      return Row(
+                                                                        children: [
+                                                                          CustomOverloadingAvatar(
+                                                                            labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('students in this class')}',
+                                                                            tailText: AppLocalizations.of(context).translate('See more'),
+                                                                            firstImage: '',
+                                                                            secondImage: '',
+                                                                            thirdImage: '',
+                                                                            fourthImage: '',
+                                                                            fifthImage: '',
+                                                                            avatarCount: 5,
+                                                                            onTap: () {//context.go('${GoRouterPath.inPreparationDetails}/1${GoRouterPath.inPreparationTrainers}/1');
+                                                                            //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                                            },
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                                                        ],
+                                                                      );
+                                                                    } else {
+                                                                      return CustomCircularProgressIndicator();
+                                                                    }
+                                                                  }
                                                               ),
-                                                              SizedBox(
-                                                                height: 570.23.h,
-                                                                child: TabBarView(
-                                                                  children: [
-                                                                    Column(
-                                                                      mainAxisSize: MainAxisSize.max,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        CustomEmptyWidget(
-                                                                          firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
-                                                                          secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                    Column(
-                                                                      mainAxisSize: MainAxisSize.max,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        //Image(image: AssetImage(Assets.empty)),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            AppLocalizations.of(context).translate('No courses at this time'),
-                                                                            style: Styles.h3Bold(color: AppColors.t3),
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                          ),
+                                                              BlocBuilder<TrainersSectionCubit, TrainersSectionState>(
+                                                                  builder: (contextTS, stateTS) {
+                                                                    if(stateTS is TrainersSectionSuccess) {
+                                                                      return Expanded(
+                                                                        child: CustomOverloadingAvatar(
+                                                                          labelText: '${AppLocalizations.of(context).translate('Look at')} ${stateTS.trainers.trainers![0].trainers!.length} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                                                          tailText: AppLocalizations.of(context).translate('See more'),
+                                                                          firstImage: stateTS.trainers.trainers![0].trainers!.isNotEmpty ? stateTS.trainers.trainers![0].trainers![0].photo : '',
+                                                                          secondImage: stateTS.trainers.trainers![0].trainers!.length >= 2 ? stateTS.trainers.trainers![0].trainers![1].photo : '',
+                                                                          thirdImage: stateTS.trainers.trainers![0].trainers!.length >= 3 ? stateTS.trainers.trainers![0].trainers![2].photo : '',
+                                                                          fourthImage: stateTS.trainers.trainers![0].trainers!.length >= 4 ? stateTS.trainers.trainers![0].trainers![3].photo : '',
+                                                                          fifthImage: stateTS.trainers.trainers![0].trainers!.length >= 5 ? stateTS.trainers.trainers![0].trainers![4].photo : '',
+                                                                          avatarCount: stateTS.trainers.trainers![0].trainers!.length,
+                                                                          onTap: () {
+                                                                            context.go('${GoRouterPath.inPreparationDetails}/${stateTS.trainers.trainers![0].id}${GoRouterPath.inPreparationTrainers}/${stateTS.trainers.trainers![0].id}');
+                                                                            //context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionTrainers}/${state.section.id}');
+                                                                          },
                                                                         ),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            AppLocalizations.of(context).translate('Courses will appear here after they enroll in your school.'),
-                                                                            style: Styles.l1Normal(color: AppColors.t3),
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
+                                                                      );
+                                                                    } else if(stateTS is TrainersSectionFailure) {
+                                                                      return Row(
+                                                                        children: [
+                                                                          CustomOverloadingAvatar(
+                                                                            labelText: '${AppLocalizations.of(context).translate('Look at')} ${AppLocalizations.of(context).translate('trainers in this class')}',
+                                                                            tailText: AppLocalizations.of(context).translate('See more'),
+                                                                            firstImage: '',
+                                                                            secondImage: '',
+                                                                            thirdImage: '',
+                                                                            fourthImage: '',
+                                                                            fifthImage: '',
+                                                                            avatarCount: 5,
+                                                                            onTap: () {//context.go('${GoRouterPath.inPreparationDetails}/2${GoRouterPath.inPreparationTrainers}/1');
+                                                                              //onTap: () {context.go('${GoRouterPath.courses}/${stateDC.course.course.departmentId}${GoRouterPath.courseDetails}/${stateDC.course.course.id}${GoRouterPath.sectionStudents}/${stateSec.section.id}');
+                                                                            },
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
+                                                                          SizedBox(
+                                                                            width: calculateWidthBetweenAvatars(avatarCount: 5) /*270.w*/,),
+                                                                        ],
+                                                                      );
+                                                                    } else {
+                                                                      return CustomCircularProgressIndicator();
+                                                                    }
+                                                                  }
                                                               ),
                                                             ],
                                                           ),
-                                                        ),
+                                                          /*Padding(
+                                                            padding: EdgeInsets.only(top: 40.h, right: 47.0.w,),
+                                                            child: DefaultTabController(
+                                                              length: 2,
+                                                              child: Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 70.h,
+                                                                    child: TabBar(
+                                                                      labelColor: AppColors.blue,
+                                                                      unselectedLabelColor: AppColors.blue,
+                                                                      indicator: BoxDecoration(
+                                                                        shape: BoxShape.circle,
+                                                                        color: AppColors.darkBlue,
+                                                                      ),
+                                                                      indicatorPadding: EdgeInsets.only(top: 48.r, bottom: 12.r),
+                                                                      indicatorWeight: 20,
+                                                                      labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                                                                      unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+                                                                      tabs: [
+                                                                        Tab(text: AppLocalizations.of(context).translate('         File         '),),
+                                                                        Tab(text: AppLocalizations.of(context).translate('Announcement')),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 570.23.h,
+                                                                    child: TabBarView(
+                                                                      children: [
+                                                                        Column(
+                                                                          mainAxisSize: MainAxisSize.max,
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            CustomEmptyWidget(
+                                                                              firstText: AppLocalizations.of(context).translate('No files in this section at this time'),
+                                                                              secondText: AppLocalizations.of(context).translate('Files will appear here after they add to the section.'),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                        Column(
+                                                                          mainAxisSize: MainAxisSize.max,
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            //Image(image: AssetImage(Assets.empty)),
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                AppLocalizations.of(context).translate('No courses at this time'),
+                                                                                style: Styles.h3Bold(color: AppColors.t3),
+                                                                                maxLines: 1,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                AppLocalizations.of(context).translate('Courses will appear here after they enroll in your school.'),
+                                                                                style: Styles.l1Normal(color: AppColors.t3),
+                                                                                maxLines: 1,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),*/
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
-                                            ),
+                                                ),
+                                              );
+                                            }
                                           );
                                         }
                                       );
-                                    }
-                                  );
-                                } else {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 238.0.h,
-                                        left: 77.0.w,
-                                        bottom: 27.0.h),
-                                    child: SingleChildScrollView(
-                                      physics: BouncingScrollPhysics(),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Column(
+                                    } else {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 238.0.h,
+                                            left: 77.0.w,
+                                            bottom: 27.0.h),
+                                        child: SingleChildScrollView(
+                                          physics: BouncingScrollPhysics(),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
                                             children: [
-                                              CustomCourseInformation(
-                                                image: stateDC.course.course.photo,
-                                                bodyText: stateDC.course.course.description,
-                                                onTap: () {},
-                                                onTapDate: () {},
-                                                onTapFirstIcon: (){},
-                                                onTapSecondIcon: (){},
-                                              ),
-                                              //SizedBox(height: 22.h),
-                                              Padding(
-                                                padding: EdgeInsets.only(right: 87.w),
-                                                child: CustomEmptyWidget(
-                                                  firstText: AppLocalizations.of(context).translate('No more at this time'),
-                                                  secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
-                                                ),
+                                              Column(
+                                                children: [
+                                                  CustomCourseInformation(
+                                                    image: stateDC.course.course.photo,
+                                                    bodyText: stateDC.course.course.description,
+                                                    onTap: () {},
+                                                    onTapDate: () {},
+                                                    onTapFirstIcon: (){},
+                                                    onTapSecondIcon: (){},
+                                                  ),
+                                                  //SizedBox(height: 22.h),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(right: 87.w),
+                                                    child: CustomEmptyWidget(
+                                                      firstText: AppLocalizations.of(context).translate('No more at this time'),
+                                                      secondText: AppLocalizations.of(context).translate('Add a section to see more options.'),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                            ),
-                          ),
-                        );
-                      } else if (state is InPreparationFailure) {
-                        return CustomErrorWidget(
-                            errorMessage: state.errorMessage);
-                      } else {
-                        return CustomCircularProgressIndicator();
-                      }
+                                        ),
+                                      );
+                                    }
+                                  }
+                                ),
+                              ),
+                            );
+                          } else if (state is InPreparationFailure) {
+                            return CustomErrorWidget(
+                                errorMessage: state.errorMessage);
+                          } else {
+                            return CustomCircularProgressIndicator();
+                          }
+                        }
+                      );
+                    } else if(stateDC is DetailsCourseFailure) {
+                      return CustomErrorWidget(
+                          errorMessage: stateDC.errorMessage);
+                    } else {
+                      return CustomCircularProgressIndicator();
                     }
-                  );
-                } else if(stateDC is DetailsCourseFailure) {
-                  return CustomErrorWidget(
-                      errorMessage: stateDC.errorMessage);
-                } else {
-                  return CustomCircularProgressIndicator();
                 }
-            }
+                );
+              }
             );
           }
         );
@@ -648,6 +664,7 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
   late TextEditingController fridayEndController;
   late TextEditingController saturdayStartController;
   late TextEditingController saturdayEndController;
+  late TextEditingController sessionsController;
 
   late final String originalName;
   late final String originalSeats;
@@ -655,6 +672,7 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
   late final String originalEndDate;
   late final List<String> originalSelectedDays;
   late final Map<String, Map<String, String>> originalTimesPerDay;
+  late final String originalSessions;
 
   @override
   void initState() {
@@ -669,6 +687,7 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
     originalEndDate = widget.section.endDate.toString().split(' ')[0];
     originalSelectedDays = [];
     originalTimesPerDay = {};
+    originalSessions = widget.section.totalSessions.toString();
 
     nameController = TextEditingController(text: originalName);
     seatsController = TextEditingController(text: originalSeats);
@@ -690,6 +709,8 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
     fridayEndController = TextEditingController();
     saturdayStartController = TextEditingController();
     saturdayEndController = TextEditingController();
+
+    sessionsController = TextEditingController(text: originalSessions);
 
     for (var day in widget.section.weekDays) {
       final dayName = (day['name'] as String).toLowerCase();
@@ -757,6 +778,7 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
     fridayEndController.dispose();
     saturdayStartController.dispose();
     saturdayEndController.dispose();
+    sessionsController.dispose();
     super.dispose();
   }
 
@@ -826,12 +848,39 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
                               color: AppColors.t3),
                         ),
                       ),
-                      CustomLabelTextFormField(
-                        labelText: AppLocalizations.of(context).translate('Name'),
-                        showLabelText: true,
-                        controller: nameController,
-                        topPadding: 60.h,
-                        bottomPadding: 0.h,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            right: 155.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .start,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: CustomLabelTextFormField(
+                                labelText: AppLocalizations.of(context).translate('Name'),
+                                showLabelText: true,
+                                controller: nameController,
+                                topPadding: 60.h,
+                                rightPadding: 0.w,
+                                bottomPadding: 0.h,
+                              ),
+                            ),
+                            SizedBox(width: 19.w,),
+                            Expanded(
+                              flex: 1,
+                              child: CustomLabelTextFormField(
+                                labelText: AppLocalizations.of(context).translate('Sessions number'),
+                                showLabelText: true,
+                                controller: sessionsController,
+                                topPadding: 60.h,
+                                leftPadding: 0.w,
+                                rightPadding: 0.w,
+                                bottomPadding: 0.h,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -1187,7 +1236,8 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
                                           startDateController.text != originalStartDate ||
                                           endDateController.text != originalEndDate ||
                                           !_areListsEqual(selectedDays, originalSelectedDays) ||
-                                          !_areDayTimesEqual(currentTimes, originalTimesPerDay);
+                                          !_areDayTimesEqual(currentTimes, originalTimesPerDay) ||
+                                          sessionsController.text != originalSessions;
 
                                   if (!hasChanged) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -1198,9 +1248,10 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
                                   Navigator.pop(context);
 
                                   widget.updateCubit.fetchUpdateSection(
-                                    courseId: widget.courseId,
+                                    courseId: widget.section.id,
                                     name: nameController.text,
                                     seatsOfNumber: int.parse(seatsController.text),
+                                    totalSessions: int.parse(sessionsController.text),
                                     startDate: startDateController.text,
                                     endDate: endDateController.text,
                                     sunday: {
@@ -1253,6 +1304,7 @@ class _UpdateSectionDialogState extends State<UpdateSectionDialog> {
                                   fridayEndController.clear();
                                   saturdayStartController.clear();
                                   saturdayEndController.clear();
+                                  sessionsController.clear();
                                 }
                             ),
                             SizedBox(width: 42.w,),
@@ -1304,7 +1356,7 @@ class UpdateStateDialog extends StatefulWidget {
   const UpdateStateDialog({super.key, required this.section, required this.updateCubit});
 
   final DatumInPreparation section;
-  final UpdateSectionCubit updateCubit;
+  final UpdateStateSectionCubit updateCubit;
 
   @override
   State<UpdateStateDialog> createState() => _UpdateStateDialogState();
@@ -1476,7 +1528,7 @@ class _UpdateStateDialogState extends State<UpdateStateDialog> {
                                 log(selected!);
                                 statusController.text = selected;
                                 Navigator.pop(context);
-                                widget.updateCubit.fetchUpdateSection(
+                                widget.updateCubit.fetchUpdateStateSection(
                                   courseId: widget.section.id,
                                   state: handleSendState(state: statusController.text),
                                 );

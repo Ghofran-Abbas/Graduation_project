@@ -50,51 +50,56 @@ class CustomAppBar extends StatelessWidget {
                 title,
                 style: Styles.h2Bold(color: AppColors.blue),
               ),
-              showProfileAvatar ?? true ? BlocBuilder<UserCubit, UserState>(
-                builder: (context, state) {
-                  if (state is UserLoaded) {
-                    if (state.user.photo != null) {
-                      return CustomImageNetwork(
-                      imageWidth: 44.w,
-                      imageHeight: 44.w,
-                      borderRadius: 50.67.r,
-                      image: state.user.photo, // ✅ عرض الصورة هنا
-                      onTap: () {
-                        context.go(GoRouterPath.profile);
-                      },
-                    );
-                    } else {
-                      return GestureDetector(
-                      child: CustomImageAsset(
-                        imageWidth: 44.w,
-                        imageHeight: 44.w,
-                        borderRadius: 50.67.r,
-                      ),
-                      onTap: () {
-                        context.go(GoRouterPath.profile);
-                      },
-                    );
-                    }
-                  } else {
-                    return CustomCircularProgressIndicator(); // يمكن عرض صورة افتراضية أثناء التحميل
-                  }
-                },
-              ) : SizedBox(width: 0.w, height: 0.h),
-              /*GestureDetector(
-                child: Icon(
-                  Icons.translate_outlined,
-                  color: AppColors.darkLightPurple,
-                  size: 34.r,
-                ),
-                onTap: () {
-                  final localeCubit = BlocProvider.of<LocaleCubit>(context);
-                  if (localeCubit.state.languageCode == 'en') {
-                    localeCubit.toArabic();
-                  } else {
-                    localeCubit.toEnglish();
-                  }
-                },
-              ),*/
+              Row(
+                children: [
+                  showProfileAvatar ?? true ? BlocBuilder<UserCubit, UserState>(
+                    builder: (context, state) {
+                      if (state is UserLoaded) {
+                        if (state.user.photo != null) {
+                          return CustomImageNetwork(
+                          imageWidth: 44.w,
+                          imageHeight: 44.w,
+                          borderRadius: 50.67.r,
+                          image: state.user.photo, // ✅ عرض الصورة هنا
+                          onTap: () {
+                            context.go(GoRouterPath.profile);
+                          },
+                        );
+                        } else {
+                          return GestureDetector(
+                          child: CustomImageAsset(
+                            imageWidth: 44.w,
+                            imageHeight: 44.w,
+                            borderRadius: 50.67.r,
+                          ),
+                          onTap: () {
+                            context.go(GoRouterPath.profile);
+                          },
+                        );
+                        }
+                      } else {
+                        return CustomCircularProgressIndicator(); // يمكن عرض صورة افتراضية أثناء التحميل
+                      }
+                    },
+                  ) : SizedBox(width: 0.w, height: 0.h),
+                  SizedBox(width: 20.w),
+                  GestureDetector(
+                    child: Icon(
+                      Icons.translate_outlined,
+                      color: AppColors.darkLightPurple,
+                      size: 34.r,
+                    ),
+                    onTap: () {
+                      final localeCubit = BlocProvider.of<LocaleCubit>(context);
+                      if (localeCubit.state.languageCode == 'en') {
+                        localeCubit.toArabic();
+                      } else {
+                        localeCubit.toEnglish();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),

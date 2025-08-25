@@ -31,6 +31,7 @@ import '../models/reservation_students_section_model.dart';
 import '../models/section_progress_model.dart';
 import '../models/section_rating_model.dart';
 import '../models/students_section_model.dart';
+import '../models/update_state_section_model.dart';
 
 abstract class CourseRepo {
 
@@ -153,4 +154,6 @@ abstract class CourseRepo {
   Future<Either<Failure, SectionProgressModel>> fetchSectionProgress({required int sectionId});
 
   Future<Either<Failure, CompleteModel>> fetchFinishedSection({required int courseId, required int page});
+
+  Future<Either<Failure, UpdateStateSectionModel>> fetchUpdateStateSection({required int courseId, String? state,});
 }
