@@ -224,12 +224,19 @@ class _ReportsViewBodyState extends State<ReportsViewBody> {
                                                               bottomPadding: 0.h,
                                                               leftPadding: 0.w,
                                                               rightPadding: 128.w,
-                                                              validator: (value) =>
+                                                              validator: (value) {
+                                                                if (value?.isEmpty ?? true) {
+                                                                  return AppLocalizations.of(context).translate('This field required');
+                                                                } else if (value!.length < 10) {
+                                                                  return 'At least 10 characters';
+                                                                }
+                                                                return null;
+                                                              }/*=>
                                                               value!.isEmpty
                                                                   ? AppLocalizations.of(
                                                                   context).translate(
                                                                   'This field required')
-                                                                  : null,
+                                                                  : null*/,
                                                             ),
                                                           ],
                                                         ),

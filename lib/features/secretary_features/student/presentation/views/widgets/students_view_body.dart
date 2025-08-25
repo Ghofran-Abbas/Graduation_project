@@ -262,7 +262,17 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                                   bottomPadding: 0.h,
                                                                   leftPadding: 175.w,
                                                                   rightPadding: 127.w,
-                                                                  validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                  validator: (value) {
+                                                                    if (value?.isEmpty ?? true) {
+                                                                      return AppLocalizations.of(context).translate('This field required');
+                                                                    } else {
+                                                                      if (!RegExp(r'\S+@\S+\.\S+')
+                                                                          .hasMatch(value.toString())) {
+                                                                        return "Please enter a valid email address";
+                                                                      }
+                                                                    }
+                                                                    return null;
+                                                                  }/* => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null*/,
                                                                 ),
                                                               ],
                                                             ),
@@ -361,7 +371,16 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                             bottomPadding: 0.h,
                                                             leftPadding: 0.w,
                                                             rightPadding: 128.w,
-                                                            validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                            validator: (value) {
+                                                              if (value?.isEmpty ?? true) {
+                                                                return AppLocalizations.of(context).translate('This field required');
+                                                              } else {
+                                                                if (value!.length < 8) {
+                                                                  return 'password must be at least 8 characters';
+                                                                }
+                                                              }
+                                                              return null;
+                                                            }/*=> value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null*/,
                                                           ),
                                                         ),
                                                       ],
@@ -425,7 +444,14 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                             bottomPadding: 0.h,
                                                             leftPadding: 0.w,
                                                             rightPadding: 128.w,
-                                                            validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                            validator: (value) {
+                                                              if (value?.isEmpty ?? true) {
+                                                                return AppLocalizations.of(context).translate('This field required');
+                                                              } else if (value!.length < 10) {
+                                                                return 'At least 10 characters';
+                                                              }
+                                                              return null;
+                                                            }/*=> value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null*/,
                                                           ),
                                                         ),
                                                       ],

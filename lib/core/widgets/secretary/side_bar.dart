@@ -52,25 +52,25 @@ class SideBar extends StatelessWidget {
                     child: Column(
                       children: [
                         SideBarItem(
-                          name: AppLocalizations.of(context).translate('Dashboard'),
-                          icon: Icons.home_outlined,
+                          name: AppLocalizations.of(context).translate('Departments'),
+                          icon: Icons.category_outlined,
                           route: GoRouterPath.dashboard,
                         ),
                         SideBarItem(
                           name: AppLocalizations.of(context).translate('Students'),
-                          icon: Icons.person_outline_outlined,
+                          icon: Icons.school_outlined,
                           route: GoRouterPath.students,
                           color: AppColors.purple,
                         ),
                         SideBarItem(
                           name: AppLocalizations.of(context).translate('Trainers'),
-                          icon: Icons.perm_identity,
+                          icon: Icons.co_present,
                           route: GoRouterPath.trainers,
                           color: AppColors.purple,
                         ),
                         SideBarItem(
                           name: AppLocalizations.of(context).translate('In preparation'),
-                          icon: Icons.school_outlined,
+                          icon: Icons.pending_actions,
                           route: GoRouterPath.inPreparation,
                           color: AppColors.purple,
                         ),
@@ -82,7 +82,7 @@ class SideBar extends StatelessWidget {
                         ),
                         SideBarItem(
                           name: AppLocalizations.of(context).translate('Tasks'),
-                          icon: Icons.task,
+                          icon: Icons.fact_check_outlined,
                           route: GoRouterPath.tasks,
                           color: AppColors.purple,
                         ),
