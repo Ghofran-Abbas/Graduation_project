@@ -273,7 +273,14 @@ class _CoursesViewBodyState extends State<CoursesViewBody> {
                                                                         leftPadding: 0.w,
                                                                         rightPadding: 128
                                                                             .w,
-                                                                        validator: (value) => value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null,
+                                                                        validator: (value) {
+                                                                          if (value?.isEmpty ?? true) {
+                                                                            return AppLocalizations.of(context).translate('This field required');
+                                                                          } else if (value!.length < 10) {
+                                                                            return 'At least 10 characters';
+                                                                          }
+                                                                          return null;
+                                                                        }/*=> value!.isEmpty ? AppLocalizations.of(context).translate('This field required') : null*/,
                                                                       ),
                                                                     ],
                                                                   ),
