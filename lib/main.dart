@@ -19,6 +19,7 @@ import 'core/localization/local_cubit/local_cubit.dart';
 import 'core/utils/app_router.dart';
 import 'core/utils/bloc_observer.dart';
 import 'core/utils/service_locator.dart';
+import 'core/utils/shared_preferences_helper.dart';
 import 'features/login/data/repos/login_secretary_repo_impl.dart';
 import 'features/login/presentation/manager/login_cubit/login_secretary_cubit.dart';
 import 'features/secretary_features/student/presentation/manager/students_cubit/students_cubit.dart';
@@ -78,7 +79,12 @@ class _MyAppState extends State<MyApp> {
       _token = await _messaging.getToken(
           vapidKey: 'BMUIu0ik_OZJ9r9n3GPXib5fouwP02aKUqHBPJZFio406nmC_henlk7OtEco9fc5xd7Q3q_tZM0RuP6oBBPqTPc'
       );
-      print('FCM Token: $_token');
+      log('FCM Token: $_token');
+      if(_token != null) {
+        await SharedPreferencesHelper.saveFcmToken(_token!);
+        log('message*****************************************************************************************************************************************');
+        log('thgrfd ${await SharedPreferencesHelper.getFcmToken()}');
+      }
 
       // استقبال الرسائل أثناء فتح التطبيق (foreground)
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {

@@ -36,7 +36,7 @@ class SearchTrainerSectionViewBody extends StatelessWidget {
               CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('AddSectionTrainerFailure'),);
             } else if (stateA is AddSectionTrainerSuccess) {
               CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('AddSectionTrainerSuccess'),);
-              Navigator.pop(context);
+              //Navigator.pop(context);
             }
           },
           builder: (contextA, stateA) {

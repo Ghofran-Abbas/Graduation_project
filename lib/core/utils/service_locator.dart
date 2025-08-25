@@ -10,7 +10,9 @@ import 'package:get_it/get_it.dart';
 import '../../features/profile/data/repos/profile_repo_impl.dart';
 import '../../features/secretary_features/course/data/repos/course_repo_impl.dart';
 import '../../features/secretary_features/forgot_password/data/repos/forgot_password_repo_impl.dart';
+import '../../features/secretary_features/notification/data/repos/notification_repo_impl.dart';
 import '../../features/secretary_features/password_reset/data/repos/password_reset_repo_impl.dart';
+import '../../features/secretary_features/task/data/repos/task_repo_impl.dart';
 import '../../features/secretary_features/verification/data/repos/verification_repo_impl.dart';
 import 'api_service.dart';
 
@@ -86,6 +88,18 @@ void setupServiceLocator() {
 
   getIt.registerSingleton<ReportRepoImpl>(
     ReportRepoImpl(
+      getIt.get<DioApiService>(),
+    ),
+  );
+
+  getIt.registerSingleton<TaskRepoImpl>(
+    TaskRepoImpl(
+      getIt.get<DioApiService>(),
+    ),
+  );
+
+  getIt.registerSingleton<NotificationRepoImpl>(
+    NotificationRepoImpl(
       getIt.get<DioApiService>(),
     ),
   );

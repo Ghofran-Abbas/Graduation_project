@@ -37,6 +37,7 @@ import '../../features/secretary_features/in_preparation_course/presentation/vie
 import '../../features/secretary_features/in_preparation_course/presentation/views/search_in_preparation_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/search_student_ip_view.dart';
 import '../../features/secretary_features/in_preparation_course/presentation/views/search_trainer_ip_view.dart';
+import '../../features/secretary_features/notification/presentation/views/notifications_view.dart';
 import '../../features/secretary_features/password_reset/presentation/views/password_reset_view.dart';
 import '../../features/secretary_features/report/presentation/views/details_report_view.dart';
 import '../../features/secretary_features/report/presentation/views/reports_view.dart';
@@ -44,6 +45,7 @@ import '../../features/secretary_features/student/presentation/views/archive_sec
 import '../../features/secretary_features/student/presentation/views/search_student_view.dart';
 import '../../features/secretary_features/student/presentation/views/student_archive_course_view.dart';
 import '../../features/secretary_features/student/presentation/views/student_details_view.dart';
+import '../../features/secretary_features/task/presentation/views/tasks_view.dart';
 import '../../features/secretary_features/trainer/presentation/views/archive_section_trainer_view.dart';
 import '../../features/secretary_features/trainer/presentation/views/search_trainer_view.dart';
 import '../../features/secretary_features/trainer/presentation/views/trainer_archive_course_view.dart';
@@ -537,6 +539,11 @@ class AppRouter {
               ),
 
               GoRoute(
+                  path: '/tasks',
+                  builder: (context, state) => const TasksView(),
+              ),
+
+              GoRoute(
                 path: '/reports',
                 builder: (context, state) => const ReportsView(),
                 routes: [
@@ -548,6 +555,11 @@ class AppRouter {
                     },
                   ),
                 ]
+              ),
+
+              GoRoute(
+                path: '/notifications',
+                builder: (context, state) => const NotificationsView(),
               ),
 
               GoRoute(

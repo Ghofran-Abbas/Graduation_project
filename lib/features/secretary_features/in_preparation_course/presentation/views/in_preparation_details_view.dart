@@ -9,6 +9,7 @@ import '../../../course/presentation/manager/sections_cubit/sections_cubit.dart'
 import '../../../course/presentation/manager/students_section_cubit/students_section_cubit.dart';
 import '../../../course/presentation/manager/trainers_section_cubit/trainers_section_cubit.dart';
 import '../../../course/presentation/manager/update_section_cubit/update_section_cubit.dart';
+import '../../../course/presentation/manager/update_state_section_cubit/update_state_section_cubit.dart';
 import '../manager/in_preparation_cubit/in_preparation_cubit.dart';
 import 'widgets/in_preparation_details_view_body.dart';
 
@@ -66,6 +67,13 @@ class DetailsInPreparationView extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return StudentsSectionCubit(
+              getIt.get<CourseRepoImpl>(),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return UpdateStateSectionCubit(
               getIt.get<CourseRepoImpl>(),
             );
           },

@@ -463,6 +463,7 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                                 birthDateController.clear();
                                                                 genderController.clear();
                                                                 passwordController.clear();
+                                                                referredId.clear();
                                                               }
                                                             },
                                                           ),
@@ -483,6 +484,7 @@ class _StudentsViewBodyState extends State<StudentsViewBody> {
                                                               birthDateController.clear();
                                                               genderController.clear();
                                                               passwordController.clear();
+                                                              referredId.clear();
                                                               Navigator.pop(
                                                                   dialogContext);
                                                             },
@@ -1026,25 +1028,39 @@ class SelectReferrerStudent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //SizedBox(height: 20.h),
-                    CustomTextFormField(
-                      hintText: AppLocalizations.of(context).translate('Search here...'),
-                      hintTextStyle: Styles.l2Medium(color: AppColors.t1),
-                      borderRadius: 4.r,
-                      borderColor: Colors.transparent,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 19.73.w),
-                      filled: true,
-                      fillColor: AppColors.highlightPurple,
-                      prefixIcon: Icons.search_outlined,
-                      prefixSize: 19.73.r,
-                      controller: searchController,
-                      onTap: () {},
-                      onPressed: () {},
-                      onFieldSubmitted: (value) {
-                        context.read<SearchStudentCubit>().fetchSearchStudent(
-                          querySearch: searchController.text,
-                          page: 1,
-                        );
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextFormField(
+                            hintText: AppLocalizations.of(context).translate('Search here...'),
+                            hintTextStyle: Styles.l2Medium(color: AppColors.t1),
+                            borderRadius: 4.r,
+                            borderColor: Colors.transparent,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 19.73.w),
+                            filled: true,
+                            fillColor: AppColors.highlightPurple,
+                            prefixIcon: Icons.search_outlined,
+                            prefixSize: 19.73.r,
+                            controller: searchController,
+                            onTap: () {},
+                            onPressed: () {},
+                            onFieldSubmitted: (value) {
+                              context.read<SearchStudentCubit>().fetchSearchStudent(
+                                querySearch: searchController.text,
+                                page: 1,
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.close),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 40.h),
                     BlocBuilder<SearchStudentCubit, SearchStudentState>(
@@ -1115,7 +1131,7 @@ class SelectReferrerStudent extends StatelessWidget {
                           return Center(heightFactor: 20.h,child: CustomErrorWidget(errorMessage: AppLocalizations.of(context).translate('Search to see more')));
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
               ),

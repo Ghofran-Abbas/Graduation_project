@@ -36,7 +36,7 @@ class SearchStudentSectionViewBody extends StatelessWidget {
                 CustomSnackBar.showErrorSnackBar(context, msg: AppLocalizations.of(context).translate('AddSectionStudentFailure'),);
               } else if (stateA is AddSectionStudentSuccess) {
                 CustomSnackBar.showSnackBar(context, msg: AppLocalizations.of(context).translate('AddSectionStudentSuccess'),);
-                Navigator.pop(context);
+                //Navigator.pop(context);
               }
             },
             builder: (contextA, stateA) {

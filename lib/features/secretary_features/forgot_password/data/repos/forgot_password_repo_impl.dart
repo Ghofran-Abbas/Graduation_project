@@ -27,7 +27,7 @@ class ForgotPasswordRepoImpl extends ForgotPasswordRepo{
         data: {
           "email": email,
         },
-        token: Constants.adminToken,
+        token: '',
       ));
       log(data.toString());
       ForgotPasswordModel forgotPasswordModel;

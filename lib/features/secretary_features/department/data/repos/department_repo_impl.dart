@@ -8,6 +8,7 @@ import 'package:alhadara_dashboard/features/secretary_features/department/data/r
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
+import '../../../../../core/utils/shared_preferences_helper.dart';
 import '../models/details_department_model.dart';
 
 class DepartmentRepoImpl extends DepartmentRepo{
@@ -19,8 +20,8 @@ class DepartmentRepoImpl extends DepartmentRepo{
   Future<Either<Failure, DepartmentsModel>> fetchDepartments({required int page}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/admin/departments?page=$page',
-        token: Constants.adminToken,
+        endPoint: '/secretary/departments?page=$page',
+        token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
       DepartmentsModel departmentsModel;
@@ -40,8 +41,8 @@ class DepartmentRepoImpl extends DepartmentRepo{
   Future<Either<Failure, DetailsDepartmentModel>> fetchDetailsDepartment({required int id}) async {
     try {
       var data = await (dioApiService.get(
-        endPoint: '/admin/departments/$id',
-        token: Constants.adminToken,
+        endPoint: '/secretary/departments/$id',
+        token: await SharedPreferencesHelper.getJwtToken(),
       ));
       log(data.toString());
       DetailsDepartmentModel detailsDepartmentModel;

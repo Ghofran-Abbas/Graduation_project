@@ -36,10 +36,10 @@
   "DeleteSectionTrainerSuccess": "Trainer deleted from section successfully",
   "AddSectionStudentFailure": "Failed to add student to section. Please try again later",
   "AddSectionStudentSuccess": "Student added to section successfully",
-  "DeleteSectionStudentFailure": "DeleteSectionStudentFailure",
-  "DeleteSectionStudentSuccess": "DeleteSectionStudentSuccess",
-  "ConfirmReservationStudentFailure": "ConfirmReservationStudentFailure",
-  "ConfirmReservationStudentSuccess": "ConfirmReservationStudentSuccess",
+  "DeleteSectionStudentFailure": "Failed to delete student from section. Please try again later",
+  "DeleteSectionStudentSuccess": "Student deleted from section successfully",
+  "ConfirmReservationStudentFailure": "Failed to confirm reservation student. Please try again later",
+  "ConfirmReservationStudentSuccess": "Confirm reservation student successfully",
 
   "Are you sure you want to delete this section?": "Are you sure you want to delete this section?",
   "Are you sure you want to add this trainer to section?": "Are you sure you want to add this trainer to section?",
@@ -242,6 +242,13 @@
   "Sessions number": "Sessions number",
 
   "Rating": "Rating",
+
+  "Tasks": "Tasks",
+  "Created at": "Created at",
+  "State": "State",
+  "UpdateTaskStateFailure": "Failed to update task state. Please try again later",
+  "UpdateTaskStateSuccess": "Task state updated successfully",
+  "Notifications": "Notifications",
 
 
   "Put Trainer translation under this line": "******************************************"

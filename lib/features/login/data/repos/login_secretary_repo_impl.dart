@@ -8,6 +8,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../../../../constants.dart';
+import '../../../../core/utils/shared_preferences_helper.dart';
 import 'login_secretary_repo.dart';
 
 class LoginRepoImpl extends LoginRepo{
@@ -23,14 +24,15 @@ class LoginRepoImpl extends LoginRepo{
     required String fcm_token,
   }) async {
     try{
+      log('${await SharedPreferencesHelper.getFcmToken()}');
       var data = await (dioApiService.post(
         endPoint: '/auth/secretary/login',
         data: {
           "email": email,
           "password": password,
-          "fcm_token": fcm_token,
+          "fcm_token": await SharedPreferencesHelper.getFcmToken()/*fcm_token*/,
         },
-        token: Constants.adminToken,
+        token: '',
       ));
       log(data.toString());
       LoginSecretaryModel loginSecretaryModel;

@@ -13,6 +13,7 @@ class AppColors
 //
   static const w1 = Color(0xFFF1F1F1);
 //main colors
+  static Color lightPurple1 = Color(0xFFEBDDF8);
   static Color lightPurple = Color(0xFFC1BBEB);
   static Color darkLightPurple = Color(0xFFC1BBEB);
   static const purple = Color(0xFF4D44B5);

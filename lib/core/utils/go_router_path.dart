@@ -47,7 +47,9 @@ class GoRouterPath {
   static const detailsCompleteTrainer = '/detailsCompleteTrainer';
   static const announcementsC = '/announcementsC';
   static const announcementCDetails = '/announcementCDetails';
+  static const tasks = '/tasks';
   static const reports = '/reports';
+  static const notifications = '/notifications';
   static const detailsReport = '/detailsReport';
   static const profile = '/profile';
   static const secretaryGifts = '$profile/secretaryGifts';

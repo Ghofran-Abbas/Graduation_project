@@ -81,6 +81,12 @@ class SideBar extends StatelessWidget {
                           color: AppColors.purple,
                         ),
                         SideBarItem(
+                          name: AppLocalizations.of(context).translate('Tasks'),
+                          icon: Icons.task,
+                          route: GoRouterPath.tasks,
+                          color: AppColors.purple,
+                        ),
+                        SideBarItem(
                           name: AppLocalizations.of(context).translate('Reports'),
                           icon: Icons.insert_chart,
                           route: GoRouterPath.reports,
@@ -89,7 +95,7 @@ class SideBar extends StatelessWidget {
                         SideBarItem(
                           name: AppLocalizations.of(context).translate('Notification'),
                           icon: Icons.notifications_none,
-                          route: GoRouterPath.reports,
+                          route: GoRouterPath.notifications,
                           color: AppColors.purple,
                         ),
                       ],
